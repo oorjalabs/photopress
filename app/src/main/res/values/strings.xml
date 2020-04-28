@@ -6,4 +6,13 @@
     <string name="title_settings">Settings</string>
     <string name="text_under_development">Still working on it</string>
     <string name="pref_title_update_notes">See what\'s new</string>
+    <string name="label_tap_to_add_photo">Tap to add photo</string>
+    <string name="text_label_post_title">Post Title</string>
+    <string name="hint_post_title">Cycle Love</string>
+    <string name="text_label_tags">Tags (comma separated)</string>
+    <string name="hint_post_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_post">Post</string>
+    <string name="cd_fab_publish">Publish</string>
+    <string name="cd_photo_to_post">Photo to post</string>
 </resources>

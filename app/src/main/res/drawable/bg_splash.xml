@@ -3,8 +3,8 @@
     android:opacity="opaque">
     <item android:drawable="@color/bg_color_splash"/>
     <item
-        android:width="128dp"
-        android:height="128dp"
+        android:width="192dp"
+        android:height="192dp"
         android:drawable="@drawable/ic_app_splash"
         android:gravity="center"/>
 </layer-list>

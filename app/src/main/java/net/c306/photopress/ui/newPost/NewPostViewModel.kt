@@ -10,4 +10,10 @@ class NewPostViewModel : ViewModel() {
         value = "This is dashboard Fragment"
     }
     val text: LiveData<String> = _text
+
+    // TODO("Image live data")
+
+    // TODO("Title live data")
+
+    // TODO("Tags live data")
 }

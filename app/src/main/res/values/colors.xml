@@ -23,8 +23,33 @@
     <color name="secondaryDarkColor">#cc174e</color>
     <color name="secondaryLightColor">#fd90a8</color>
 
+    <color name="bg_status_bar">@color/primaryLightColor</color>
+
     <color name="tint_updated_indicator">#D50000</color>
     <color name="bg_updated_indicator">#dcf3f1</color> <!-- 50 of primary -->
 
-    <color name="bg_color_splash">@color/p4_night</color>
+    <color name="bg_color_splash">@color/primaryDarkColor</color>
+
+    <color name="text_primary_on_surface">@color/primaryDarkColor</color>
+
+    <color name="text_default">#DE000000</color><!-- 86% black -->
+    <color name="text_disabled">#61000000</color><!-- 37.5% black -->
+
+    <color name="bg_fab_disabled">@color/grey_400</color>
+
+    <!-- Greys  -->
+    <color name="grey_50">#FAFAFA</color>
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_400">#BDBDBD</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="grey_550">#888888</color>
+    <color name="grey_600">#757575</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_800">#424242</color>
+    <color name="grey_900">#212121</color>
+    <color name="grey_950">#121212</color>
+
+
 </resources>
