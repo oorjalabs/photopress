@@ -1,0 +1,32 @@
+
+
+------------------
+
+
+v. 2020.0428.0.1.2
+
+    --TBD-- Wireframe
+        [ ] Post
+        [ ] List
+        [ ] Login
+
+
+------------------
+
+
+v. 2020.0428.0.1.1
+
+    --TBD-- Wireframe
+        [X] Colours
+        [X] List placeholder
+        [X] Splash
+        [X] Settings
+
+
+------------------
+
+
+v. 2020.0428.0.1.0
+
+    [DONE] Init
+
