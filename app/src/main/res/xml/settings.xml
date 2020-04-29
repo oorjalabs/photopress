@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <Preference
+        app:isPreferenceVisible="true"
+        app:key="whats_new"
+        app:layout="@layout/update_notes_preference"
+        app:title="@string/pref_title_update_notes"
+        tools:summary="v. 1.0.0" />
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Test category" />
+
+</PreferenceScreen>

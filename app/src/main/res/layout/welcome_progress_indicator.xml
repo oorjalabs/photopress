@@ -1,0 +1,34 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/progress_indicator_page_1"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_margin="@dimen/item_margin_half"
+        android:tint="?colorControlNormal"
+        android:alpha="@dimen/icon_alpha_default"
+        android:contentDescription="@string/cd_welcome_screen_progress_indicator"
+        tools:src="@drawable/ic_circle_empty" />
+
+    <ImageView
+        android:id="@+id/progress_indicator_page_2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_margin="@dimen/item_margin_half"
+        android:tint="?colorControlNormal"
+        android:alpha="@dimen/icon_alpha_default"
+        android:contentDescription="@string/cd_welcome_screen_progress_indicator"
+        tools:src="@drawable/ic_circle_filled" />
+
+    <ImageView
+        android:id="@+id/progress_indicator_page_3"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_margin="@dimen/item_margin_half"
+        android:alpha="@dimen/icon_alpha_default"
+        android:contentDescription="@string/cd_welcome_screen_progress_indicator"
+        android:tint="?colorControlNormal"
+        tools:src="@drawable/ic_circle_empty" />
+
+</merge>

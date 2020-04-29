@@ -1,0 +1,53 @@
+
+
+------------------
+
+
+v. 2020.0429.0.2.1
+
+    --TBD-- Login
+
+    --TBD-- List and pick blog
+
+    --TBD-- Wireframe
+        [ ] List
+
+
+------------------
+
+
+v. 2020.0429.0.1.3
+
+    --TBD-- Wireframe
+        [X] Login
+        [X] Welcome
+
+
+------------------
+
+
+v. 2020.0428.0.1.2
+
+    --TBD-- Wireframe
+        [X] Post
+
+
+------------------
+
+
+v. 2020.0428.0.1.1
+
+    --TBD-- Wireframe
+        [X] Colours
+        [X] List placeholder
+        [X] Splash
+        [X] Settings
+
+
+------------------
+
+
+v. 2020.0428.0.1.0
+
+    [DONE] Init
+
