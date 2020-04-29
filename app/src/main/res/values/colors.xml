@@ -31,11 +31,19 @@
     <color name="bg_color_splash">@color/primaryDarkColor</color>
 
     <color name="text_primary_on_surface">@color/primaryDarkColor</color>
+    <color name="text_secondary_on_surface">@color/secondaryDarkColor</color>
 
     <color name="text_default">#DE000000</color><!-- 86% black -->
     <color name="text_disabled">#61000000</color><!-- 37.5% black -->
 
     <color name="bg_fab_disabled">@color/grey_400</color>
+
+    <color name="stroke_close_button">@color/grey_200</color>
+    <color name="bg_close_button">#61EEEEEE</color>
+
+    <color name="bg_button_primary">@color/primaryColor</color>
+    <color name="bg_button_secondary">@color/secondaryColor</color>
+    <color name="bg_button_disabled">#1f000000</color>
 
     <!-- Greys  -->
     <color name="grey_50">#FAFAFA</color>

@@ -3,4 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="item_margin_half">8dp</dimen>
+
+    <item name="icon_alpha_default" format="float" type="dimen">0.56</item>
+    <item name="icon_alpha_coloured" format="float" type="dimen">1.0</item>
+    <item name="icon_alpha_disabled" format="float" type="dimen">0.24</item>
+
 </resources>

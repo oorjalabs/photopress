@@ -3,23 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_post_new">
-    
+    app:startDestination="@+id/welcomeFragment">
+    <!--    app:startDestination="@+id/navigation_post_new">-->
+
     <fragment
         android:id="@+id/navigation_post_list"
         android:name="net.c306.photopress.ui.postList.PostListFragment"
         android:label="@string/title_list"
         tools:layout="@layout/fragment_post_list" />
-    
+
     <fragment
         android:id="@+id/navigation_post_new"
         android:name="net.c306.photopress.ui.newPost.NewPostFragment"
         android:label="@string/title_post_new"
         tools:layout="@layout/fragment_post_new" />
-    
+
     <fragment
         android:id="@+id/navigation_settings"
         android:name="net.c306.photopress.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="net.c306.photopress.ui.welcome.WelcomeFragment"
+        android:label="Welcome"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcome_to_post"
+            app:destination="@id/navigation_post_new"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_welcomeFragment"
+        app:destination="@id/welcomeFragment"
+        app:launchSingleTop="true" />
 </navigation>

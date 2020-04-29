@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.welcome.WelcomeFragment">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/button_close_welcome"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:background="@drawable/rounded_button_with_ripple"
+        android:contentDescription="@string/cd_close_welcome_screen"
+        android:padding="12dp"
+        android:src="@drawable/ic_close"
+        android:tint="?colorControlNormal" />
+</FrameLayout>

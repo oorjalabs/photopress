@@ -15,4 +15,20 @@
     <string name="button_post">Post</string>
     <string name="cd_fab_publish">Publish</string>
     <string name="cd_photo_to_post">Photo to post</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cd_close_welcome_screen">Close welcome screen</string>
+    <string name="title_welcome_to_photopress">Welcome to PhotoPress</string>
+    <string name="subtitle_welcome_to_photopress">The photoblogging app for WordPress</string>
+    <string name="message_welcome_to_photopress">Select a photo.\nGive a title.\nPress publish.\n\nIt\'s that simple.</string>
+    <string name="cd_welcome_screen_progress_indicator">Welcome screen progress indicator</string>
+    <string name="cd_photopress_logo">PhotoPress logo</string>
+    <string name="title_login_to_wordpress">Login to WordPress</string>
+    <string name="subtitle_login_to_wordpress">Connect with your WordPress blog</string>
+    <string name="message_login_to_wordpress">PhotoPress works with blogs hosted on WordPress.com or using the Jetpack plugin.</string>
+    <string name="button_connect_with_wordpress">Connect with WordPress</string>
+    <string name="title_welcome_last">Select blog</string>
+    <string name="subtitle_welcome_last">Pick a blog to post photos</string>
+    <string name="button_get_started">Let\'s begin</string>
 </resources>

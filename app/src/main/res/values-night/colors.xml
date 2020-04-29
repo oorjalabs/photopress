@@ -15,6 +15,7 @@
     <color name="bg_updated_indicator">#388b76</color> <!-- 800 of primary -->
 
     <color name="text_primary_on_surface">@color/primaryLightColor</color>
+    <color name="text_secondary_on_surface">@color/secondaryLightColor</color>
 
     <color name="text_default">#DEFFFFFF</color><!-- 86% black -->
     <color name="text_disabled">#61FFFFFF</color><!-- 37.5% black -->
