@@ -3,17 +3,23 @@
 ------------------
 
 
-v. 2020.0501.0.2.2
-
-    --TBD-- Login
-        [ ] Authenticate with code
-        [ ] Confirm token
-        [ ] Save token and go to next screen
+v. 2020.0501.0.2.3
 
     --TBD-- List and pick blog
 
     --TBD-- Wireframe
         [ ] List
+
+
+------------------
+
+
+v. 2020.0501.0.2.2
+
+    --TBD-- Login
+        [X] Authenticate with code
+        [X] Confirm token
+        [X] Save token and go to next screen
 
 
 ------------------

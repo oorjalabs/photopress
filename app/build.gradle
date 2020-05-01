@@ -16,7 +16,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 29
         versionCode 4
-        versionName "2020.0430.0.2.1"
+        versionName "2020.0501.0.2.2"
 
         // should correspond to key/value pairs inside the file
         buildConfigField("String", "WP_ID", apiKeyProperties['CLIENT_ID'])
@@ -74,9 +74,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     // Networking
-    implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.6.0'
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
 
     // WorkManager
     def work_version = "1.0.1"

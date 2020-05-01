@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="welcome1"
     android:background="@color/bg_status_bar">
 
     <androidx.constraintlayout.widget.Guideline

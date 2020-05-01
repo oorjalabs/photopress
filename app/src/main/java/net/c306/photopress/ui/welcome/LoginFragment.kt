@@ -2,7 +2,6 @@ package net.c306.photopress.ui.welcome
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +12,12 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiConstants
+import net.c306.photopress.api.ApiConstants.ARG_CODE
+import net.c306.photopress.api.ApiConstants.ARG_ERROR
 import timber.log.Timber
 
 /**
@@ -44,16 +46,19 @@ class LoginFragment : NoBottomNavFragment() {
 
             // Enable javascript
             settings.javaScriptEnabled = true
-            // addJavascriptInterface(JSInterface(resources), "IAR")
 
             loadUrl(ApiConstants.AUTHORISE_URL)
-
         }
+
+        loginViewModel.authComplete.observe(viewLifecycleOwner, Observer {
+            // Authorisation complete, navigate back to where we came from
+            if (it == true) findNavController().navigate(LoginFragmentDirections.actionPostLogin())
+        })
 
         loginViewModel.authResult.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
 
-            // TODO("If error, show message. Else save token and return to welcome fragment")
+            // TODO("If error, show message to user")
         })
 
     }
@@ -62,11 +67,13 @@ class LoginFragment : NoBottomNavFragment() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            loading_bar?.hide()
             Timber.d("Page finished loading... $url")
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
+            loading_bar?.show()
             Timber.d("Page started loading... $url")
         }
 
@@ -76,6 +83,7 @@ class LoginFragment : NoBottomNavFragment() {
             error: WebResourceError?
         ) {
             Timber.d("Received error: $error")
+
             // TODO("Tell user about error and ask them to retry.")
             loginViewModel.setAuthResult(
                 LoginViewModel.AuthResponse(error = error?.description?.toString() ?: "TODO: Error statement")
@@ -90,10 +98,12 @@ class LoginFragment : NoBottomNavFragment() {
         ): Boolean {
             request?.url?.let {
 
-                if (it.host == "c306.net" && it.path == "/apps/auth/photopress.html") {
-                    val parsedResponse = parseTokenFromUrl(it)
+                if (it.host == ApiConstants.AUTH_REDIRECT_HOST && it.path == ApiConstants.AUTH_REDIRECT_PATH) {
 
-                    Timber.d("Response: $parsedResponse")
+                    val parsedResponse = LoginViewModel.AuthResponse(
+                        code = it.getQueryParameter(ARG_CODE),
+                        error = it.getQueryParameter(ARG_ERROR)
+                    )
 
                     // Save parsed response to view model
                     loginViewModel.setAuthResult(parsedResponse)
@@ -108,37 +118,4 @@ class LoginFragment : NoBottomNavFragment() {
         }
     }
 
-    private fun parseTokenFromUrl(url: Uri): LoginViewModel.AuthResponse {
-
-        val fragment = url.fragment
-            ?: return LoginViewModel.AuthResponse(error = "No data in fragment")
-
-        val params = splitQuery(fragment)
-
-        val authResponse = LoginViewModel.AuthResponse(
-            accessToken = params["access_token"],
-            expiresIn = params["expires_in"],
-            tokenType = params["token_type"],
-            siteId = params["site_id"],
-            scope = params["scope"],
-            error = params["error"]
-        )
-
-        return authResponse
-    }
-
-    private fun splitQuery(query: String): Map<String, String> {
-        val queryPairs: MutableMap<String, String> = mutableMapOf()
-
-        val pairs = query.split("&")
-
-        for (pair in pairs) {
-            val idx = pair.indexOf("=")
-
-            val key = if (idx > 0) pair.substring(0, idx) else pair
-            val value = if (idx > 0 && pair.length > idx + 1) pair.substring(idx+1) else continue
-            queryPairs.putIfAbsent(key, value)
-        }
-        return queryPairs.toMap()
-    }
 }

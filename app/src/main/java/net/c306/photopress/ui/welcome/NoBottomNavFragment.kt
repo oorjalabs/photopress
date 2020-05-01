@@ -17,12 +17,12 @@ open class NoBottomNavFragment: Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        (activity as? MainActivity)?.apply {
-            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
-        }
-
-        super.onDestroyView()
-    }
+//    override fun onDestroyView() {
+//        (activity as? MainActivity)?.apply {
+//            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
+//        }
+//
+//        super.onDestroyView()
+//    }
 
 }

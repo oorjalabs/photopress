@@ -1,7 +1,7 @@
 package net.c306.photopress
 
 import android.content.Context
-import net.c306.photopress.api.SessionManager
+import net.c306.photopress.api.AuthPrefs
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -9,7 +9,7 @@ import okhttp3.Response
  * Interceptor to add auth token to requests
  */
 class AuthInterceptor(context: Context) : Interceptor {
-    private val sessionManager = SessionManager(context)
+    private val sessionManager = AuthPrefs(context)
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
