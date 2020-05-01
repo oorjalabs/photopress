@@ -3,14 +3,26 @@
 ------------------
 
 
-v. 2020.0429.0.2.1
+v. 2020.0501.0.2.2
 
     --TBD-- Login
+        [ ] Authenticate with code
+        [ ] Confirm token
+        [ ] Save token and go to next screen
 
     --TBD-- List and pick blog
 
     --TBD-- Wireframe
         [ ] List
+
+
+------------------
+
+
+v. 2020.0430.0.2.1
+
+    --TBD-- Login
+        [X] Authenticate
 
 
 ------------------

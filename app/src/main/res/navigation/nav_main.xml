@@ -34,9 +34,18 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/welcomeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_open_loginFragment"
+            app:destination="@id/loginFragment"
+            app:launchSingleTop="true" />
     </fragment>
     <action
         android:id="@+id/action_global_welcomeFragment"
         app:destination="@id/welcomeFragment"
         app:launchSingleTop="true" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="net.c306.photopress.ui.welcome.LoginFragment"
+        android:label="@string/title_login_to_wordpress"
+        tools:layout="@layout/fragment_login" />
 </navigation>

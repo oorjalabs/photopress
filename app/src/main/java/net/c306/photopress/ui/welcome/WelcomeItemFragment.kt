@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.fragment_welcome_item_2.*
 import kotlinx.android.synthetic.main.fragment_welcome_item_3.*
 import kotlinx.android.synthetic.main.welcome_progress_indicator.*
 import kotlinx.coroutines.*
@@ -74,6 +75,11 @@ class WelcomeItemFragment : Fragment() {
         )
         progress_indicator_page_3?.alpha = progressAlpha
 
+        button_login.setOnClickListener {
+            findNavController().navigate(
+                WelcomeFragmentDirections.actionOpenLoginFragment()
+            )
+        }
     }
 
     private fun setupThree(view: View) {
