@@ -14,13 +14,14 @@ object ApiConstants {
     const val AUTHORISE_URL = "https://public-api.wordpress.com/oauth2/authorize?client_id=${BuildConfig.WP_ID}&response_type=code&redirect_uri=$AUTH_REDIRECT_URL&scope=global"
 
     const val TOKEN_URL = "https://public-api.wordpress.com/oauth2/token"
-
+    
     const val VALIDATE_URL = "https://public-api.wordpress.com/oauth2/token-info"
 
 
     const val BASE_URL = "https://public-api.wordpress.com/rest/v1.1/"
     const val ABOUT_ME_URL = "me"
-    const val POSTS_URL = "posts"
+
+    const val BLOG_LIST = "me/sites"
 
 
     const val ARG_FIELDS = "fields"

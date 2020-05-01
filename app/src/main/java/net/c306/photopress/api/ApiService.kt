@@ -26,6 +26,12 @@ interface ApiService {
     @GET(ApiConstants.ABOUT_ME_URL)
     fun aboutMe(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<UserDetails>
 
+    @GET(ApiConstants.BLOG_LIST)
+    fun listBlogs(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<SitesResponse>
+
+    data class SitesResponse(
+        val sites: List<Blog>
+    )
 
     data class ValidateTokenResponse(
         @SerializedName(ApiConstants.ARG_CLIENT_ID)

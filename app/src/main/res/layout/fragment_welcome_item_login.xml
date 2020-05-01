@@ -41,6 +41,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/item_margin_half"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/subtitle_login_to_wordpress"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintEnd_toEndOf="parent"

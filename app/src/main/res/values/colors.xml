@@ -45,6 +45,10 @@
     <color name="bg_button_secondary">@color/secondaryColor</color>
     <color name="bg_button_disabled">#1f000000</color>
 
+    <!--source: https://meyerweb.com/eric/tools/color-blend/#FFFFFF:00b8a9:10:hex-->
+    <color name="bg_list_item_activated">#D1F2EF</color>
+
+
     <!-- Greys  -->
     <color name="grey_50">#FAFAFA</color>
     <color name="grey_100">#F5F5F5</color>

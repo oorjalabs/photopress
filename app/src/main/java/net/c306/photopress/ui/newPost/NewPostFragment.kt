@@ -30,7 +30,7 @@ class NewPostFragment : Fragment() {
 
         // Instead load this from view model on login/welcome completion
         (activity as? MainActivity)?.apply {
-            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.GONE
+            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
         }
 
         input_post_tags.setOnFocusChangeListener { v, hasFocus ->

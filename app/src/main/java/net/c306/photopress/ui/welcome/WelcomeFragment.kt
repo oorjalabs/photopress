@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_welcome.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
-import timber.log.Timber
 
 /**
  * Holder fragment for the welcome fragment views
@@ -33,6 +32,12 @@ class WelcomeFragment : NoBottomNavFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val isLoggedIn = activityViewModel.isLoggedIn.value == true
+        val blogSelected = activityViewModel.blogSelected.value == true
+        if (isLoggedIn && blogSelected) {
+            findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
+            return null
+        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
@@ -61,7 +66,6 @@ class WelcomeFragment : NoBottomNavFragment() {
 
         // If not authenticated, disable screen 3
         activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
-            Timber.d("isLoggedIn: $it")
             mPagerAdapter.setMaxScreen(
                 if (it == true) 3 else 2
             )

@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_welcome_item_select_blog.*
 import kotlinx.android.synthetic.main.welcome_progress_indicator.*
-import kotlinx.coroutines.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
 import net.c306.photopress.utils.getFloatFromXml
@@ -21,6 +20,8 @@ import net.c306.photopress.utils.getFloatFromXml
 class WelcomeItemFragmentSelectBlog : Fragment() {
 
     private val activityViewModel by activityViewModels<ActivityViewModel>()
+
+    private val selectBlogViewModel by activityViewModels<SelectBlogViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,15 +40,34 @@ class WelcomeItemFragmentSelectBlog : Fragment() {
         progress_indicator_page_2?.setImageDrawable(emptyCircle)
         progress_indicator_page_3?.setImageDrawable(filledCircle)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                delay(3000)
+        selectBlogViewModel.blogList.observe(viewLifecycleOwner, Observer {
+            if (it.isNullOrEmpty()) {
+                // TODO("This may cause an infinite loop if API request keeps returning null/empty. Should stop after one try.")
+                selectBlogViewModel.refreshBlogsList()
+                button_select_blog.isEnabled = false
+            } else {
+                button_select_blog.isEnabled = true
             }
-            setupComplete()
-        }
+        })
+
+        selectBlogViewModel.selectedBlog.observe(viewLifecycleOwner, Observer {
+            subtitle_welcome_select_blog?.text =
+                if (it == null) getString(R.string.subtitle_welcome_select_blog)
+                else getString(R.string.posting_on_blog, it.name)
+        })
+
+        activityViewModel.blogSelected.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                setupComplete()
+            }
+        })
 
         button_start?.setOnClickListener {
             findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
+        }
+
+        button_select_blog?.setOnClickListener {
+            findNavController().navigate(WelcomeFragmentDirections.actionSelectBlog())
         }
 
         activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
@@ -58,8 +78,8 @@ class WelcomeItemFragmentSelectBlog : Fragment() {
     }
 
     private fun setupComplete() {
-        animation_view_done?.visibility = View.VISIBLE
+        group_setup_complete?.visibility = View.VISIBLE
         animation_view_done?.playAnimation()
-        button_start?.visibility = View.VISIBLE
+        button_select_blog.visibility = View.GONE
     }
 }

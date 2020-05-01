@@ -20,4 +20,7 @@
     <color name="text_default">#DEFFFFFF</color><!-- 86% black -->
     <color name="text_disabled">#61FFFFFF</color><!-- 37.5% black -->
 
+    <!--source: https://meyerweb.com/eric/tools/color-blend/#000000:95E1D3:10:hex-->
+    <color name="bg_list_item_activated">#1B2926</color>
+
 </resources>

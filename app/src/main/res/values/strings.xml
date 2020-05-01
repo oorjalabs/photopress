@@ -27,8 +27,15 @@
     <string name="message_login_to_wordpress">PhotoPress works with blogs hosted on WordPress.com or using the Jetpack plugin.</string>
     <string name="button_connect_with_wordpress">Connect with WordPress</string>
     <string name="title_welcome_last">Select blog</string>
-    <string name="subtitle_welcome_last">Pick a blog to post photos</string>
+    <string name="subtitle_welcome_select_blog">Pick a blog to post photos</string>
     <string name="button_get_started">Let\'s begin</string>
     <string name="label_next_pick_a_blog">Next: Pick a blog</string>
     <string name="connected_as">Connected as %1$s</string>
+    <string name="hint_text_blog_search">Search</string>
+    <string name="dialog_blog_list_empty_view">No blogs found. Would you like to create a new blog?</string>
+    <string name="blog_selector_title">Select blog</string>
+    <string name="button_text_done">Done</string>
+    <string name="button_text_cancel">Cancel</string>
+    <string name="button_select_blog">Select a blog</string>
+    <string name="posting_on_blog">Selected blog: %1$s</string>
 </resources>

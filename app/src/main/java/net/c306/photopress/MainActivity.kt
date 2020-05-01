@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         nav_view?.setupWithNavController(navController)
 
         activityViewModel.isLoggedIn.observe(this, Observer {  })
+        activityViewModel.blogSelected.observe(this, Observer {  })
 
 
     }
