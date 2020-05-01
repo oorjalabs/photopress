@@ -52,7 +52,7 @@ class LoginFragment : NoBottomNavFragment() {
 
         loginViewModel.authComplete.observe(viewLifecycleOwner, Observer {
             // Authorisation complete, navigate back to where we came from
-            if (it == true) findNavController().navigate(LoginFragmentDirections.actionPostLogin())
+            if (it == true) findNavController().navigate(LoginFragmentDirections.actionReturnToWelcome(1))
         })
 
         loginViewModel.authResult.observe(viewLifecycleOwner, Observer {
@@ -104,6 +104,10 @@ class LoginFragment : NoBottomNavFragment() {
                         code = it.getQueryParameter(ARG_CODE),
                         error = it.getQueryParameter(ARG_ERROR)
                     )
+
+                    // Show loading bar while token is fetched and validated in background
+                    // After which view model will close this fragment
+                    loading_bar?.show()
 
                     // Save parsed response to view model
                     loginViewModel.setAuthResult(parsedResponse)

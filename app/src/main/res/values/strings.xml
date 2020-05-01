@@ -29,4 +29,6 @@
     <string name="title_welcome_last">Select blog</string>
     <string name="subtitle_welcome_last">Pick a blog to post photos</string>
     <string name="button_get_started">Let\'s begin</string>
+    <string name="label_next_pick_a_blog">Next: Pick a blog</string>
+    <string name="connected_as">Connected as %1$s</string>
 </resources>

@@ -15,9 +15,9 @@ class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            2 -> WelcomeItemFragmentThree()
-            1 -> WelcomeItemFragmentTwo()
-            else -> WelcomeItemFragmentOne()
+            2 -> WelcomeItemFragmentSelectBlog()
+            1 -> WelcomeItemFragmentLogin()
+            else -> WelcomeItemFragmentInit()
         }
     }
 

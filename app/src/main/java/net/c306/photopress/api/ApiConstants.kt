@@ -18,12 +18,12 @@ object ApiConstants {
     const val VALIDATE_URL = "https://public-api.wordpress.com/oauth2/token-info"
 
 
-    const val BASE_URL = "https://baseurl.com/"
+    const val BASE_URL = "https://public-api.wordpress.com/rest/v1.1/"
+    const val ABOUT_ME_URL = "me"
     const val POSTS_URL = "posts"
 
 
-
-
+    const val ARG_FIELDS = "fields"
     const val ARG_ACCESS_TOKEN = "access_token"
     const val ARG_CLIENT_ID = "client_id"
     const val ARG_CLIENT_SECRET = "client_secret"
@@ -36,4 +36,7 @@ object ApiConstants {
     const val ARG_BLOG_URL = "blog_url"
     const val ARG_TOKEN_TYPE = "token_type"
     const val ARG_REDIRECT_URI = "redirect_uri"
+    const val ARG_USER_DISPLAY_NAME = "display_name"
+    const val ARG_USER_AVATAR_URL = "avatar_URL"
+    const val ARG_USER_PROFILE_URL = "profile_URL"
 }

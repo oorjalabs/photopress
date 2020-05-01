@@ -17,18 +17,14 @@ interface ApiService {
 
 
     @GET(ApiConstants.VALIDATE_URL)
-    fun validateToken(@QueryMap fields: Map<String, String>): Call<ValidateTokenResponse>
-
-    @GET(ApiConstants.VALIDATE_URL)
     fun validateToken(
         @Query(ApiConstants.ARG_CLIENT_ID) clientId: String = BuildConfig.WP_ID,
         @Query(ApiConstants.ARG_TOKEN) token: String
     ): Call<ValidateTokenResponse>
 
 
-    @GET(ApiConstants.POSTS_URL)
-    fun fetchPosts(): Call<PostsResponse>
-
+    @GET(ApiConstants.ABOUT_ME_URL)
+    fun aboutMe(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<UserDetails>
 
 
     data class ValidateTokenResponse(
@@ -59,4 +55,5 @@ interface ApiService {
         val error: String?
 
     )
+
 }

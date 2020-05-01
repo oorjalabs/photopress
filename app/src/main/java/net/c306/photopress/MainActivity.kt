@@ -21,8 +21,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        AuthPrefs(applicationContext).removeAuthToken()
-
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
 
@@ -37,10 +35,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+
         setContentView(R.layout.activity_main)
 
         nav_view?.setupWithNavController(navController)
 
         activityViewModel.isLoggedIn.observe(this, Observer {  })
+
+
     }
 }

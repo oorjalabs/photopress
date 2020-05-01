@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
@@ -16,7 +17,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 29
         versionCode 4
-        versionName "2020.0501.0.2.2"
+        versionName "2020.0501.0.2.3"
 
         // should correspond to key/value pairs inside the file
         buildConfigField("String", "WP_ID", apiKeyProperties['CLIENT_ID'])
@@ -78,6 +79,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.6.0'
+
+    // Images
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
     // WorkManager
     def work_version = "1.0.1"

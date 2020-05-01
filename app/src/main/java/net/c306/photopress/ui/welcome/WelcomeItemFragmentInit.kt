@@ -15,7 +15,7 @@ import net.c306.photopress.utils.getFloatFromXml
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
-class WelcomeItemFragmentOne : Fragment() {
+class WelcomeItemFragmentInit : Fragment() {
 
     private val activityViewModel by activityViewModels<ActivityViewModel>()
 
@@ -24,7 +24,7 @@ class WelcomeItemFragmentOne : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_welcome_item_1, container, false)
+        return inflater.inflate(R.layout.fragment_welcome_item_init, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

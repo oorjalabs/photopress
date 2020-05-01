@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_welcome.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
@@ -23,8 +24,10 @@ class WelcomeFragment : NoBottomNavFragment() {
         WelcomeFragmentAdapter(this)
     }
 
+
+    private val args by navArgs<WelcomeFragmentArgs>()
+
     private val activityViewModel by activityViewModels<ActivityViewModel>()
-    private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,16 +42,20 @@ class WelcomeFragment : NoBottomNavFragment() {
 
         pager?.apply {
             adapter = mPagerAdapter
-            // TODO("Set current item from arguments")
-//            currentItem = 1
+
+            // Open to screen number specified in args, if valid
+            if (args.startScreenNumber in 0..mPagerAdapter.itemCount) {
+                setCurrentItem(args.startScreenNumber, false)
+            }
         }
 
+        // Close welcome screen on close button press (Not used)
         button_close_welcome?.apply {
             // TODO("Set this to true if coming after first launch and login")
             visibility = View.GONE
 
             setOnClickListener {
-                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeToPost())
+                findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
             }
         }
 
@@ -58,16 +65,6 @@ class WelcomeFragment : NoBottomNavFragment() {
             mPagerAdapter.setMaxScreen(
                 if (it == true) 3 else 2
             )
-        })
-
-
-        welcomeViewModel.openLoginScreen.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                welcomeViewModel.setOpenLoginScreen(false)
-                findNavController().navigate(
-                    WelcomeFragmentDirections.actionOpenLoginFragment()
-                )
-            }
         })
 
     }

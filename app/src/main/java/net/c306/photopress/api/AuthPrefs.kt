@@ -14,7 +14,9 @@ class AuthPrefs (context: Context) {
 
     companion object {
 
-        const val USER_TOKEN = "user_token"
+        const val ARG_USER_TOKEN = "user_token_ksf33n"
+        const val ARG_USER_DETAILS = "arg_user_details_qkndi3"
+
         private const val AUTH_PREFS_NAME = "gdeu82gd823eg339h238ghf"
     }
 
@@ -27,13 +29,7 @@ class AuthPrefs (context: Context) {
      */
     fun saveAuthToken(token: String) {
         prefs.edit {
-            putString(USER_TOKEN, token)
-        }
-    }
-
-    fun removeAuthToken() {
-        prefs.edit (commit = true) {
-            remove(USER_TOKEN)
+            putString(ARG_USER_TOKEN, token)
         }
     }
 
@@ -41,7 +37,7 @@ class AuthPrefs (context: Context) {
      * Function to fetch auth token
      */
     fun haveAuthToken(): Boolean {
-        val haveIt = prefs.getString(USER_TOKEN, null) != null
+        val haveIt = prefs.getString(ARG_USER_TOKEN, null) != null
         Timber.d("have Auth token: $haveIt")
         return haveIt
     }
@@ -50,6 +46,24 @@ class AuthPrefs (context: Context) {
      * Function to fetch auth token
      */
     fun fetchAuthToken(): String? {
-        return prefs.getString(USER_TOKEN, null)
+        return prefs.getString(ARG_USER_TOKEN, null)
+    }
+
+    fun getUserDetails(): UserDetails? {
+        val savedString = prefs.getString(ARG_USER_DETAILS, null) ?: return null
+
+        return UserDetails.fromJson(savedString)
+    }
+
+    fun saveUserDetails(details: UserDetails) {
+        prefs.edit {
+            putString(ARG_USER_DETAILS, details.toJson())
+        }
+    }
+
+    fun clear() {
+        prefs.edit(commit = true) {
+            clear()
+        }
     }
 }

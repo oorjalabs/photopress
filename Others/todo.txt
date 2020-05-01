@@ -3,12 +3,21 @@
 ------------------
 
 
-v. 2020.0501.0.2.3
+v. 2020.0501.0.2.4
 
     --TBD-- List and pick blog
 
     --TBD-- Wireframe
         [ ] List
+
+
+------------------
+
+
+v. 2020.0501.0.2.3
+
+    --TBD-- Login
+        [X] Get user info and show status on login screen
 
 
 ------------------

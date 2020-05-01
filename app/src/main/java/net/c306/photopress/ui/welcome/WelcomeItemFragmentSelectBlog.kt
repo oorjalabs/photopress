@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_welcome_item_3.*
+import kotlinx.android.synthetic.main.fragment_welcome_item_select_blog.*
 import kotlinx.android.synthetic.main.welcome_progress_indicator.*
 import kotlinx.coroutines.*
 import net.c306.photopress.ActivityViewModel
@@ -18,7 +18,7 @@ import net.c306.photopress.utils.getFloatFromXml
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
-class WelcomeItemFragmentThree : Fragment() {
+class WelcomeItemFragmentSelectBlog : Fragment() {
 
     private val activityViewModel by activityViewModels<ActivityViewModel>()
 
@@ -27,7 +27,7 @@ class WelcomeItemFragmentThree : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_welcome_item_3, container, false)
+        return inflater.inflate(R.layout.fragment_welcome_item_select_blog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,7 +47,7 @@ class WelcomeItemFragmentThree : Fragment() {
         }
 
         button_start?.setOnClickListener {
-            findNavController().navigate(WelcomeFragmentDirections.actionWelcomeToPost())
+            findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
         }
 
         activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {

@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.fragment_welcome_item_2.*
+import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.fragment_welcome_item_login.*
 import kotlinx.android.synthetic.main.welcome_progress_indicator.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
@@ -16,17 +17,16 @@ import net.c306.photopress.utils.getFloatFromXml
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
-class WelcomeItemFragmentTwo : Fragment() {
+class WelcomeItemFragmentLogin : Fragment() {
 
     private val activityViewModel by activityViewModels<ActivityViewModel>()
-    private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_welcome_item_2, container, false)
+        return inflater.inflate(R.layout.fragment_welcome_item_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,21 +39,36 @@ class WelcomeItemFragmentTwo : Fragment() {
         progress_indicator_page_3?.setImageDrawable(emptyCircle)
 
         button_login.setOnClickListener {
-            welcomeViewModel.setOpenLoginScreen(true)
+            findNavController().navigate(WelcomeFragmentDirections.actionOpenLoginFragment())
         }
 
         activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
             if (it == true) {
-                // TODO("Show message and go to next fragment")
-                  button_login?.isEnabled = false
+                // Hide login button and WP/Jetpack text
+                button_login?.visibility = View.GONE
+                message_wp_or_jetpack?.visibility = View.GONE
+
+                // Show done animation and message
+                animation_view_done?.visibility = View.VISIBLE
+                animation_view_done?.playAnimation()
+                go_to_select_blog?.visibility = View.VISIBLE
             }
 
-            val progressAlpha = view.context.getFloatFromXml(
+            progress_indicator_page_3?.alpha = view.context.getFloatFromXml(
                 if (it == true) R.dimen.icon_alpha_default else R.dimen.icon_alpha_disabled
             )
 
-            progress_indicator_page_3?.alpha = progressAlpha
+        })
 
+        // Show username or display name when logged in
+        activityViewModel.userDetails.observe(viewLifecycleOwner, Observer {
+            if (it == null || (it.displayName.isNullOrBlank() && it.username.isNullOrBlank())) {
+                return@Observer
+            }
+
+            val displayName = if (!it.displayName.isNullOrBlank()) it.displayName else it.username
+
+            subtitle_welcome?.text = getString(R.string.connected_as, displayName)
         })
     }
 

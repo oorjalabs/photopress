@@ -9,6 +9,7 @@ import net.c306.photopress.api.ApiService.GetTokenResponse
 import net.c306.photopress.api.ApiService.ValidateTokenResponse
 import net.c306.photopress.api.AuthPrefs
 import net.c306.photopress.api.TokenRequest
+import net.c306.photopress.api.UserDetails
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,10 +68,13 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                 // Token validated, save it to storage
                 Timber.d("Token validated, save it")
                 AuthPrefs(getApplication()).saveAuthToken(authResponse.accessToken)
+                getToKnowMe()
                 _authComplete.value = true
             }
         }
     }
+
+
 
     /**
      * Get access token using auth code
@@ -120,10 +124,6 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 
         apiClient.getApiService(getApplication())
             .validateToken(token = token)
-//            .validateToken(mapOf(
-//                ARG_CLIENT_ID to BuildConfig.WP_ID,
-//                ARG_TOKEN to token
-//            ))
             .enqueue(object : Callback<ValidateTokenResponse> {
                 override fun onFailure(call: Call<ValidateTokenResponse>, t: Throwable) {
                     // Error logging in
@@ -160,5 +160,36 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
             })
     }
 
+    /**
+     * Get user details from server
+     */
+    private fun getToKnowMe() {
+
+        apiClient.getApiService(getApplication())
+            .aboutMe(UserDetails.FIELD_STRING)
+            .enqueue(object : Callback<UserDetails> {
+                override fun onFailure(call: Call<UserDetails>, t: Throwable) {
+                    // Error logging in
+                    Timber.w(t, "Error getting token!")
+                    AuthResponse(
+                        error = "Error getting token: $t"
+                    )
+                }
+
+                override fun onResponse(call: Call<UserDetails>, response: Response<UserDetails>) {
+                    val userDetails = response.body()
+
+                    if (userDetails == null) {
+                        Timber.w("No user info recovered :(")
+                        return
+                    }
+
+                    Timber.d("User info received: $userDetails")
+
+                    AuthPrefs(getApplication())
+                        .saveUserDetails(userDetails)
+                }
+            })
+    }
 
 }
