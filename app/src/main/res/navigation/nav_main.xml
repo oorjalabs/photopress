@@ -23,20 +23,57 @@
         android:name="net.c306.photopress.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="net.c306.photopress.ui.welcome.WelcomeFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_welcome">
         <action
-            android:id="@+id/action_welcome_to_post"
+            android:id="@+id/action_go_to_app"
             app:destination="@id/navigation_post_new"
             app:launchSingleTop="true"
             app:popUpTo="@id/welcomeFragment"
             app:popUpToInclusive="true" />
+        <!-- Don't return from login to welcome, else adapter in welcome crashes -->
+        <action
+            android:id="@+id/action_open_loginFragment"
+            app:destination="@id/loginFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="startScreenNumber"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_selectBlog"
+            app:destination="@id/blogChooserDialogFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_welcomeFragment"
         app:destination="@id/welcomeFragment"
         app:launchSingleTop="true" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="net.c306.photopress.ui.welcome.LoginFragment"
+        android:label="@string/title_login_to_wordpress"
+        tools:layout="@layout/fragment_login" >
+        <!-- Use this action to return to welcome, else adapter in welcome crashes -->
+        <action
+            android:id="@+id/action_returnToWelcome"
+            app:destination="@id/welcomeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" >
+        </action>
+    </fragment>
+    <dialog
+        android:id="@+id/blogChooserDialogFragment"
+        android:name="net.c306.photopress.ui.welcome.BlogChooserDialogFragment"
+        android:label="BlogChooserDialogFragment" >
+        <argument
+            android:name="currentBlogId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </dialog>
 </navigation>

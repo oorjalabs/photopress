@@ -4,56 +4,73 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_welcome.*
-import net.c306.photopress.MainActivity
+import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
 
 /**
  * Holder fragment for the welcome fragment views
  */
-class WelcomeFragment : Fragment() {
+class WelcomeFragment : NoBottomNavFragment() {
 
     // When requested, this adapter returns a DemoObjectFragment,
     // representing an object in the collection.
-    private lateinit var mPagerAdapter: WelcomeFragmentAdapter
+    private val mPagerAdapter: WelcomeFragmentAdapter by lazy {
+        WelcomeFragmentAdapter(this)
+    }
+
+
+    private val args by navArgs<WelcomeFragmentArgs>()
+
+    private val activityViewModel by activityViewModels<ActivityViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val isLoggedIn = activityViewModel.isLoggedIn.value == true
+        val blogSelected = activityViewModel.blogSelected.value == true
+        if (isLoggedIn && blogSelected) {
+            findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
+            return null
+        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as? MainActivity)?.apply {
-            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.GONE
-        }
+        super.onViewCreated(view, savedInstanceState)
 
         pager?.apply {
-            mPagerAdapter = WelcomeFragmentAdapter(this@WelcomeFragment)
             adapter = mPagerAdapter
-            mPagerAdapter.setMaxScreen(3)
+
+            // Open to screen number specified in args, if valid
+            if (args.startScreenNumber in 0..mPagerAdapter.itemCount) {
+                setCurrentItem(args.startScreenNumber, false)
+            }
         }
 
+        // Close welcome screen on close button press (Not used)
         button_close_welcome?.apply {
             // TODO("Set this to true if coming after first launch and login")
             visibility = View.GONE
 
             setOnClickListener {
-                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeToPost())
+                findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
             }
         }
+
+        // If not authenticated, disable screen 3
+        activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
+            mPagerAdapter.setMaxScreen(
+                if (it == true) 3 else 2
+            )
+        })
+
     }
 
-    override fun onDestroyView() {
-        (activity as? MainActivity)?.apply {
-            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
-        }
-
-        super.onDestroyView()
-    }
 }

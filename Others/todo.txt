@@ -3,14 +3,55 @@
 ------------------
 
 
-v. 2020.0429.0.2.1
+v. 2020.0501.0.3.1
 
-    --TBD-- Login
+    --TBD-- Select image by user
 
-    --TBD-- List and pick blog
+    --TBD-- Display image in image view
+
+    --TBD-- Publish post with image and title
 
     --TBD-- Wireframe
         [ ] List
+
+
+------------------
+
+
+v. 2020.0501.0.2.4
+
+    [DONE] List and pick blog
+
+    [DONE] Skip welcome if logged in and blog already selected
+
+
+------------------
+
+
+v. 2020.0501.0.2.3
+
+    --TBD-- Login
+        [X] Get user info and show status on login screen
+
+
+------------------
+
+
+v. 2020.0501.0.2.2
+
+    --TBD-- Login
+        [X] Authenticate with code
+        [X] Confirm token
+        [X] Save token and go to next screen
+
+
+------------------
+
+
+v. 2020.0430.0.2.1
+
+    --TBD-- Login
+        [X] Authenticate
 
 
 ------------------

@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_status_bar"
-    android:paddingHorizontal="@dimen/activity_horizontal_margin">
+    android:tag="welcome1"
+    android:background="@color/bg_status_bar">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/image_guide"
@@ -17,18 +17,18 @@
         android:id="@+id/logo"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:contentDescription="@string/cd_photopress_logo"
         android:src="@drawable/ic_app_splash"
         app:layout_constraintBottom_toTopOf="@id/image_guide"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/cd_photopress_logo" />
 
     <TextView
         android:id="@+id/text_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/title_welcome_last"
+        android:text="@string/title_welcome_to_photopress"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,37 +39,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/item_margin_half"
-        android:text="@string/subtitle_welcome_last"
+        android:text="@string/subtitle_welcome_to_photopress"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_welcome" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view_done"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        app:layout_constraintBottom_toTopOf="@id/button_start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
-        app:lottie_autoPlay="false"
-        android:visibility="gone"
-        app:lottie_rawRes="@raw/anim_done" />
-
-    <Button
-        android:id="@+id/button_start"
-        style="@style/OutlinedButton.Secondary"
+    <TextView
+        android:id="@+id/message_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_get_started"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/progress_indicator"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:lineSpacingMultiplier="2"
+        android:text="@string/message_welcome_to_photopress"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/progress_indicator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
-        app:layout_constraintVertical_bias="0.9" />
-
+        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome" />
 
     <LinearLayout
         android:id="@+id/progress_indicator"
@@ -80,7 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <include layout="@layout/welcome_progress_indicator" />
+        <include layout="@layout/welcome_progress_indicator"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
