@@ -23,7 +23,6 @@ import kotlinx.coroutines.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
-import timber.log.Timber
 
 class NewPostFragment : Fragment() {
     
@@ -55,7 +54,7 @@ class NewPostFragment : Fragment() {
         }
 
         fab_publish?.setOnClickListener {
-            newPostViewModel.publish(
+            newPostViewModel.publishPost(
                 activityViewModel.selectedBlogId.value!!,
                 newPostViewModel.titleText.value!!,
                 newPostViewModel.imageUri.value!!
@@ -146,8 +145,6 @@ class NewPostFragment : Fragment() {
         }
 
         val imageUri = data?.data
-
-        Timber.d("Got response: ${imageUri?.toString() ?: "nada :("}")
 
         if (imageUri != null) {
             newPostViewModel.setImageUri(imageUri)

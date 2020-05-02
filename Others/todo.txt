@@ -18,6 +18,14 @@ v. 2020.0504.0.3.3
 ------------------
 
 
+v. 2020.0502.0.3.3
+
+    [DONE] Bug fix for enum serialisation - added to proguard
+
+
+------------------
+
+
 v. 2020.0502.0.3.2
 
     [DONE] Publish post with image and title

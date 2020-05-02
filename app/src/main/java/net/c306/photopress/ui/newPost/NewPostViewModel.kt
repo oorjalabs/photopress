@@ -81,7 +81,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private fun getFileForUri(uri: Uri): Pair<File, String>? {
 
         val (name, mimeType) = getFileName(uri)
-        Timber.d("name: $name")
 
         // Open a specific media item using ParcelFileDescriptor.
         val resolver = applicationContext.contentResolver
@@ -119,7 +118,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         return Pair(fileName, mimeType)
     }
 
-    internal fun publish(
+    internal fun publishPost(
         blogId: Int,
         blogTitle: String,
         imageUri: Uri,
@@ -158,10 +157,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             blogContent
         )
 
-        ApiClient().getApiService(getApplication())
+        ApiClient().getApiService(applicationContext)
             .createBlogpost(
-                blogId.toString(),
-                BlogPostRequest.FIELDS_STRING,
+                blogId = blogId.toString(),
+                fields = BlogPostRequest.FIELDS_STRING,
                 title = title,
                 content = content,
                 media = filePart
