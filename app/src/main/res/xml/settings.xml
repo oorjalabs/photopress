@@ -11,6 +11,20 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="User">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="Logged in as ..." />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="Change blog" />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="Logout" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="Test category" />
 
 </PreferenceScreen>

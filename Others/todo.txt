@@ -3,16 +3,24 @@
 ------------------
 
 
-v. 2020.0502.0.3.1
-
-    --TBD-- Select image by user
-
-    --TBD-- Display image in image view
+v. 2020.0502.0.3.2
 
     --TBD-- Publish post with image and title
 
     --TBD-- Wireframe
         [ ] List
+
+
+------------------
+
+
+v. 2020.0502.0.3.1
+
+    [DONE] Select image by user
+
+    [DONE] Display image in image view
+
+    [DONE] Set date in version name automatically
 
 
 ------------------

@@ -8,6 +8,13 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
+
+def versionString="0.3.1"
+
+static def getDate() {
+    return new Date().format('yyyy.MMdd')
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -16,8 +23,8 @@ android {
         applicationId "net.c306.photopress"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 5
-        versionName "2020.0501.0.2.5"
+        versionCode 6
+        versionName versionString
 
         // should correspond to key/value pairs inside the file
         buildConfigField("String", "WP_ID", apiKeyProperties['CLIENT_ID'])
@@ -52,6 +59,18 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "versionString"
+
+    productFlavors {
+        elsa {
+            versionName "${getDate()}.${versionString}"
+        }
+
+        granny {
+            versionName "${getDate()}.${versionString}-granny"
         }
     }
 

@@ -56,8 +56,8 @@
 
                 <ImageView
                     android:id="@+id/added_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:contentDescription="@string/cd_photo_to_post"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
