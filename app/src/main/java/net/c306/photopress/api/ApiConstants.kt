@@ -25,6 +25,7 @@ object ApiConstants {
 
 
     const val ARG_FIELDS = "fields"
+    const val ARG_OPTIONS = "options"
     const val ARG_ACCESS_TOKEN = "access_token"
     const val ARG_CLIENT_ID = "client_id"
     const val ARG_CLIENT_SECRET = "client_secret"

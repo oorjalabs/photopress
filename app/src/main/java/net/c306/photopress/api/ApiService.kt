@@ -1,5 +1,6 @@
 package net.c306.photopress.api
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import net.c306.photopress.BuildConfig
 import retrofit2.Call
@@ -27,12 +28,14 @@ interface ApiService {
     fun aboutMe(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<UserDetails>
 
     @GET(ApiConstants.BLOG_LIST)
-    fun listBlogs(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<SitesResponse>
+    fun listBlogs(@Query(ApiConstants.ARG_FIELDS) fields: String?, @Query(ApiConstants.ARG_OPTIONS) options: String?): Call<SitesResponse>
 
+    @Keep
     data class SitesResponse(
         val sites: List<Blog>
     )
 
+    @Keep
     data class ValidateTokenResponse(
         @SerializedName(ApiConstants.ARG_CLIENT_ID)
         val clientId: String?,
@@ -44,6 +47,7 @@ interface ApiService {
         val error: String?
     )
 
+    @Keep
     data class GetTokenResponse(
 
         @SerializedName(ApiConstants.ARG_ACCESS_TOKEN)

@@ -1,7 +1,6 @@
-package net.c306.photopress
+package net.c306.photopress.api
 
 import android.content.Context
-import net.c306.photopress.api.AuthPrefs
 import okhttp3.Interceptor
 import okhttp3.Response
 

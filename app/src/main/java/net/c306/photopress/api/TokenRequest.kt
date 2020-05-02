@@ -1,8 +1,10 @@
 package net.c306.photopress.api
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import net.c306.photopress.BuildConfig
 
+@Keep
 data class TokenRequest(
 
     @SerializedName(value = ApiConstants.ARG_CLIENT_ID)

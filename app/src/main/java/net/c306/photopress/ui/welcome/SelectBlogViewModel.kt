@@ -55,7 +55,7 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
     internal fun refreshBlogsList() {
 
         apiClient.getApiService(getApplication())
-            .listBlogs("")
+            .listBlogs(Blog.FIELDS_STRING, Blog.OPTIONS_STRING)
             .enqueue(object : Callback<ApiService.SitesResponse> {
                 override fun onFailure(call: Call<ApiService.SitesResponse>, t: Throwable) {
                     // Error logging in

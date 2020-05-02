@@ -16,8 +16,8 @@ android {
         applicationId "net.c306.photopress"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 4
-        versionName "2020.0501.0.2.4"
+        versionCode 5
+        versionName "2020.0501.0.2.5"
 
         // should correspond to key/value pairs inside the file
         buildConfigField("String", "WP_ID", apiKeyProperties['CLIENT_ID'])
@@ -47,6 +47,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
+//            minifyEnabled true
+//            shrinkResources true
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -1,8 +1,10 @@
 package net.c306.photopress.api
 
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class UserDetails(
     @SerializedName(ApiConstants.ARG_USER_DISPLAY_NAME)
     val displayName: String? = null,

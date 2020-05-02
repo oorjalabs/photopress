@@ -18,6 +18,8 @@ class AuthPrefs (context: Context) {
         const val ARG_BLOGS_LIST = "arg_blogs_list_ihd9323e"
         const val ARG_SELECTED_BLOG_ID = "arg_selected_blog_id_kdh39dhqk"
 
+        // This name is used in backup_descriptor to deny backups.
+        // Change there too if you change here.
         private const val AUTH_PREFS_NAME = "gdeu82gd823eg339h238ghf"
     }
 
@@ -89,6 +91,10 @@ class AuthPrefs (context: Context) {
         return prefs.getInt(ARG_SELECTED_BLOG_ID, -1)
     }
 
+    /**
+     * Clear all auth and user related data. Used on logout.
+     */
+    @Suppress("unused")
     fun clear() {
         prefs.edit(commit = true) {
             clear()

@@ -1,8 +1,10 @@
 package net.c306.photopress.api
 
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Blog(
     @SerializedName("ID")
     val id: Int,
@@ -21,6 +23,7 @@ data class Blog(
         return Gson().toJson(this)
     }
 
+    @Keep
     data class BlogIcon(
         val img: String,
         val ico: String,
@@ -28,6 +31,7 @@ data class Blog(
         val mediaId: Int
     )
 
+    @Keep
     data class BlogCapabilities(
         @SerializedName("upload_files")
         val uploadFiles: Boolean,
@@ -35,6 +39,7 @@ data class Blog(
         val publishPosts: Boolean
     )
 
+    @Keep
     data class BlogQuota(
         @SerializedName("percent_used")
         val percentUsed: Double,
@@ -42,6 +47,7 @@ data class Blog(
         val spaceAvailable: Long
     )
 
+    @Keep
     data class BlogOptions(
         @SerializedName("featured_images_enabled")
         val featuredImagesEnabled: Boolean,
@@ -50,8 +56,8 @@ data class Blog(
     )
 
     companion object {
-        const val BLOG_FIELDS = "ID,name,description,URL,jetpack,icon,capabilities,quota"
-        const val OPTIONS_FIELDS = "featured_images_enabled,default_category"
+        const val FIELDS_STRING = "ID,name,description,URL,jetpack,icon,capabilities,quota"
+        const val OPTIONS_STRING = "featured_images_enabled,default_category"
 
         fun fromJson(jsonString: String): Blog {
             return Gson().fromJson(jsonString, Blog::class.java)

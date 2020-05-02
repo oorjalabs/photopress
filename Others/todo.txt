@@ -3,7 +3,7 @@
 ------------------
 
 
-v. 2020.0501.0.3.1
+v. 2020.0502.0.3.1
 
     --TBD-- Select image by user
 
@@ -13,6 +13,16 @@ v. 2020.0501.0.3.1
 
     --TBD-- Wireframe
         [ ] List
+
+
+------------------
+
+
+v. 2020.0502.0.2.5
+
+    [DONE] Add @Keep to data classes used for networking and storage
+
+    [DONE] Add storage rules to exclude auth shared prefs from backup
 
 
 ------------------

@@ -1,7 +1,6 @@
 package net.c306.photopress.api
 
 import android.content.Context
-import net.c306.photopress.AuthInterceptor
 import net.c306.photopress.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
