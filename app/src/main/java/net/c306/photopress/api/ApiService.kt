@@ -3,6 +3,7 @@ package net.c306.photopress.api
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import net.c306.photopress.BuildConfig
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -29,6 +30,18 @@ interface ApiService {
 
     @GET(ApiConstants.BLOG_LIST)
     fun listBlogs(@Query(ApiConstants.ARG_FIELDS) fields: String?, @Query(ApiConstants.ARG_OPTIONS) options: String?): Call<SitesResponse>
+
+
+    @POST(ApiConstants.CREATE_POST)
+    @Multipart
+    fun createBlogpost(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Part title: MultipartBody.Part,
+        @Part content: MultipartBody.Part,
+        @Part media: MultipartBody.Part
+    ): Call<BlogPostResponse>
+
 
     @Keep
     data class SitesResponse(

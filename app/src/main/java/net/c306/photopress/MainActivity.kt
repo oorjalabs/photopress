@@ -21,6 +21,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (BuildConfig.DEBUG) {
+//            AuthPrefs(applicationContext).clear()
+        }
+
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
 
@@ -41,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         nav_view?.setupWithNavController(navController)
 
         activityViewModel.isLoggedIn.observe(this, Observer {  })
+        activityViewModel.selectedBlogId.observe(this, Observer {  })
         activityViewModel.blogSelected.observe(this, Observer {  })
 
 

@@ -19,9 +19,10 @@ object ApiConstants {
 
 
     const val BASE_URL = "https://public-api.wordpress.com/rest/v1.1/"
-    const val ABOUT_ME_URL = "me"
 
+    const val ABOUT_ME_URL = "me"
     const val BLOG_LIST = "me/sites"
+    const val CREATE_POST = "sites/{blog_id}/posts/new"
 
 
     const val ARG_FIELDS = "fields"
