@@ -56,8 +56,8 @@
 
                 <ImageView
                     android:id="@+id/added_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:contentDescription="@string/cd_photo_to_post"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,8 +108,22 @@
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/published_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:layout_marginTop="@dimen/item_margin_half"
+                tools:visibility="visible"
+                android:visibility="gone"
+                tools:text="@string/post_published_link"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/holder_tags" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

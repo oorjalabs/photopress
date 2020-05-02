@@ -3,16 +3,39 @@
 ------------------
 
 
-v. 2020.0502.0.3.1
-
-    --TBD-- Select image by user
-
-    --TBD-- Display image in image view
-
-    --TBD-- Publish post with image and title
+v. 2020.0504.0.3.3
 
     --TBD-- Wireframe
         [ ] List
+
+    --TBD-- Data binding
+
+    --TBD-- For non supporters, add
+        [ ] 'photopress for android' as tag
+        [ ] 'Posted with photopress for android' with play store link as post footer
+
+
+------------------
+
+
+v. 2020.0502.0.3.2
+
+    [DONE] Publish post with image and title
+
+    --TBD-- For non supporters, add
+        [X] 'Posted with photopress for android' with play store link as post footer
+
+
+------------------
+
+
+v. 2020.0502.0.3.1
+
+    [DONE] Select image by user
+
+    [DONE] Display image in image view
+
+    [DONE] Set date in version name automatically
 
 
 ------------------

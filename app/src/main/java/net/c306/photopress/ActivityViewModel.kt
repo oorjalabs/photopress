@@ -13,6 +13,9 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
     private val _userDetails = MutableLiveData<UserDetails>()
     val userDetails: LiveData<UserDetails> = _userDetails
 
+    private val _selectedBlogId = MutableLiveData<Int>()
+    val selectedBlogId: LiveData<Int> = _selectedBlogId
+
     private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> = _isLoggedIn
 
@@ -26,15 +29,23 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
 
                 AuthPrefs.ARG_USER_DETAILS -> _userDetails.value = AuthPrefs(application).getUserDetails()
 
-                AuthPrefs.ARG_SELECTED_BLOG_ID -> _blogSelected.value = AuthPrefs(application).getSelectedBlogId() > -1
+                AuthPrefs.ARG_SELECTED_BLOG_ID -> {
+                    val selectedBlog = AuthPrefs(application).getSelectedBlogId()
+                    _selectedBlogId.value = selectedBlog
+                    _blogSelected.value = selectedBlog > -1
+                }
             }
         }
 
     init {
         val authPrefs = AuthPrefs(application)
+
         _userDetails.value = authPrefs.getUserDetails()
         _isLoggedIn.value = authPrefs.haveAuthToken()
-        _blogSelected.value = AuthPrefs(application).getSelectedBlogId() > -1
+        val selectedBlog = authPrefs.getSelectedBlogId()
+        _selectedBlogId.value = selectedBlog
+        _blogSelected.value = selectedBlog > -1
+
         authPrefs.observe(observer)
     }
 
