@@ -38,5 +38,6 @@
     <string name="button_text_cancel">Cancel</string>
     <string name="button_select_blog">Select a blog</string>
     <string name="posting_on_blog">Selected blog: %1$s</string>
-    <string name="post_published_link">Post published: %1$s ( %2$s )</string>
+    <string name="message_post_published">Post published: %1$s ( %2$s )</string>
+    <string name="message_post_saved_as_draft">Post uploaded as draft: %1$s ( %2$s )</string>
 </resources>

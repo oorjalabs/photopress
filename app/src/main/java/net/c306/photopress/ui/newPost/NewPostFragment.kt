@@ -88,7 +88,11 @@ class NewPostFragment : Fragment() {
                     text = ""
                 } else {
                     visibility = View.VISIBLE
-                    text = getString(R.string.post_published_link, it.title, it.shortUrl)
+                    text = getString(
+                        if (it.isDraft) R.string.message_post_saved_as_draft else R.string.message_post_published,
+                        it.post.title,
+                        it.post.shortUrl
+                    )
                 }
                 
             }
@@ -267,7 +271,7 @@ class NewPostFragment : Fragment() {
     private fun setTitleText(text: String) {
         input_post_title?.apply {
             setText(text)
-            setSelection(0, text.length)
+//            setSelection(0, text.length)
         }
     }
     

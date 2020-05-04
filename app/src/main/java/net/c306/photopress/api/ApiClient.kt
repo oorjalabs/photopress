@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
@@ -34,9 +35,13 @@ class ApiClient {
     private fun okhttpClient(context: Context): OkHttpClient {
         
         val builder = OkHttpClient.Builder()
-        
+    
         if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor()
+            val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+                override fun log(message: String) {
+                    Timber.v("HTTP: $message")
+                }
+            })
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS)
             builder.addInterceptor(loggingInterceptor)
         }

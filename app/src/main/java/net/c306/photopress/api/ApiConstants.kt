@@ -23,6 +23,9 @@ object ApiConstants {
     const val ABOUT_ME_URL = "me"
     const val BLOG_LIST = "me/sites"
     const val CREATE_POST = "sites/{blog_id}/posts/new"
+    const val UPDATE_POST = "sites/{blog_id}/posts/{post_id}"
+    const val UPLOAD_MEDIA = "sites/{blog_id}/media/new"
+    
 
 
     const val ARG_FIELDS = "fields"
@@ -36,6 +39,7 @@ object ApiConstants {
     const val ARG_TOKEN = "token"
     const val ARG_USER_ID = "user_id"
     const val ARG_BLOG_ID = "blog_id"
+    const val ARG_POST_ID = "post_id"
     const val ARG_BLOG_URL = "blog_url"
     const val ARG_TOKEN_TYPE = "token_type"
     const val ARG_REDIRECT_URI = "redirect_uri"
