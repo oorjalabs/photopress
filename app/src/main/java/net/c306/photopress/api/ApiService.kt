@@ -32,17 +32,57 @@ interface ApiService {
     fun listBlogs(@Query(ApiConstants.ARG_FIELDS) fields: String?, @Query(ApiConstants.ARG_OPTIONS) options: String?): Call<SitesResponse>
 
 
+//    @POST(ApiConstants.CREATE_POST)
+//    @Multipart
+//    fun createBlogpost(
+//        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+//        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+//        @Part title: MultipartBody.Part,
+//        @Part content: MultipartBody.Part,
+////        @Part status: MultipartBody.Part,
+//        @Part("status") status: String = "publish",
+//        @Part media: MultipartBody.Part
+//    ): Call<WPBlogPost>
+    
+    
     @POST(ApiConstants.CREATE_POST)
-    @Multipart
-    fun createBlogpost(
+    fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Part title: MultipartBody.Part,
-        @Part content: MultipartBody.Part,
-        @Part media: MultipartBody.Part
-    ): Call<BlogPostResponse>
-
-
+        @Body body: BlogPostRequest
+    ): Call<WPBlogPost>
+    
+    
+    @POST(ApiConstants.UPDATE_POST)
+    fun updatePostStatus(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Path(ApiConstants.ARG_POST_ID) postId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Body body: UpdatePostStatusRequest
+    ): Call<WPBlogPost>
+    
+    
+    @POST(ApiConstants.UPLOAD_MEDIA)
+    @Multipart
+    fun uploadMedia(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Part media: MultipartBody.Part,
+        @Part("attrs") attrs: List<WPBlogPost.MediaAttributes>
+    ): Call<UploadMediaResponse>
+    
+    
+    @Keep
+    data class UpdatePostStatusRequest(
+        val status: WPBlogPost.PublishStatus
+    )
+    
+    @Keep
+    data class UploadMediaResponse(
+        val media: List<WPMedia>,
+        val errors: List<String>?
+    )
+    
     @Keep
     data class SitesResponse(
         val sites: List<Blog>

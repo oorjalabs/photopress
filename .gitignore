@@ -88,3 +88,8 @@ lint/tmp/
 
 .DS_Store
 /photopress.code-workspace
+.project
+.settings/org.eclipse.buildship.core.prefs
+app/.classpath
+app/.project
+app/.settings/org.eclipse.buildship.core.prefs

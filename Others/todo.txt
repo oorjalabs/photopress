@@ -3,7 +3,7 @@
 ------------------
 
 
-v. 2020.0504.0.3.3
+v. 2020.X.X.X
 
     --TBD-- Wireframe
         [ ] List
@@ -13,6 +13,50 @@ v. 2020.0504.0.3.3
     --TBD-- For non supporters, add
         [ ] 'photopress for android' as tag
         [ ] 'Posted with photopress for android' with play store link as post footer
+
+
+------------------
+
+
+v. 2020.0505.0.4.3
+
+    --TBD-- Show upload progress
+
+    --TBD-- Add tags
+
+    --TBD-- Add caption
+
+    --TBD-- Upload multiple photos - gallery
+
+    --TBD-- Prevent parsing single photo as gallery in wordpress
+
+
+------------------
+
+
+v. 2020.0504.0.4.2
+
+    [DONE] Update publish order
+        [X] upload media
+        [X] publish as draft
+        [X] publish as published
+
+    [DONE] Change blog preference
+
+
+------------------
+
+
+v. 2020.0504.0.4.1
+
+    [DONE] Create post from share intent from other apps
+
+    [DONE] On photo select,
+        [X] fill file name in title field,
+        [X] focus title and
+        [X] set full content as selected
+
+    [DONE] Bug: text input needs two taps to show keyboard
 
 
 ------------------

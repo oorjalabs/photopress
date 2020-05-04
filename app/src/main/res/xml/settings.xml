@@ -15,8 +15,9 @@
         <Preference
             app:iconSpaceReserved="false"
             app:title="Logged in as ..." />
-        <Preference
+        <ListPreference
             app:iconSpaceReserved="false"
+            app:key="key_change_blog"
             app:title="Change blog" />
         <Preference
             app:iconSpaceReserved="false"

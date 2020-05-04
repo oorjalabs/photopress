@@ -39,7 +39,7 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
 
     init {
         val authPrefs = AuthPrefs(application)
-
+        
         _userDetails.value = authPrefs.getUserDetails()
         _isLoggedIn.value = authPrefs.haveAuthToken()
         val selectedBlog = authPrefs.getSelectedBlogId()
