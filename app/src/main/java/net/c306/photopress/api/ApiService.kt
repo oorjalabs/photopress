@@ -39,6 +39,8 @@ interface ApiService {
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Part title: MultipartBody.Part,
         @Part content: MultipartBody.Part,
+//        @Part status: MultipartBody.Part,
+        @Part("status") status: String = "publish",
         @Part media: MultipartBody.Part
     ): Call<BlogPostResponse>
 

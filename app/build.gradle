@@ -9,7 +9,8 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString="0.3.3"
+def versionString="0.4.1"
+def versionNumber = 8
 
 static def getDate() {
     return new Date().format('yyyy.MMdd')
@@ -23,8 +24,8 @@ android {
         applicationId "net.c306.photopress"
         minSdkVersion 26
         targetSdkVersion 29
-        versionCode 6
-        versionName versionString
+        versionCode versionNumber
+        versionName "${getDate()}.${versionString}"
 
         // should correspond to key/value pairs inside the file
         buildConfigField("String", "WP_ID", apiKeyProperties['CLIENT_ID'])

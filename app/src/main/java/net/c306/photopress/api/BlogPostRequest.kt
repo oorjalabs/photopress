@@ -19,40 +19,58 @@ data class BlogPostRequest(
     @SerializedName("media_attrs")
     val mediaAttrs: List<MediaAttributes>? = null
 ) {
-    enum class PublishStatus {
+    @Keep
+    enum class PublishStatus (val value: String) {
+        
+        /** (default) Publish the post. */
         @SerializedName("publish")
-        PUBLISH,
+        PUBLISH("publish"),
+        
+        /** Privately publish the post. */
         @SerializedName("private")
-        PRIVATE,
+        PRIVATE("private"),
+        
+        /** Save the post as a draft. */
         @SerializedName("draft")
-        DRAFT,
+        DRAFT("draft"),
+        
+        /** Mark the post as pending editorial approval. */
         @SerializedName("pending")
-        PENDING,
+        PENDING("pending"),
+        
+        /** Schedule the post (alias for publish; you must also set a future date). */
         @SerializedName("future")
-        FUTURE,
+        FUTURE("future"),
+        
+        /** Save a placeholder for a newly created post, with no content. */
         @SerializedName("auto-draft")
-        AUTO_DRAFT
+        AUTO_DRAFT("auto-draft")
     }
-
-
+    
+    @Keep
     enum class PostFormat {
+        
+        /** (default) Use default post format */
         @SerializedName("default")
         DEFAULT,
+        
         @SerializedName("standard")
         STANDARD,
+        
         @SerializedName("image")
         IMAGE,
+        
         @SerializedName("gallery")
         GALLERY
     }
-
+    
     @Keep
     data class MediaAttributes(
         val title: String,
         val description: String,
         val caption: String
     )
-
+    
     companion object {
         const val FIELDS_STRING = "id,date,title,URL,short_URL,status,post_thumbnail,format"
     }
