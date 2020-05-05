@@ -59,23 +59,12 @@ class BlogChooserDialogFragment: DialogFragment() {
 
                 // Create list view - add adapter and click listeners
                 val listView = findViewById<ListView>(R.id.blog_list)?.apply {
-                    choiceMode = ListView.CHOICE_MODE_MULTIPLE
+                    choiceMode = ListView.CHOICE_MODE_SINGLE
                     adapter = mBlogChooserListAdapter
 
                     setOnItemClickListener { adapterView, view, i, _ ->
                         val blog = adapterView.adapter.getItem(i) as Blog
-
-                        // Add/remove blog from list
-                        if (mCurrentBlogId > -1 && blog.id == mCurrentBlogId) {
-                            mCurrentBlogId  = -1
-                            view.isActivated = false
-                            view.background = view.context.resources.getDrawable(NORMAL_ITEM_BACKGROUND_COLOUR_ID, view.context.theme)
-                        }
-                        else {
-                            mCurrentBlogId = blog.id
-                            view.isActivated = true
-                            view.background = view.context.resources.getDrawable(SELECTED_ITEM_BACKGROUND_COLOUR_ID, view.context.theme)
-                        }
+                        mCurrentBlogId = blog.id
                     }
                 }
 
@@ -112,7 +101,7 @@ class BlogChooserDialogFragment: DialogFragment() {
 //                                mCurrentBlogList.add(mSuggestedNewBlog!!)
 //                                getView(index, null, listView as ViewGroup).apply {
 //                                    isActivated = true
-//                                    background = context.resources.getDrawable(SELECTED_ITEM_BACKGROUND_COLOUR_ID, context.theme)
+//                                    background = context.getDrawable(SELECTED_ITEM_BACKGROUND_COLOUR_ID, context.theme)
 //                                }
 //                            }
 //                        }
@@ -141,11 +130,6 @@ class BlogChooserDialogFragment: DialogFragment() {
 
         } ?: throw IllegalStateException("Activity cannot be null")
 
-    }
-
-    companion object {
-        private const val SELECTED_ITEM_BACKGROUND_COLOUR_ID = R.color.bg_list_item_activated
-        private const val NORMAL_ITEM_BACKGROUND_COLOUR_ID = android.R.color.transparent
     }
 
 
@@ -215,12 +199,7 @@ class BlogChooserDialogFragment: DialogFragment() {
                 // Mark selected if blog previously selected
                 isActivated = currentBlogId != null && blog?.id == currentBlogId
 
-                background = context.resources.getDrawable(
-                    if (isActivated)
-                        SELECTED_ITEM_BACKGROUND_COLOUR_ID
-                    else NORMAL_ITEM_BACKGROUND_COLOUR_ID,
-                    context.theme
-                )
+                background = context.getDrawable(R.drawable.sl_bg_item_blog_chooser)
 
                 // Set blog text
                 findViewById<TextView>(android.R.id.text1).text = blog?.name

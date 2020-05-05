@@ -18,12 +18,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0505.0.5.3
-
-    --TBD-- Show upload progress
-        [ ] Show message with state of progress - uploading image, uploading content, publishing
-
-    --TBD-- Refresh sites, tags and categories at least once a day
+v. 2020.0506.0.5.4
 
     --TBD-- Tap on selected image options
         [ ] Change image
@@ -32,7 +27,27 @@ v. 2020.0505.0.5.3
 
     --TBD-- Add caption
 
+    --TBD-- Show upload progress
+        [ ] Show message with state of progress - uploading image, uploading content, publishing
+
     --TBD-- Upload multiple photos - gallery
+
+    --TBD-- Show upload progress
+        [ ] Show message with state of progress - uploading image, uploading content, publishing
+
+    --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0505.0.5.3
+
+    [DONE] New app icon
+        [X] App
+        [X] Splash
+        [X] Welcome screens
+        [X] Add photo background
 
 
 ------------------

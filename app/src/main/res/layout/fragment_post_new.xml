@@ -23,17 +23,17 @@
                 android:id="@+id/blog_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Selected blog name"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Selected blog name" />
 
             <FrameLayout
                 android:id="@+id/photo_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/item_margin_half"
-                app:layout_constraintDimensionRatio="4:3"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/blog_name">
@@ -42,11 +42,11 @@
                     android:id="@+id/photo_target"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/ic_photo_target"
+                    android:background="@drawable/ic_puppy_photo_target"
                     android:clickable="true"
                     android:foreground="?selectableItemBackground"
                     android:gravity="bottom|center_horizontal"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingBottom="0dp"
                     android:text="@string/label_tap_to_add_photo"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="?android:textColorSecondary" />
@@ -136,11 +136,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        app:layout_constraintStart_toStartOf="@id/scrim_publishing"
         app:layout_constraintEnd_toEndOf="@id/scrim_publishing"
-        app:layout_constraintTop_toBottomOf="@id/progress_publishing"
-        tools:text="Publishing"
-        />
+        app:layout_constraintStart_toStartOf="@id/scrim_publishing"
+        app:layout_constraintTop_toBottomOf="@id/progress_publishing" />
 
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progress_publishing"
@@ -150,6 +148,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
