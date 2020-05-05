@@ -9,8 +9,10 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.c306.photopress.R
 import net.c306.photopress.UserPrefs
 import net.c306.photopress.api.*
+import net.c306.photopress.utils.Utils
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -65,7 +67,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             else                         -> State.READY
         }
     }
-    
+
+
     // Selected Blog
     private val _selectedBlogId = MutableLiveData<Int>()
     private val selectedBlogId: LiveData<Int> = _selectedBlogId
@@ -152,6 +155,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Published post data
     private val _publishedPost = MutableLiveData<PublishedPost>()
     val publishedPost: LiveData<PublishedPost> = _publishedPost
+
+    fun newPost() {
+        _publishedPost.value = null
+    }
     
     data class PublishedPost(
         val post: WPBlogPost,
@@ -313,14 +320,16 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
             
             val blogTags = (blogTags.value ?: emptyList())
-            val newTags = (publishedPost?.tags ?: uploadedPost.tags).values.filter { it !in blogTags }
+            val newTags = (publishedPost?.tags ?: uploadedPost.tags)
+                .values
+                .filter { tag -> blogTags.none { it.id == tag.id } }
             
             // If there were new tags found, save them to blog tags list
             if (newTags.isNotEmpty()) {
                 val updatedBlogTags = blogTags.toMutableList().apply {
                     addAll(newTags)
                 }
-    
+
                 AuthPrefs(applicationContext).saveTagsList(updatedBlogTags)
                 setBlogTags(updatedBlogTags)
             }
@@ -577,5 +586,25 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 }
             })
     }
-    
+
+    val publishedDialogMessage: String
+        get() {
+            val published = publishedPost.value ?: return ""
+            return applicationContext.getString(
+                if (published.isDraft) R.string.message_post_draft
+                else R.string.message_post_published,
+                published.post.title)
+        }
+
+    fun sharePost(post: WPBlogPost) {
+        Utils.sendSharingIntent(applicationContext, post.url, post.title)
+    }
+
+    fun openPostExternal(post: WPBlogPost) {
+        applicationContext.startActivity(Utils.getIntentForUrl(post.url))
+    }
+
+    fun copyPostToClipboard(post: WPBlogPost) {
+        Utils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
+    }
 }

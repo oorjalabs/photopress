@@ -17,6 +17,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_post_new.*
@@ -94,20 +95,10 @@ class NewPostFragment : Fragment() {
             setupImageSection(it)
         })
         
-        // Show name and link to post when published
+        // Show dialog with published post details when done
         newPostViewModel.publishedPost.observe(viewLifecycleOwner, Observer {
-            with (published_post) {
-                if (it == null) {
-                    visibility = View.GONE
-                    text = ""
-                } else {
-                    visibility = View.VISIBLE
-                    text = getString(
-                        if (it.isDraft) R.string.message_post_saved_as_draft else R.string.message_post_published,
-                        it.post.title,
-                        it.post.shortUrl
-                    )
-                }
+            if (it != null) {
+                findNavController().navigate(NewPostFragmentDirections.actionShowAfterPublishDialog())
             }
         })
         
@@ -138,6 +129,10 @@ class NewPostFragment : Fragment() {
                     
                     // Disable fab
                     enableFab(false)
+                    
+                    // Hide publishing progress indicator
+                    progress_publishing?.hide()
+                    scrim_publishing?.visibility = View.GONE
                 }
                 
                 NewPostViewModel.State.NO_BLOG_SELECTED -> {
@@ -155,7 +150,10 @@ class NewPostFragment : Fragment() {
     
                     // Disable fab
                     enableFab(false)
-                    
+    
+                    // Hide publishing progress indicator
+                    progress_publishing?.hide()
+                    scrim_publishing?.visibility = View.GONE
                 }
                 
                 NewPostViewModel.State.HAVE_IMAGE -> {
@@ -173,6 +171,10 @@ class NewPostFragment : Fragment() {
                     
                     // Disable fab
                     enableFab(false)
+                    
+                    // Hide publishing progress indicator
+                    progress_publishing?.hide()
+                    scrim_publishing?.visibility = View.GONE
                 }
                 
                 NewPostViewModel.State.READY -> {
@@ -190,6 +192,10 @@ class NewPostFragment : Fragment() {
     
                     // Enable fab
                     enableFab(true)
+                    
+                    // Hide publishing progress indicator
+                    progress_publishing?.hide()
+                    scrim_publishing?.visibility = View.GONE
                 }
                 
                 NewPostViewModel.State.PUBLISHING -> {
@@ -200,13 +206,17 @@ class NewPostFragment : Fragment() {
                     // Remove photo, add target
                     added_photo?.visibility = View.VISIBLE
                     photo_target?.visibility = View.GONE
-    
+                    
                     // Disable photo target
                     photo_target?.isEnabled = false
                     photo_target?.isClickable = false
                     
                     // Disable fab
                     enableFab(false)
+                    
+                    // Hide publishing progress indicator
+                    progress_publishing?.show()
+                    scrim_publishing?.visibility = View.VISIBLE
                 }
                 
                 NewPostViewModel.State.PUBLISHED -> {
@@ -223,24 +233,24 @@ class NewPostFragment : Fragment() {
                     // Remove photo, add target
                     added_photo?.visibility = View.GONE
                     photo_target?.visibility = View.VISIBLE
-    
+                    
                     // Disable photo target
                     photo_target?.isEnabled = false
                     photo_target?.isClickable = false
                     
                     // Disable fab
                     enableFab(false)
+                    
+                    // Hide publishing progress indicator
+                    progress_publishing?.hide()
+                    scrim_publishing?.visibility = View.GONE
                 }
             }
         })
         
         // Show name of blog where we're posting
         newPostViewModel.selectedBlog.observe(viewLifecycleOwner, Observer {
-            blog_name.text = if (it == null) {
-                getString(R.string.message_no_blog_selected)
-            } else {
-                getString(R.string.message_posting_to, it.name)
-            }
+            blog_name.text = it?.name ?: getString(R.string.message_no_blog_selected)
         })
         
         // Update tags in tags suggester

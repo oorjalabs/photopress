@@ -38,8 +38,11 @@
     <string name="button_text_cancel">Cancel</string>
     <string name="button_select_blog">Select a blog</string>
     <string name="posting_on_blog">Selected blog: %1$s</string>
-    <string name="message_post_published">Post published: %1$s ( %2$s )</string>
-    <string name="message_post_saved_as_draft">Post uploaded as draft: %1$s ( %2$s )</string>
+    <string name="message_post_published">Post published: %1$s</string>
+    <string name="message_post_draft">Post uploaded as draft: %1$s</string>
     <string name="message_posting_to">Posting to %1$s</string>
     <string name="message_no_blog_selected">No blog selected. Please first select a blog on the settings screen.</string>
+    <string name="open_post">Open in browser</string>
+    <string name="copy_post">Copy link to clipboard</string>
+    <string name="share_post">Share post</string>
 </resources>

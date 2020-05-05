@@ -28,6 +28,55 @@
         <item name="android:windowBackground">@drawable/bg_splash</item>
     </style>
 
+    <!-- Bottom sheet dialog styles -->
+    <style name="BottomSheetStyle" parent="@style/Widget.MaterialComponents.BottomSheet.Modal" />
+
+    <style name="BottomSheetStyle.Rounded">
+        <item name="shapeAppearanceOverlay">@style/RoundedTopCornersBottomSheetShapeAppearance</item>
+    </style>
+
+    <style name="RoundedTopCornersBottomSheetShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="android:paddingStart">@dimen/bottom_sheet_padding</item>
+        <item name="android:paddingEnd">@dimen/bottom_sheet_padding</item>
+        <item name="android:paddingTop">@dimen/bottom_sheet_padding</item>
+        <item name="cornerSizeTopRight">@dimen/bottom_sheet_corner_radius</item>
+        <item name="cornerSizeTopLeft">@dimen/bottom_sheet_corner_radius</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+
+    <style name="AppTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle.Rounded</item>
+    </style>
+
+    <style name="AppTheme.BottomSheetDialog.OverflowMenu">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.05</item>
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:paddingHorizontal">8dp</item>
+    </style>
+
+    <style name="BottomSheetActionButtons" parent="@style/TextButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="iconPadding">16dp</item>
+        <item name="iconTint">?android:colorControlNormal</item>
+    </style>
+
+    <!-- Custom text input box styles -->
 
     <style name="UnderlinedTextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">@android:color/transparent</item>

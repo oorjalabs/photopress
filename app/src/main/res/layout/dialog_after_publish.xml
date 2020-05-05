@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="net.c306.photopress.ui.newPost.NewPostViewModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:paddingVertical="@dimen/activity_vertical_margin"
+        tools:context=".ui.newPost.AfterPublishedDialog">
+
+        <TextView
+            android:id="@+id/highlight_action_title"
+            style="@style/BottomSheetTitle"
+            android:text="@{viewmodel.publishedDialogMessage}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_share_post"
+            style="@style/BottomSheetActionButtons"
+            android:onClick="@{() -> viewmodel.sharePost(viewmodel.publishedPost.post)}"
+            android:text="@string/share_post"
+            app:icon="@drawable/ic_share" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_copy_post_to_clipboard"
+            style="@style/BottomSheetActionButtons"
+            android:onClick="@{() -> viewmodel.copyPostToClipboard(viewmodel.publishedPost.post)}"
+            android:text="@string/copy_post"
+            app:icon="@drawable/ic_copy" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_open_post_in_browser"
+            style="@style/BottomSheetActionButtons"
+            android:onClick="@{() -> viewmodel.openPostExternal(viewmodel.publishedPost.post)}"
+            android:text="@string/open_post"
+            app:icon="@drawable/ic_open_external" />
+
+    </LinearLayout>
+</layout>

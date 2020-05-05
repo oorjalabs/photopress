@@ -83,7 +83,10 @@ class AuthPrefs (context: Context) {
             if (list == null) {
                 remove(ARG_TAGS_LIST)
             } else {
-                putStringSet(ARG_TAGS_LIST, list.map { it.toJson() }.toSet())
+                putStringSet(
+                    ARG_TAGS_LIST,
+                    list.distinctBy { it.id }.map { it.toJson() }.toSet()
+                )
             }
         }
     }
