@@ -40,4 +40,6 @@
     <string name="posting_on_blog">Selected blog: %1$s</string>
     <string name="message_post_published">Post published: %1$s ( %2$s )</string>
     <string name="message_post_saved_as_draft">Post uploaded as draft: %1$s ( %2$s )</string>
+    <string name="message_posting_to">Posting to %1$s</string>
+    <string name="message_no_blog_selected">No blog selected. Please first select a blog on the settings screen.</string>
 </resources>

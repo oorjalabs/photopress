@@ -25,6 +25,7 @@ object ApiConstants {
     const val CREATE_POST = "sites/{blog_id}/posts/new"
     const val UPDATE_POST = "sites/{blog_id}/posts/{post_id}"
     const val UPLOAD_MEDIA = "sites/{blog_id}/media/new"
+    const val GET_TAGS_FOR_SITE = "sites/{blog_id}/tags"
     
 
 

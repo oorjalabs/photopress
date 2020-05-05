@@ -20,6 +20,7 @@ import net.c306.photopress.utils.getFloatFromXml
 class WelcomeItemFragmentLogin : Fragment() {
 
     private val activityViewModel by activityViewModels<ActivityViewModel>()
+    private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,7 +52,7 @@ class WelcomeItemFragmentLogin : Fragment() {
                 // Show done animation and message
                 animation_view_done?.visibility = View.VISIBLE
                 animation_view_done?.playAnimation()
-                go_to_select_blog?.visibility = View.VISIBLE
+                button_go_to_select_blog?.visibility = View.VISIBLE
             }
 
             progress_indicator_page_3?.alpha = view.context.getFloatFromXml(
@@ -70,6 +71,11 @@ class WelcomeItemFragmentLogin : Fragment() {
 
             subtitle_welcome?.text = getString(R.string.connected_as, displayName)
         })
+        
+        button_go_to_select_blog.setOnClickListener {
+            // TODO("Replace screen numbers with constants so they can be understood and changed in one position")
+            welcomeViewModel.setGoToScreen(2)
+        }
     }
 
 }

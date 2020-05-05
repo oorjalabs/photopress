@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import net.c306.photopress.UserPrefs
 import net.c306.photopress.api.ApiClient
-import net.c306.photopress.api.ApiService
 import net.c306.photopress.api.AuthPrefs
 import net.c306.photopress.api.Blog
 import retrofit2.Call
@@ -16,6 +16,7 @@ import timber.log.Timber
 class SelectBlogViewModel(application: Application): AndroidViewModel(application) {
 
     private val apiClient = ApiClient()
+    private val applicationContext = application.applicationContext
 
     private val _blogList = MutableLiveData<List<Blog>>()
     val blogList: LiveData<List<Blog>> = _blogList
@@ -30,17 +31,17 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
             val allBlogs = _blogList.value ?: emptyList()
             _selectedBlog.value = allBlogs.find { it.id == value }
         }
-
-        AuthPrefs(getApplication()).setSelectedBlogId(value)
+        
+        UserPrefs(applicationContext).setSelectedBlogId(value)
     }
 
     init {
         val authPrefs = AuthPrefs(application)
         _blogList.value = authPrefs.getBlogsList()
 
-        val selectedBlogId = authPrefs.getSelectedBlogId()
-
-        if (selectedBlogId == -1) {
+        val selectedBlogId = UserPrefs(applicationContext).getSelectedBlogId()
+        
+        if (selectedBlogId < 0) {
             _selectedBlog.value = null
         } else {
             val allBlogs = _blogList.value ?: emptyList()
@@ -54,15 +55,15 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
      */
     internal fun refreshBlogsList() {
 
-        apiClient.getApiService(getApplication())
+        apiClient.getApiService(applicationContext)
             .listBlogs(Blog.FIELDS_STRING, Blog.OPTIONS_STRING)
-            .enqueue(object : Callback<ApiService.SitesResponse> {
-                override fun onFailure(call: Call<ApiService.SitesResponse>, t: Throwable) {
+            .enqueue(object : Callback<Blog.GetSitesResponse> {
+                override fun onFailure(call: Call<Blog.GetSitesResponse>, t: Throwable) {
                     // Error logging in
                     Timber.w(t, "Error fetching blogs!")
                 }
 
-                override fun onResponse(call: Call<ApiService.SitesResponse>, response: Response<ApiService.SitesResponse>) {
+                override fun onResponse(call: Call<Blog.GetSitesResponse>, response: Response<Blog.GetSitesResponse>) {
                     val blogsList = response.body()?.sites
 
                     if (blogsList == null) {
@@ -75,7 +76,7 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
                     _blogList.value = blogsList
 
                     // Save to storage
-                    AuthPrefs(getApplication())
+                    AuthPrefs(applicationContext)
                         .saveBlogsList(blogsList)
                 }
             })

@@ -54,6 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         app:constraint_referenced_ids="animation_view_done,button_start"
         tools:layout_editor_absoluteX="16dp" />
 

@@ -16,18 +16,19 @@ import net.c306.photopress.R
  * Holder fragment for the welcome fragment views
  */
 class WelcomeFragment : NoBottomNavFragment() {
-
+    
     // When requested, this adapter returns a DemoObjectFragment,
     // representing an object in the collection.
     private val mPagerAdapter: WelcomeFragmentAdapter by lazy {
         WelcomeFragmentAdapter(this)
     }
-
-
+    
+    
     private val args by navArgs<WelcomeFragmentArgs>()
-
+    
     private val activityViewModel by activityViewModels<ActivityViewModel>()
-
+    private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,36 +42,44 @@ class WelcomeFragment : NoBottomNavFragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         pager?.apply {
             adapter = mPagerAdapter
-
+            
             // Open to screen number specified in args, if valid
             if (args.startScreenNumber in 0..mPagerAdapter.itemCount) {
                 setCurrentItem(args.startScreenNumber, false)
             }
         }
-
+        
         // Close welcome screen on close button press (Not used)
         button_close_welcome?.apply {
             // TODO("Set this to true if coming after first launch and login")
             visibility = View.GONE
-
+            
             setOnClickListener {
                 findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
             }
         }
-
+        
         // If not authenticated, disable screen 3
         activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
             mPagerAdapter.setMaxScreen(
                 if (it == true) 3 else 2
             )
         })
-
+        
+        
+        welcomeViewModel.goToScreen.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                pager?.setCurrentItem(it, true)
+                welcomeViewModel.setGoToScreen(null)
+            }
+        })
+        
     }
 
 }

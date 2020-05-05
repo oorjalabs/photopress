@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (BuildConfig.DEBUG) {
+//            AuthPrefs(applicationContext).saveTagsList(null)
+//            UserPrefs(applicationContext).setSelectedBlogId(-1)
 //            AuthPrefs(applicationContext).clear()
         }
 
