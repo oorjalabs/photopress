@@ -18,17 +18,65 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0505.0.4.3
+v. 2020.0506.0.5.4
 
-    --TBD-- Show upload progress
-
-    --TBD-- Add tags
+    --TBD-- Tap on selected image options
+        [ ] Change image
+        [ ] Add more images (gallery)
+        [ ] Add caption, description, alt text
 
     --TBD-- Add caption
 
+    --TBD-- Show upload progress
+        [ ] Show message with state of progress - uploading image, uploading content, publishing
+
     --TBD-- Upload multiple photos - gallery
 
-    --TBD-- Prevent parsing single photo as gallery in wordpress
+    --TBD-- Show upload progress
+        [ ] Show message with state of progress - uploading image, uploading content, publishing
+
+    --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0505.0.5.3
+
+    [DONE] New app icon
+        [X] App
+        [X] Splash
+        [X] Welcome screens
+        [X] Add photo background
+
+
+------------------
+
+
+v. 2020.0505.0.5.2
+
+    [DONE] WHEN PUBLISHED POST IS NOT NULL, SHOW DIALOG WITH POST DETAILS. WHEN DIALOG IS DISMISSED, CLEAR PUBLISHED POST
+        [X] Use data binding
+
+    --TBD-- Show upload progress
+        [X] Show circling uploading indicator
+
+
+------------------
+
+
+v. 2020.0505.0.5.1
+
+    [DONE] After login, button takes to select blog screen
+
+    [DONE] Settings: Show selected blog
+        [X] Move selected blog id setting to user prefs/settings
+
+    [DONE] Add tags
+        [X] Fetch tags when a blog is changed or updated
+        [X] Suggest tags when typing in tags entry
+        [X] Add tags to post
+        [X] Fetch new tags when a new post is added
 
 
 ------------------

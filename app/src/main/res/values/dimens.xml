@@ -8,4 +8,11 @@
     <item name="icon_alpha_coloured" format="float" type="dimen">1.0</item>
     <item name="icon_alpha_disabled" format="float" type="dimen">0.24</item>
 
+    <item name="alpha_scrim_publishing" format="float" type="dimen">0.375</item>
+
+    <dimen name="bottom_sheet_corner_radius">8dp</dimen>
+    <dimen name="bottom_sheet_padding">2dp</dimen>
+
+    <dimen name="min_touch_width">48dp</dimen>
+
 </resources>

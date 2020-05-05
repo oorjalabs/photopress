@@ -20,7 +20,7 @@
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:contentDescription="@string/cd_photopress_logo"
-        android:src="@drawable/ic_app_splash"
+        android:src="@drawable/ic_puppy_full_white"
         app:layout_constraintBottom_toTopOf="@id/image_guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -54,6 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         app:constraint_referenced_ids="animation_view_done,button_start"
         tools:layout_editor_absoluteX="16dp" />
 

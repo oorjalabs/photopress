@@ -16,7 +16,7 @@ import retrofit2.Response
 import timber.log.Timber
 
 class LoginViewModel(application: Application): AndroidViewModel(application) {
-
+    
     internal data class AuthResponse(
         val accessToken: String? = null,
         val expiresIn: String? = null,
@@ -29,26 +29,26 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
         val userId: String? = null,
         val error: String? //error=access_denied
     )
-
+    
     private val _authComplete = MutableLiveData<Boolean>()
     internal val authComplete: LiveData<Boolean> = _authComplete
-
+    
     private val _authResult = MutableLiveData<AuthResponse>()
     internal val authResult: LiveData<AuthResponse> = _authResult
-
+    
     private val apiClient = ApiClient()
-
+    
     internal fun setAuthResult(authResponse: AuthResponse) {
         _authResult.value = authResponse
-
+        
         when {
-
+            
             !authResponse.code.isNullOrBlank() -> {
                 // If authResponse has `code`, then exchange it for token.
                 Timber.d("Auth code received, exchange it for token")
                 getToken(authResponse.code)
             }
-
+            
             !authResponse.accessToken.isNullOrBlank() &&
                     !authResponse.tokenValidated &&
                     !authResponse.error.isNullOrBlank() -> {
@@ -56,14 +56,14 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                 Timber.d("Invalid token")
                 // TODO("Prompt user to login again")
             }
-
+            
             !authResponse.accessToken.isNullOrBlank() &&
                     !authResponse.tokenValidated -> {
                 // AuthResponse has `token` but not validated; Validate token.
                 Timber.d("Token received, validate it")
                 validateAuthToken(authResponse.accessToken)
             }
-
+            
             !authResponse.accessToken.isNullOrBlank() -> {
                 // Token validated, save it to storage
                 Timber.d("Token validated, save it")
@@ -73,15 +73,15 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
             }
         }
     }
-
-
-
+    
+    
+    
     /**
      * Get access token using auth code
      */
     private fun getToken(code: String) {
         val tokenRequest = TokenRequest(code = code)
-
+        
         apiClient.getApiService(getApplication())
             .getToken(tokenRequest.toFieldMap())
             .enqueue(object : Callback<GetTokenResponse> {
@@ -92,10 +92,10 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                         error = "Error getting token: $t"
                     )
                 }
-
+                
                 override fun onResponse(call: Call<GetTokenResponse>, response: Response<GetTokenResponse>) {
                     val tokenResponse = response.body()
-
+                    
                     if (tokenResponse?.accessToken != null) {
                         // sessionManager.saveAuthToken(loginResponse.authToken)
                         Timber.d("Got token: $tokenResponse")
@@ -116,12 +116,12 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                 }
             })
     }
-
+    
     /**
      * Validate auth token with server
      */
     private fun validateAuthToken(token: String) {
-
+        
         apiClient.getApiService(getApplication())
             .validateToken(token = token)
             .enqueue(object : Callback<ValidateTokenResponse> {
@@ -132,10 +132,10 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                         error = "Error getting token: $t"
                     )
                 }
-
+                
                 override fun onResponse(call: Call<ValidateTokenResponse>, response: Response<ValidateTokenResponse>) {
                     val tokenResponse = response.body()
-
+                    
                     if (tokenResponse == null || !tokenResponse.error.isNullOrBlank()) {
                         Timber.w("Token not validated")
                         setAuthResult(AuthResponse(
@@ -145,9 +145,9 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                         ))
                         return
                     }
-
+                    
                     Timber.d("Token verified. Yay! $tokenResponse")
-
+                    
                     setAuthResult(AuthResponse(
                         accessToken = token,
                         tokenValidated = true,
@@ -155,16 +155,16 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                         siteId = tokenResponse.blogId,
                         error = null
                     ))
-
+                    
                 }
             })
     }
-
+    
     /**
      * Get user details from server
      */
     private fun getToKnowMe() {
-
+        
         apiClient.getApiService(getApplication())
             .aboutMe(UserDetails.FIELD_STRING)
             .enqueue(object : Callback<UserDetails> {
@@ -175,17 +175,17 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                         error = "Error getting token: $t"
                     )
                 }
-
+                
                 override fun onResponse(call: Call<UserDetails>, response: Response<UserDetails>) {
                     val userDetails = response.body()
-
+                    
                     if (userDetails == null) {
                         Timber.w("No user info recovered :(")
                         return
                     }
-
+                    
                     Timber.d("User info received: $userDetails")
-
+                    
                     AuthPrefs(getApplication())
                         .saveUserDetails(userDetails)
                 }

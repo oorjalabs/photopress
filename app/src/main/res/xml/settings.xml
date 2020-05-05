@@ -5,7 +5,7 @@
     <Preference
         app:isPreferenceVisible="true"
         app:key="whats_new"
-        app:layout="@layout/update_notes_preference"
+        app:layout="@layout/pref_update_notes"
         app:title="@string/pref_title_update_notes"
         tools:summary="v. 1.0.0" />
 
@@ -17,7 +17,8 @@
             app:title="Logged in as ..." />
         <ListPreference
             app:iconSpaceReserved="false"
-            app:key="key_change_blog"
+            app:key="key_selected_blog_id"
+            app:summary="%s"
             app:title="Change blog" />
         <Preference
             app:iconSpaceReserved="false"

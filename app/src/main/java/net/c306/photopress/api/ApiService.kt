@@ -28,28 +28,29 @@ interface ApiService {
     @GET(ApiConstants.ABOUT_ME_URL)
     fun aboutMe(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<UserDetails>
 
+    
     @GET(ApiConstants.BLOG_LIST)
-    fun listBlogs(@Query(ApiConstants.ARG_FIELDS) fields: String?, @Query(ApiConstants.ARG_OPTIONS) options: String?): Call<SitesResponse>
-
-
-//    @POST(ApiConstants.CREATE_POST)
-//    @Multipart
-//    fun createBlogpost(
-//        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-//        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-//        @Part title: MultipartBody.Part,
-//        @Part content: MultipartBody.Part,
-////        @Part status: MultipartBody.Part,
-//        @Part("status") status: String = "publish",
-//        @Part media: MultipartBody.Part
-//    ): Call<WPBlogPost>
+    fun listBlogs(
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Query(ApiConstants.ARG_OPTIONS) options: String?
+    ): Call<Blog.GetSitesResponse>
+    
+    
+    @GET(ApiConstants.GET_TAGS_FOR_SITE)
+    fun getTagsForSite(
+            @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+            @Query(WPTag.ARG_ORDER_BY) orderBy: String = WPTag.VALUE_ORDER_BY,
+            @Query(WPTag.ARG_ORDER) order: String = WPTag.VALUE_ORDER,
+            @Query(WPTag.ARG_NUMBER) number: Number = WPTag.VALUE_NUMBER,
+            @Query(WPTag.ARG_FIELDS) fields: String = WPTag.FIELDS_STRING
+    ): Call<WPTag.TagsResponse>
     
     
     @POST(ApiConstants.CREATE_POST)
     fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: BlogPostRequest
+        @Body body: WPBlogPost.CreatePostRequest
     ): Call<WPBlogPost>
     
     
@@ -58,7 +59,7 @@ interface ApiService {
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Path(ApiConstants.ARG_POST_ID) postId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: UpdatePostStatusRequest
+        @Body body: WPBlogPost.UpdatePostStatusRequest
     ): Call<WPBlogPost>
     
     
@@ -68,26 +69,10 @@ interface ApiService {
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Part media: MultipartBody.Part,
-        @Part("attrs") attrs: List<WPBlogPost.MediaAttributes>
-    ): Call<UploadMediaResponse>
+        @Part("attrs") attrs: List<WPMedia.MediaAttributes>
+    ): Call<WPMedia.UploadMediaResponse>
     
     
-    @Keep
-    data class UpdatePostStatusRequest(
-        val status: WPBlogPost.PublishStatus
-    )
-    
-    @Keep
-    data class UploadMediaResponse(
-        val media: List<WPMedia>,
-        val errors: List<String>?
-    )
-    
-    @Keep
-    data class SitesResponse(
-        val sites: List<Blog>
-    )
-
     @Keep
     data class ValidateTokenResponse(
         @SerializedName(ApiConstants.ARG_CLIENT_ID)
@@ -102,7 +87,7 @@ interface ApiService {
 
     @Keep
     data class GetTokenResponse(
-
+        
         @SerializedName(ApiConstants.ARG_ACCESS_TOKEN)
         val accessToken: String?,
 

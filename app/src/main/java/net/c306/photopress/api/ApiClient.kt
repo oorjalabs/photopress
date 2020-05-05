@@ -43,6 +43,7 @@ class ApiClient {
                 }
             })
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS)
+            // loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             builder.addInterceptor(loggingInterceptor)
         }
         

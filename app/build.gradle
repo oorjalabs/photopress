@@ -9,8 +9,8 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString="0.4.2"
-def versionNumber = 8
+def versionString="0.5.3"
+def versionNumber = 10
 
 static def getDate() {
     return new Date().format('yyyy.MMdd')
@@ -83,6 +83,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    dataBinding {
+        enabled = true
     }
 
 }

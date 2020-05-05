@@ -18,7 +18,9 @@ data class WPBlogPost(
     val status: PublishStatus? = PublishStatus.PUBLISH,
     @SerializedName("post_thumbnail")
     val postThumbnail: Thumbnail,
-    val format: PostFormat? = PostFormat.DEFAULT
+    val format: PostFormat? = PostFormat.DEFAULT,
+    val tags: Map<String, WPTag>,
+    val categories: Map<String, WPCategory>
 ) {
     
     @Keep
@@ -62,30 +64,42 @@ data class WPBlogPost(
     }
     
     @Keep
+    data class UpdatePostStatusRequest(
+        val status: PublishStatus
+    )
+    
+    @Keep
     enum class PostFormat {
-        
         /** (default) Use default post format */
         @SerializedName("default")
         DEFAULT,
-        
         @SerializedName("standard")
         STANDARD,
-        
         @SerializedName("image")
         IMAGE,
-        
         @SerializedName("gallery")
         GALLERY
     }
     
+    //https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/posts/new/
     @Keep
-    data class MediaAttributes(
-        val title: String,
-        val description: String,
-        val caption: String,
-        val alt: String? = null,
-        val album: String? = null,
-        @SerializedName("parent_id")
-        val parentId: String? = null
-    )
+    data class CreatePostRequest(
+            val title: String,
+            val content: String?,
+            val status: PublishStatus? = PublishStatus.PUBLISH,
+            /** List of tags (name or id) **/
+            val tags: List<String>? = null,
+            val format: PostFormat? = PostFormat.STANDARD,
+            @SerializedName("featured_image")
+            val featuredImage: String? = null,
+            @SerializedName("media_urls")
+            val mediaUrls: List<String>? = null,
+            @SerializedName("media_attrs")
+            val mediaAttrs: List<WPMedia.MediaAttributes>? = null
+                                ) {
+    }
+    
+    companion object {
+        const val FIELDS_STRING = "ID,date,title,URL,short_URL,status,post_thumbnail,format,tags,categories"
+    }
 }

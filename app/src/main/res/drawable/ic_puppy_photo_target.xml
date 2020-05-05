@@ -1,14 +1,15 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="256dp"
     android:height="256dp"
-    android:alpha="0.56"
+    android:alpha="0.2"
+    android:tint="?colorControlNormal"
     android:viewportWidth="256"
     android:viewportHeight="256">
     <group
         android:scaleX="0.8"
         android:scaleY="0.8"
         android:translateX="26"
-        android:translateY="26">
+        android:translateY="16">
         <!-- Credit: https://www.iconfinder.com/geraldsfbg -->
         <path
             android:fillColor="@color/grey_50"
@@ -26,7 +27,7 @@
 
     <!-- Frame -->
     <path
-        android:pathData="M16,16 h224 v224 h -224 z"
+        android:pathData="M16,6 h224 v224 h -224 z"
         android:strokeWidth="12"
         android:strokeColor="@color/grey_50"
         android:strokeLineJoin="round" />

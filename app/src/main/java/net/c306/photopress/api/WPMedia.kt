@@ -68,6 +68,7 @@ data class WPMedia(
     
 ) {
     
+    @Keep
     data class Thumbnail(
         val thumbnail: String,
         val medium: String,
@@ -76,6 +77,8 @@ data class WPMedia(
         val postThumbnail: String
     )
     
+    
+    @Keep
     data class Exif(
         val aperture: Float, // 1.8,
         val credit: String, // "",
@@ -90,7 +93,28 @@ data class WPMedia(
         val orientation: Int // 0/1
     )
     
+    
+    @Keep
+    data class MediaAttributes(
+        val title: String,
+        val description: String,
+        val caption: String,
+        val alt: String? = null,
+        val album: String? = null,
+        @SerializedName("parent_id")
+        val parentId: String? = null
+    )
+    
+    
+    @Keep
+    data class UploadMediaResponse(
+        val media: List<WPMedia>,
+        val errors: List<String>?
+    )
+    
+    
     companion object {
         const val FIELDS_STRING = "ID,date,URL,file,extension,mime_type,title,caption,description,alt,thumbnails,height,width,exif"
     }
+    
 }

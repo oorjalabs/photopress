@@ -16,7 +16,11 @@
         android:id="@+id/navigation_post_new"
         android:name="net.c306.photopress.ui.newPost.NewPostFragment"
         android:label="@string/title_post_new"
-        tools:layout="@layout/fragment_post_new" />
+        tools:layout="@layout/fragment_post_new">
+        <action
+            android:id="@+id/action_show_after_publish_dialog"
+            app:destination="@id/afterPublishedDialog" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
@@ -44,8 +48,8 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="startScreenNumber"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_selectBlog"
             app:destination="@id/blogChooserDialogFragment" />
@@ -58,22 +62,26 @@
         android:id="@+id/loginFragment"
         android:name="net.c306.photopress.ui.welcome.LoginFragment"
         android:label="@string/title_login_to_wordpress"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <!-- Use this action to return to welcome, else adapter in welcome crashes -->
         <action
             android:id="@+id/action_returnToWelcome"
             app:destination="@id/welcomeFragment"
             app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" >
-        </action>
+            app:popUpToInclusive="true" />
     </fragment>
     <dialog
         android:id="@+id/blogChooserDialogFragment"
         android:name="net.c306.photopress.ui.welcome.BlogChooserDialogFragment"
-        android:label="BlogChooserDialogFragment" >
+        android:label="BlogChooserDialogFragment">
         <argument
             android:name="currentBlogId"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
     </dialog>
+    <dialog
+        android:id="@+id/afterPublishedDialog"
+        android:name="net.c306.photopress.ui.newPost.AfterPublishedDialog"
+        android:label="@string/message_post_published"
+        tools:layout="@layout/dialog_after_publish" />
 </navigation>

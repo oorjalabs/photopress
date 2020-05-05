@@ -18,11 +18,11 @@ data class Blog(
     val quota: BlogQuota,
     val options: BlogOptions
 ) {
-
+    
     fun toJson(): String {
         return Gson().toJson(this)
     }
-
+    
     @Keep
     data class BlogIcon(
         val img: String,
@@ -30,7 +30,7 @@ data class Blog(
         @SerializedName("media_id")
         val mediaId: Int
     )
-
+    
     @Keep
     data class BlogCapabilities(
         @SerializedName("upload_files")
@@ -38,7 +38,7 @@ data class Blog(
         @SerializedName("publish_posts")
         val publishPosts: Boolean
     )
-
+    
     @Keep
     data class BlogQuota(
         @SerializedName("percent_used")
@@ -46,7 +46,7 @@ data class Blog(
         @SerializedName("space_available")
         val spaceAvailable: Long
     )
-
+    
     @Keep
     data class BlogOptions(
         @SerializedName("featured_images_enabled")
@@ -54,11 +54,17 @@ data class Blog(
         @SerializedName("default_category")
         val defaultCategory: Int
     )
-
+    
+    @Keep
+    data class GetSitesResponse(
+        val sites: List<Blog>
+    )
+    
+    
     companion object {
         const val FIELDS_STRING = "ID,name,description,URL,jetpack,icon,capabilities,quota"
         const val OPTIONS_STRING = "featured_images_enabled,default_category"
-
+        
         fun fromJson(jsonString: String): Blog {
             return Gson().fromJson(jsonString, Blog::class.java)
         }
