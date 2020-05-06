@@ -1,4 +1,4 @@
-package net.c306.photopress.ui
+package net.c306.photopress.ui.custom
 
 import android.os.Bundle
 import android.view.LayoutInflater

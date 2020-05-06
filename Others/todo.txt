@@ -5,11 +5,6 @@
 
 v. 2020.X.X.X
 
-    --TBD-- Wireframe
-        [ ] List
-
-    --TBD-- Data binding
-
     --TBD-- For non supporters, add
         [ ] 'photopress for android' as tag
         [ ] 'Posted with photopress for android' with play store link as post footer
@@ -18,13 +13,25 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0506.0.7.3
+v. 2020.0507.0.8.1
 
-    --TBD-- Tap on selected image options
-        [ ] Add caption, description, alt text
+    --TBD-- Settings
+        [ ] Use block editor or classic
+        [ ] Default tags
+        [ ] Default categories
+        [ ] Logout
+        [ ] Logged in as
 
-    --TBD-- Show upload progress
-        [ ] Show message with state of progress - uploading image, uploading content, publishing
+    --TBD-- Wireframe
+        [ ] List
+
+    --TBD-- Support for categories
+
+    --TBD-- Update notes
+
+    --TBD-- Subscriptions
+
+    --TBD-- Layout: move publish button out of the way
 
     --TBD-- Upload multiple photos - gallery
 
@@ -34,6 +41,19 @@ v. 2020.0506.0.7.3
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0506.0.7.3
+
+    [DONE] Border around image area when image is selected
+
+    [DONE] Tap on selected image options
+        [X] Add image title, caption, description, alt text
+
+    [DONE] Test twitter post with and without block editor formatting
 
 
 ------------------

@@ -19,7 +19,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="744" />
-                            <option name="y" value="724" />
+                            <option name="y" value="410" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -37,13 +37,25 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="imageAttributesFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="744" />
+                            <option name="y" value="766" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="loginFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="513" />
-                            <option name="y" value="13" />
+                            <option name="x" value="12" />
+                            <option name="y" value="681" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -81,7 +93,12 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_navigation_post_new_to_afterPublishedDialog">
+                            <entry key="action_navigation_post_new_to_imageAttributesFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_show_after_publish_dialog">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -109,7 +126,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="256" />
-                            <option name="y" value="410" />
+                            <option name="y" value="681" />
                           </Point>
                         </option>
                         <option name="myPositions">

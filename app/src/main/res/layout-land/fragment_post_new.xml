@@ -54,12 +54,13 @@
             <ImageView
                 android:id="@+id/added_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:contentDescription="@string/cd_photo_to_post"
                 android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                 app:imageUri="@{viewmodel.imageUri}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/bg_rounded_dashed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_height="match_parent" />
@@ -86,6 +87,7 @@
                 android:tooltipText="@string/cd_photo_attributes"
                 android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                 app:icon="@drawable/ic_photo_attributes"
+                android:onClick="@{() -> fragmentEventHandler.openImageAttributes()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         
@@ -136,7 +138,7 @@
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences"
                         android:lines="1"
-                        android:text="@={viewmodel.titleText}" />
+                        android:text="@={viewmodel.postTitle}" />
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputLayout
