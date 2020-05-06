@@ -453,19 +453,26 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     @Suppress("unused")
-    private val bareTemplate = """
+    private val singleImageClassicTemplate = """
+            [gallery ids="%%MEDIA_ID%%" columns="1" size="large"]
             <p class="has-text-color has-small-font-size has-dark-gray-color">
                 Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a>
             </p>
         """.trimIndent()
     
-    private val gallerySingleTemplate = """
-            [gallery ids="MEDIA_ID" columns="1" size="large"]
-            <p class="has-text-color has-small-font-size has-dark-gray-color">
-                Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a>
-            </p>
-        """.trimIndent()
-    
+    private val singleImageBlockTemplate = """
+        <!-- wp:image {"id":%%MEDIA_ID%%,"align":"center","linkDestination":"media"} -->
+        <div class="wp-block-image"><figure class="aligncenter"><a href="%%MEDIA_URL%%"><img src="%%MEDIA_LARGE%%" alt="" class="wp-image-%%MEDIA_ID%%"/></a><figcaption>%%MEDIA_CAPTION%%</figcaption></figure></div>
+        <!-- /wp:image -->
+        
+        <!-- wp:more -->
+        <!--more-->
+        <!-- /wp:more -->
+        
+        <!-- wp:paragraph {"fontSize":"small"} -->
+        <p class="has-small-font-size">Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a></p>
+        <!-- /wp:paragraph -->
+    """.trimIndent()
     
     private suspend fun uploadPost(
         blogId: Int,
@@ -474,8 +481,14 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         tags: List<String>
     ) = suspendCoroutine<UploadPostResponse> { cont ->
         
-        val content = gallerySingleTemplate
-            .replace("MEDIA_ID", media.id.toString())
+//        val content = gallerySingleTemplate
+//            .replace("%%MEDIA_ID%%", media.id.toString())
+        val content = singleImageBlockTemplate
+            .replace("%%MEDIA_ID%%", media.id.toString())
+            .replace("%%MEDIA_LARGE%%", media.thumbnails?.large ?: media.url)
+            .replace("%%MEDIA_URL%%", media.url)
+            .replace("%%MEDIA_CAPTION%%", if (media.caption.isNullOrBlank()) title else media.caption)
+            
         
         ApiClient().getApiService(applicationContext)
             .uploadBlogpost(

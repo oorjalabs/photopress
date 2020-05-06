@@ -18,9 +18,10 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0506.0.7.1
+v. 2020.0506.0.7.2
 
-    Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
+    [DONE] Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
+        [X] Use block editor template to publish posts :)
 
     --TBD-- Tap on selected image options
         [ ] Change image
@@ -34,10 +35,21 @@ v. 2020.0506.0.7.1
 
     --TBD-- Upload multiple photos - gallery
 
+    --TBD-- Delete photo from app storage after successful publishing
+
     --TBD-- Show upload progress
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0506.0.7.1
+
+    [DONE] Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
+        [X] Use block editor template to publish posts :)
 
 
 ------------------
