@@ -4,10 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.*
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,17 +19,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_post_new.*
-import kotlinx.coroutines.*
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
+import net.c306.photopress.databinding.FragmentPostNewBinding
 
 
 class NewPostFragment : Fragment() {
     
     private val newPostViewModel: NewPostViewModel by activityViewModels()
+
+    private lateinit var binding: FragmentPostNewBinding
     
     private val mTagsAdapter by lazy {
         TagsAutocompleteAdapter(
@@ -42,7 +44,11 @@ class NewPostFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
                              ): View? {
-        return inflater.inflate(R.layout.fragment_post_new, container, false)
+        binding = FragmentPostNewBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewmodel = newPostViewModel
+        binding.fragmentEventHandler = this@NewPostFragment
+        return binding.root
     }
     
     
@@ -58,10 +64,7 @@ class NewPostFragment : Fragment() {
             
             setAdapter(mTagsAdapter)
             setTokenizer(CommaTokenizer())
-//            setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
-            
-            addTextChangedListener(tagsTextWatcher)
-            
+
             setOnFocusChangeListener { v, hasFocus ->
                 setInputFocus(
                     v as EditText,
@@ -71,44 +74,31 @@ class NewPostFragment : Fragment() {
             }
         }
         
-        input_post_title?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                setInputFocus(
-                    v as EditText,
-                    hasFocus,
-                    R.string.hint_post_title
-                )
-            }
-            addTextChangedListener(titleTextWatcher)
+        input_post_title?.setOnFocusChangeListener { v, hasFocus ->
+            setInputFocus(
+                v as EditText,
+                hasFocus,
+                R.string.hint_post_title
+            )
         }
-        
-        fab_publish?.setOnClickListener {
-            newPostViewModel.publishPost()
-        }
-        
-        photo_target?.setOnClickListener {
-            openPhotoPicker()
-        }
-        
-        // Load image into view when selected
-        newPostViewModel.imageUri.observe(viewLifecycleOwner, Observer {
-            setupImageSection(it)
-        })
-        
+
+
         // Show dialog with published post details when done
         newPostViewModel.publishedPost.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 findNavController().navigate(NewPostFragmentDirections.actionShowAfterPublishDialog())
             }
         })
-        
+
+
         // When image is selected, set image name as title if no title is present
         newPostViewModel.fileDetails.observe(viewLifecycleOwner, Observer {
             if (it == null || it.fileName.isBlank() || !newPostViewModel.titleText.value.isNullOrBlank()) return@Observer
-            
-            setTitleText(it.fileName)
+
+            newPostViewModel.titleText.value = it.fileName
         })
-        
+
+
         // Update enabled state for inputs based on fragment state
         newPostViewModel.state.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -248,11 +238,7 @@ class NewPostFragment : Fragment() {
             }
         })
         
-        // Show name of blog where we're posting
-        newPostViewModel.selectedBlog.observe(viewLifecycleOwner, Observer {
-            blog_name.text = it?.name ?: getString(R.string.message_no_blog_selected)
-        })
-        
+
         // Update tags in tags suggester
         newPostViewModel.blogTags.observe(viewLifecycleOwner, Observer { list ->
             mTagsAdapter.setList(list?.map { it.name } ?: emptyList())
@@ -281,7 +267,7 @@ class NewPostFragment : Fragment() {
     /**
      * Open file picker to select file location for syncing
      */
-    private fun openPhotoPicker() {
+    fun openPhotoPicker() {
         val galleryIntent = Intent(
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -312,29 +298,6 @@ class NewPostFragment : Fragment() {
     }
     
     
-    /**
-     * Setup image section based on whether user has selected an image or not
-     */
-    private fun setupImageSection(imageUri: Uri?) {
-        if (imageUri == null) {
-            // Hide image view, show drop target
-//            added_photo.visibility = View.GONE
-//            photo_target.visibility = View.VISIBLE
-        } else {
-            // Load image into image view
-            Glide.with(requireContext())
-                //.asGif()
-                .load(imageUri)
-                // TODO: Based on user settings, this can be set to crop or center
-                .optionalFitCenter()
-                .into(added_photo)
-            // Show image view, hide drop target
-//            added_photo.visibility = View.VISIBLE
-//            photo_target.visibility = View.GONE
-        }
-    }
-    
-    
     private fun enableFab(value: Boolean) {
         fab_publish?.apply {
             if (!value) {
@@ -351,78 +314,6 @@ class NewPostFragment : Fragment() {
         }
     }
     
-    
-    private val titleTextWatcher = object: TextWatcher {
-        
-        override fun afterTextChanged(s: Editable?) {
-            saveTitleText(s?.toString())
-        }
-        
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
-        
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        }
-        
-    }
-    
-    private var saveTitleJob: Job? = null
-    
-    /**
-     * Save title text to view model after a short delay
-     */
-    private fun saveTitleText(text: String?) {
-        saveTitleJob?.cancel()
-        
-        saveTitleJob = CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                delay(300)
-            }
-            newPostViewModel.setTitleText(text)
-        }
-    }
-    
-    
-    private val tagsTextWatcher = object: TextWatcher {
-        
-        override fun afterTextChanged(s: Editable?) {
-            saveTagsText(s?.toString())
-        }
-        
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
-        
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        }
-        
-    }
-    
-    private var saveTagsJob: Job? = null
-    
-    /**
-     * Save tags to view model after a short delay
-     */
-    private fun saveTagsText(text: String?) {
-        saveTagsJob?.cancel()
-        
-        saveTagsJob = CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                delay(300)
-            }
-            newPostViewModel.setPostTags(text)
-        }
-    }
-    
-    
-    /**
-     * Set text in title box, and optionally, mark it selected
-     */
-    private fun setTitleText(text: String) {
-        input_post_title?.apply {
-            setText(text)
-//            setSelection(0, text.length)
-        }
-    }
     
     companion object {
         const val RC_PHOTO_PICKER = 9723

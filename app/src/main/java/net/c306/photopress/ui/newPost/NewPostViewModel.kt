@@ -135,23 +135,12 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     // Title text
-    private val _titleText = MutableLiveData<String>()
-    val titleText: LiveData<String> = _titleText
-    
-    fun setTitleText(value: String?) {
-        _titleText.value = value
-        updateState()
-    }
-    
+    val titleText = MutableLiveData<String>()
+
     // Post tags
-    private val _postTags = MutableLiveData<String>()
-    private val postTags: LiveData<String> = _postTags
-    
-    fun setPostTags(value: String?) {
-        _postTags.value = value
-    }
-    
-    
+    val postTags = MutableLiveData<String>()
+
+
     // Published post data
     private val _publishedPost = MutableLiveData<PublishedPost>()
     val publishedPost: LiveData<PublishedPost> = _publishedPost
@@ -239,7 +228,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
-    internal fun publishPost() {
+    fun publishPost() {
         val blogId = selectedBlogId.value
         val title = titleText.value
         val image = imageUri.value
@@ -255,7 +244,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG).show()
             return
         }
-        
+
+
         viewModelScope.launch {
             
             val imageDetails = getFileForUri(image)
@@ -344,9 +334,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
             // Clear current post fields
             setImageUri(null)
-            setTitleText(null)
-            setPostTags(null)
-            
+            titleText.value = null
+            postTags.value = null
+
             updateState()
         }
     }
