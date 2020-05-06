@@ -18,17 +18,10 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0506.0.7.2
-
-    [DONE] Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
-        [X] Use block editor template to publish posts :)
+v. 2020.0506.0.7.3
 
     --TBD-- Tap on selected image options
-        [ ] Change image
-        [ ] Add more images (gallery)
         [ ] Add caption, description, alt text
-
-    --TBD-- Add caption
 
     --TBD-- Show upload progress
         [ ] Show message with state of progress - uploading image, uploading content, publishing
@@ -41,6 +34,17 @@ v. 2020.0506.0.7.2
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0506.0.7.2
+
+    --TBD-- Tap on selected image options
+        [X] Change image
+
+    [DONE] Landscape layout for new photo screen
 
 
 ------------------

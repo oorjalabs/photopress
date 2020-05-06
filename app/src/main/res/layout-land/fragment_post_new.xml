@@ -23,12 +23,82 @@
         android:layout_height="match_parent"
         tools:context=".ui.newPost.NewPostFragment">
         
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/photo_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            
+            <TextView
+                android:id="@+id/photo_target"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_puppy_photo_target"
+                android:clickable="@{viewmodel.state == State.EMPTY}"
+                android:enabled="@{viewmodel.state == State.EMPTY}"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
+                android:text="@string/label_tap_to_add_photo"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="?android:textColorSecondary"
+                android:visibility="@{viewmodel.imageUri != null ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            
+            <ImageView
+                android:id="@+id/added_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/cd_photo_to_post"
+                android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                app:imageUri="@{viewmodel.imageUri}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_height="match_parent" />
+            
+            <Button
+                android:id="@+id/button_change_image"
+                style="@style/IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/cd_change_photo"
+                android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
+                android:tooltipText="@string/cd_change_photo"
+                android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                app:icon="@drawable/ic_swap"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+            
+            <Button
+                android:id="@+id/button_change_photo_attributes"
+                style="@style/IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/cd_photo_attributes"
+                android:tooltipText="@string/cd_photo_attributes"
+                android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                app:icon="@drawable/ic_photo_attributes"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        
         <ScrollView
             android:id="@+id/post_content_container"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/photo_container"
             app:layout_constraintTop_toTopOf="parent">
             
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,76 +116,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Selected blog name" />
                 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/photo_container"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/item_margin_half"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/blog_name">
-                    
-                    <TextView
-                        android:id="@+id/photo_target"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_puppy_photo_target"
-                        android:clickable="@{viewmodel.state == State.EMPTY}"
-                        android:enabled="@{viewmodel.state == State.EMPTY}"
-                        android:foreground="?selectableItemBackground"
-                        android:gravity="bottom|center_horizontal"
-                        android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
-                        android:paddingBottom="0dp"
-                        android:text="@string/label_tap_to_add_photo"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                        android:textColor="?android:textColorSecondary"
-                        android:visibility="@{viewmodel.imageUri != null ? View.GONE : View.VISIBLE}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                    
-                    <ImageView
-                        android:id="@+id/added_photo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_photo_to_post"
-                        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
-                        app:imageUri="@{viewmodel.imageUri}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_height="match_parent" />
-                    
-                    <Button
-                        android:id="@+id/button_change_image"
-                        style="@style/IconButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_change_photo"
-                        android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
-                        android:tooltipText="@string/cd_change_photo"
-                        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
-                        app:icon="@drawable/ic_swap"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-                    
-                    <Button
-                        android:id="@+id/button_change_photo_attributes"
-                        style="@style/IconButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_photo_attributes"
-                        android:tooltipText="@string/cd_photo_attributes"
-                        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
-                        app:icon="@drawable/ic_photo_attributes"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-                
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/holder_title"
                     style="@style/UnderlinedTextInputLayout"
@@ -125,7 +125,7 @@
                     android:hint="@string/text_label_post_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/photo_container">
+                    app:layout_constraintTop_toBottomOf="@id/blog_name">
                     
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/input_post_title"

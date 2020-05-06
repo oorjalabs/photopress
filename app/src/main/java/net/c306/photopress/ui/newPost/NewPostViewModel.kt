@@ -158,6 +158,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     fun newPost() {
         _publishedPost.value = null
+        updateState()
     }
     
     data class PublishedPost(
