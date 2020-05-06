@@ -4,12 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewmodel"
             type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+
         <variable
             name="fragmentEventHandler"
             type="net.c306.photopress.ui.newPost.NewPostFragment" />
+
+        <import type="net.c306.photopress.ui.newPost.NewPostViewModel.State" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,9 +40,9 @@
                     android:id="@+id/blog_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@{viewmodel.selectedBlog.name ?? @string/message_no_blog_selected}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:text="@{viewmodel.selectedBlog.name ?? @string/message_no_blog_selected}"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Selected blog name" />
 
@@ -55,22 +61,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/ic_puppy_photo_target"
-                        android:clickable="true"
+                        android:clickable="@{viewmodel.state == State.EMPTY}"
+                        android:enabled="@{viewmodel.state == State.EMPTY}"
                         android:foreground="?selectableItemBackground"
                         android:gravity="bottom|center_horizontal"
                         android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
                         android:paddingBottom="0dp"
                         android:text="@string/label_tap_to_add_photo"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                        android:textColor="?android:textColorSecondary" />
+                        android:textColor="?android:textColorSecondary"
+                        android:visibility="@{viewmodel.imageUri != null ? View.GONE : View.VISIBLE}" />
 
                     <ImageView
                         android:id="@+id/added_photo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:imageUri="@{viewmodel.imageUri}"
                         android:contentDescription="@string/cd_photo_to_post"
-                        android:visibility="gone"
+                        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                        app:imageUri="@{viewmodel.imageUri}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -93,10 +101,11 @@
                         style="@style/UnderlinedTextInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="@{viewmodel.inputsEnabled}"
                         android:importantForAutofill="no"
-                        android:text="@={viewmodel.titleText}"
                         android:inputType="textCapSentences"
-                        android:lines="1" />
+                        android:lines="1"
+                        android:text="@={viewmodel.titleText}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -116,10 +125,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:completionThreshold="0"
+                        android:enabled="@{viewmodel.inputsEnabled}"
                         android:importantForAutofill="no"
-                        android:text="@={viewmodel.postTags}"
                         android:inputType="text"
                         android:lines="1"
+                        android:text="@={viewmodel.postTags}"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,21 +143,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_vertical_margin"
+            android:backgroundTint="@{viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
+            android:clickable="@{viewmodel.state == State.READY}"
             android:contentDescription="@string/cd_fab_publish"
+            android:focusable="@{viewmodel.state == State.READY}"
+            android:onClick="@{() -> viewmodel.publishPost()}"
             android:tooltipText="@string/cd_fab_publish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_publish"
-            android:onClick="@{() -> viewmodel.publishPost()}"
             app:tint="?android:textColorPrimaryInverse" />
 
         <View
             android:id="@+id/scrim_publishing"
             android:layout_width="match_parent"
-            tools:visibility="gone"
             android:layout_height="match_parent"
             android:alpha="@dimen/alpha_scrim_publishing"
-            android:background="?colorSurface" />
+            android:background="?colorSurface"
+            android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/message_publishing_status"

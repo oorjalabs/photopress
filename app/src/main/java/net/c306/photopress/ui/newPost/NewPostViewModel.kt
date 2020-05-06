@@ -38,14 +38,19 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     enum class State {
         /** Blog not selected. Can't publish. */
         NO_BLOG_SELECTED,
+        
         /** Image not selected. Can't publish. */
         EMPTY,
+        
         /** Image selected, title text not available. Can't publish. */
         HAVE_IMAGE,
+        
         /** Image & title text are both available. Can publish. */
         READY,
+        
         /** Publishing post. */
         PUBLISHING,
+        
         /** Post. Show link, clear inputs */
         PUBLISHED
     }
@@ -53,31 +58,37 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _state = MutableLiveData<State>().apply { value = State.EMPTY }
     val state: LiveData<State> = _state
     
-    private fun updateState() {
+    internal fun updateState() {
         val title = titleText.value ?: ""
         val image = imageUri.value
         val blogId = selectedBlogId.value
         val publishedPost = publishedPost.value
-    
+        
         _state.value = when {
             blogId == null || blogId < 0 -> State.NO_BLOG_SELECTED
-            publishedPost != null        -> State.PUBLISHED
-            image == null                -> State.EMPTY
-            title.isBlank()              -> State.HAVE_IMAGE
-            else                         -> State.READY
+            publishedPost != null -> State.PUBLISHED
+            image == null -> State.EMPTY
+            title.isBlank() -> State.HAVE_IMAGE
+            else -> State.READY
         }
     }
-
-
+    
+    val inputsEnabled = Transformations.switchMap(state) {
+        MutableLiveData<Boolean>().apply {
+            value = it != State.NO_BLOG_SELECTED && it != State.PUBLISHING && it != State.PUBLISHED
+        }
+    }
+    
+    
     // Selected Blog
     private val _selectedBlogId = MutableLiveData<Int>()
     private val selectedBlogId: LiveData<Int> = _selectedBlogId
     val selectedBlog = Transformations.switchMap(selectedBlogId) { blogId ->
         val selectedBlog =
-                if (blogId == null || blogId < 0) null
-                else AuthPrefs(applicationContext)
-                        .getBlogsList()
-                        .find { it.id == blogId }
+            if (blogId == null || blogId < 0) null
+            else AuthPrefs(applicationContext)
+                .getBlogsList()
+                .find { it.id == blogId }
         
         MutableLiveData<Blog?>().apply { value = selectedBlog }
     }
@@ -136,15 +147,15 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     // Title text
     val titleText = MutableLiveData<String>()
-
+    
     // Post tags
     val postTags = MutableLiveData<String>()
-
-
+    
+    
     // Published post data
     private val _publishedPost = MutableLiveData<PublishedPost>()
     val publishedPost: LiveData<PublishedPost> = _publishedPost
-
+    
     fun newPost() {
         _publishedPost.value = null
     }
@@ -156,7 +167,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     // Observer for changes to selected blog id
-    private val observer = SharedPreferences.OnSharedPreferenceChangeListener {_, key ->
+    private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
             UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(UserPrefs(applicationContext).getSelectedBlogId())
         }
@@ -178,7 +189,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      */
     private fun getFileForUri(uri: Uri): Pair<File, String>? {
         
-        val fileDetails =  getFileName(uri)
+        val fileDetails = getFileName(uri)
         
         // Open a specific media item using ParcelFileDescriptor.
         val resolver = applicationContext.contentResolver
@@ -208,12 +219,12 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         )
         
         val metaCursor = applicationContext.contentResolver.query(
-                uri,
-                projection,
-                null,
-                null,
-                null
-                                                                 )
+            uri,
+            projection,
+            null,
+            null,
+            null
+        )
         
         var fileName = ""
         var mimeType = ""
@@ -233,19 +244,20 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         val title = titleText.value
         val image = imageUri.value
         val tags = postTags.value
-                           ?.split(",")
-                           ?.filter { !it.isBlank() }
-                           ?.distinct()
-                   ?: emptyList()
-    
+            ?.split(",")
+            ?.filter { !it.isBlank() }
+            ?.distinct()
+            ?: emptyList()
+        
         
         if (blogId == null || title.isNullOrBlank() || image == null) {
             Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$image'")
-            Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG)
+                .show()
             return
         }
-
-
+        
+        
         viewModelScope.launch {
             
             val imageDetails = getFileForUri(image)
@@ -271,7 +283,11 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             if (mediaError != null || media == null) {
                 // Show error message and reset state
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, mediaError ?: "No media returned", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        mediaError ?: "No media returned",
+                        Toast.LENGTH_LONG
+                    ).show()
                     _state.value = State.READY
                 }
                 return@launch
@@ -279,16 +295,20 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
             // Upload post as draft with embedded image
             val (uploadedPost, uploadError) = uploadPost(
-                    blogId,
-                    media,
-                    title,
-                    tags
-                                                        )
+                blogId,
+                media,
+                title,
+                tags
+            )
             
             if (uploadError != null || uploadedPost == null) {
                 // Show error message and reset state
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, uploadError ?: "Uploaded post not returned", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        uploadError ?: "Uploaded post not returned",
+                        Toast.LENGTH_LONG
+                    ).show()
                     _state.value = State.READY
                 }
                 // TODO("Maybe delete uploaded media, or store reference to it to retry.")
@@ -301,11 +321,16 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 blogId,
                 uploadedPost
             )
-    
+            
             if (publishError != null || publishedPost == null) {
-                Toast.makeText(applicationContext, "Post uploaded as draft.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Post uploaded as draft.", Toast.LENGTH_SHORT)
+                    .show()
             } else {
-                Toast.makeText(applicationContext, "Post published successfully.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "Post published successfully.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             
             
@@ -319,12 +344,12 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 val updatedBlogTags = blogTags.toMutableList().apply {
                     addAll(newTags)
                 }
-
+                
                 AuthPrefs(applicationContext).saveTagsList(updatedBlogTags)
                 setBlogTags(updatedBlogTags)
             }
-    
-    
+            
+            
             Timber.d("Blogpost done! ${publishedPost ?: uploadedPost}")
             
             // Update published post
@@ -336,7 +361,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             setImageUri(null)
             titleText.value = null
             postTags.value = null
-
+            
             updateState()
         }
     }
@@ -362,10 +387,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         caption: String? = null,
         description: String? = null,
         alt: String? = null
-    ) = suspendCoroutine<UploadMediaResponse> {cont ->
+    ) = suspendCoroutine<UploadMediaResponse> { cont ->
         
         val imageBody = file.asRequestBody(mimeType)
-    
+        
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "media[0]",
             file.name,
@@ -380,14 +405,14 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 alt = alt ?: title ?: file.nameWithoutExtension
             )
         )
-    
+        
         ApiClient().getApiService(applicationContext)
             .uploadMedia(
                 blogId = blogId.toString(),
                 media = filePart,
                 attrs = attrs,
                 fields = WPMedia.FIELDS_STRING
-            ).enqueue(object: Callback<WPMedia.UploadMediaResponse>{
+            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
                 
                 override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
                     // Error creating post
@@ -395,7 +420,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: ${t.localizedMessage}"))
                 }
                 
-                override fun onResponse(call: Call<WPMedia.UploadMediaResponse>, response: Response<WPMedia.UploadMediaResponse>) {
+                override fun onResponse(
+                    call: Call<WPMedia.UploadMediaResponse>,
+                    response: Response<WPMedia.UploadMediaResponse>
+                ) {
                     val uploadMediaResponse = response.body()
                     
                     if (uploadMediaResponse == null) {
@@ -420,7 +448,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     
                 }
             })
-    
+        
     }
     
     
@@ -440,11 +468,11 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     private suspend fun uploadPost(
-            blogId: Int,
-            media: WPMedia,
-            title: String,
-            tags: List<String>
-                                  ) = suspendCoroutine<UploadPostResponse> {cont ->
+        blogId: Int,
+        media: WPMedia,
+        title: String,
+        tags: List<String>
+    ) = suspendCoroutine<UploadPostResponse> { cont ->
         
         val content = gallerySingleTemplate
             .replace("MEDIA_ID", media.id.toString())
@@ -454,11 +482,11 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 blogId = blogId.toString(),
                 fields = WPBlogPost.FIELDS_STRING,
                 body = WPBlogPost.CreatePostRequest(
-                        title = title,
-                        content = content,
-                        tags = tags,
-                        status = WPBlogPost.PublishStatus.DRAFT
-                                      )
+                    title = title,
+                    content = content,
+                    tags = tags,
+                    status = WPBlogPost.PublishStatus.DRAFT
+                )
             ).enqueue(object : Callback<WPBlogPost> {
                 override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
                     // Error creating post
@@ -500,7 +528,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private suspend fun updateToPublished(
         blogId: Int,
         blogPost: WPBlogPost
-    ) = suspendCoroutine<UploadPostResponse> {cont ->
+    ) = suspendCoroutine<UploadPostResponse> { cont ->
         
         ApiClient().getApiService(applicationContext)
             .updatePostStatus(
@@ -576,24 +604,25 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 }
             })
     }
-
+    
     val publishedDialogMessage: String
         get() {
             val published = publishedPost.value ?: return ""
             return applicationContext.getString(
                 if (published.isDraft) R.string.message_post_draft
                 else R.string.message_post_published,
-                published.post.title)
+                published.post.title
+            )
         }
-
+    
     fun sharePost(post: WPBlogPost) {
         Utils.sendSharingIntent(applicationContext, post.url, post.title)
     }
-
+    
     fun openPostExternal(post: WPBlogPost) {
         applicationContext.startActivity(Utils.getIntentForUrl(post.url))
     }
-
+    
     fun copyPostToClipboard(post: WPBlogPost) {
         Utils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
     }

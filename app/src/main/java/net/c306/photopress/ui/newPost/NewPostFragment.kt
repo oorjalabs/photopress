@@ -3,7 +3,6 @@ package net.c306.photopress.ui.newPost
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.SpannableString
@@ -29,21 +28,22 @@ import net.c306.photopress.databinding.FragmentPostNewBinding
 class NewPostFragment : Fragment() {
     
     private val newPostViewModel: NewPostViewModel by activityViewModels()
-
+    
     private lateinit var binding: FragmentPostNewBinding
     
     private val mTagsAdapter by lazy {
         TagsAutocompleteAdapter(
-                context = requireContext(),
-                list = newPostViewModel.blogTags.value?.map { it.name }?.toMutableList() ?: mutableListOf()
-                               )
+            context = requireContext(),
+            list = newPostViewModel.blogTags.value?.map { it.name }?.toMutableList()
+                ?: mutableListOf()
+        )
     }
     
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-                             ): View? {
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentPostNewBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = newPostViewModel
@@ -64,7 +64,7 @@ class NewPostFragment : Fragment() {
             
             setAdapter(mTagsAdapter)
             setTokenizer(CommaTokenizer())
-
+            
             setOnFocusChangeListener { v, hasFocus ->
                 setInputFocus(
                     v as EditText,
@@ -81,167 +81,45 @@ class NewPostFragment : Fragment() {
                 R.string.hint_post_title
             )
         }
-
-
+        
+        
         // Show dialog with published post details when done
         newPostViewModel.publishedPost.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 findNavController().navigate(NewPostFragmentDirections.actionShowAfterPublishDialog())
             }
         })
-
-
+        
+        
         // When image is selected, set image name as title if no title is present
         newPostViewModel.fileDetails.observe(viewLifecycleOwner, Observer {
             if (it == null || it.fileName.isBlank() || !newPostViewModel.titleText.value.isNullOrBlank()) return@Observer
-
+            
             newPostViewModel.titleText.value = it.fileName
         })
-
-
+        
+        
         // Update enabled state for inputs based on fragment state
         newPostViewModel.state.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                
-                null,
-                NewPostViewModel.State.EMPTY -> {
-                    // Enable title and tags inputs
-                    input_post_title?.isEnabled = true
-                    input_post_tags?.isEnabled = true
-                    
-                    // Remove photo, add target
-                    added_photo?.visibility = View.GONE
-                    photo_target?.visibility = View.VISIBLE
-                    
-                    // Enable photo target
-                    photo_target?.isEnabled = true
-                    photo_target?.isClickable = true
-                    
-                    // Disable fab
-                    enableFab(false)
-                    
-                    // Hide publishing progress indicator
-                    progress_publishing?.hide()
-                    scrim_publishing?.visibility = View.GONE
-                }
-                
-                NewPostViewModel.State.NO_BLOG_SELECTED -> {
-                    // Disable title and tags inputs
-                    input_post_title?.isEnabled = false
-                    input_post_tags?.isEnabled = false
-                    
-                    // Remove photo, add target
-                    added_photo?.visibility = View.GONE
-                    photo_target?.visibility = View.VISIBLE
-                    
-                    // Disable photo target
-                    photo_target?.isEnabled = false
-                    photo_target?.isClickable = false
-    
-                    // Disable fab
-                    enableFab(false)
-    
-                    // Hide publishing progress indicator
-                    progress_publishing?.hide()
-                    scrim_publishing?.visibility = View.GONE
-                }
-                
-                NewPostViewModel.State.HAVE_IMAGE -> {
-                    // Disable title and tags inputs
-                    input_post_title?.isEnabled = true
-                    input_post_tags?.isEnabled = true
-    
-                    // Remove photo, add target
-                    added_photo?.visibility = View.VISIBLE
-                    photo_target?.visibility = View.GONE
-                    
-                    // Disable photo target
-                    photo_target?.isEnabled = false
-                    photo_target?.isClickable = false
-                    
-                    // Disable fab
-                    enableFab(false)
-                    
-                    // Hide publishing progress indicator
-                    progress_publishing?.hide()
-                    scrim_publishing?.visibility = View.GONE
-                }
-                
-                NewPostViewModel.State.READY -> {
-                    // Disable title and tags inputs
-                    input_post_title?.isEnabled = true
-                    input_post_tags?.isEnabled = true
-                    
-                    // Remove photo, add target
-                    added_photo?.visibility = View.VISIBLE
-                    photo_target?.visibility = View.GONE
-    
-                    // Disable photo target
-                    photo_target?.isEnabled = false
-                    photo_target?.isClickable = false
-    
-                    // Enable fab
-                    enableFab(true)
-                    
-                    // Hide publishing progress indicator
-                    progress_publishing?.hide()
-                    scrim_publishing?.visibility = View.GONE
-                }
-                
-                NewPostViewModel.State.PUBLISHING -> {
-                    // Disable title and tags inputs
-                    input_post_title?.isEnabled = false
-                    input_post_tags?.isEnabled = false
-                    
-                    // Remove photo, add target
-                    added_photo?.visibility = View.VISIBLE
-                    photo_target?.visibility = View.GONE
-                    
-                    // Disable photo target
-                    photo_target?.isEnabled = false
-                    photo_target?.isClickable = false
-                    
-                    // Disable fab
-                    enableFab(false)
-                    
-                    // Hide publishing progress indicator
-                    progress_publishing?.show()
-                    scrim_publishing?.visibility = View.VISIBLE
-                }
-                
-                NewPostViewModel.State.PUBLISHED -> {
-                    // Clear title and tags text
-                    input_post_title?.setText("")
-                    input_post_title?.clearFocus()
-                    input_post_tags?.setText("")
-                    input_post_tags?.clearFocus()
-                    
-                    // Disable title and tags inputs
-                    input_post_title?.isEnabled = false
-                    input_post_tags?.isEnabled = false
-                    
-                    // Remove photo, add target
-                    added_photo?.visibility = View.GONE
-                    photo_target?.visibility = View.VISIBLE
-                    
-                    // Disable photo target
-                    photo_target?.isEnabled = false
-                    photo_target?.isClickable = false
-                    
-                    // Disable fab
-                    enableFab(false)
-                    
-                    // Hide publishing progress indicator
-                    progress_publishing?.hide()
-                    scrim_publishing?.visibility = View.GONE
-                }
+            if (it == NewPostViewModel.State.PUBLISHING) {
+                // Show publishing progress indicator
+                progress_publishing?.show()
+            } else {
+                // Hide publishing progress indicator
+                progress_publishing?.hide()
             }
         })
         
-
+        
         // Update tags in tags suggester
         newPostViewModel.blogTags.observe(viewLifecycleOwner, Observer { list ->
             mTagsAdapter.setList(list?.map { it.name } ?: emptyList())
+        })
+        
+        
+        // Update state when title text changes
+        newPostViewModel.titleText.observe(viewLifecycleOwner, Observer {
+            newPostViewModel.updateState()
         })
         
     }
@@ -298,28 +176,12 @@ class NewPostFragment : Fragment() {
     }
     
     
-    private fun enableFab(value: Boolean) {
-        fab_publish?.apply {
-            if (!value) {
-                isEnabled = false
-                isClickable = false
-                focusable = View.NOT_FOCUSABLE
-                backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.bg_fab_disabled))
-            } else {
-                isEnabled = true
-                isClickable = true
-                focusable = View.FOCUSABLE_AUTO
-                backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.secondaryColor))
-            }
-        }
-    }
-    
-    
     companion object {
         const val RC_PHOTO_PICKER = 9723
     }
     
-    class TagsAutocompleteAdapter(context: Context, list: MutableList<String>): ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list) {
+    class TagsAutocompleteAdapter(context: Context, list: MutableList<String>) :
+        ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list) {
         
         private val mInflater = LayoutInflater.from(context)
         private val layoutResource = android.R.layout.simple_list_item_1
@@ -334,7 +196,7 @@ class NewPostFragment : Fragment() {
                 }
             }
         }
-    
+        
         fun setList(value: List<String>) {
             clear()
             addAll(value)
@@ -378,15 +240,15 @@ class NewPostFragment : Fragment() {
             }
             return if (i > 0 && text[i - 1] == ',') {
                 text
-            }
-            else {
+            } else {
                 if (text is Spanned) {
                     val sp = SpannableString("$text")
-                    TextUtils.copySpansFrom(text, 0, text.length,
-                                            Any::class.java, sp, 0)
+                    TextUtils.copySpansFrom(
+                        text, 0, text.length,
+                        Any::class.java, sp, 0
+                    )
                     sp
-                }
-                else {
+                } else {
                     "$text"
                 }
             }
