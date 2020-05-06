@@ -13,6 +13,6 @@
     <dimen name="bottom_sheet_corner_radius">8dp</dimen>
     <dimen name="bottom_sheet_padding">2dp</dimen>
 
-    <dimen name="min_touch_width">48dp</dimen>
+    <dimen name="min_touch_size">48dp</dimen>
 
 </resources>

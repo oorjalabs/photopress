@@ -27,7 +27,14 @@
         <item name="android:statusBarColor">@color/bg_color_splash</item>
         <item name="android:windowBackground">@drawable/bg_splash</item>
     </style>
-
+    
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="android:backgroundTint">?colorSurface</item>
+    </style>
+    
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+    
+    
     <!-- Bottom sheet dialog styles -->
     <style name="BottomSheetStyle" parent="@style/Widget.MaterialComponents.BottomSheet.Modal" />
 
@@ -135,5 +142,23 @@
         <item name="rippleColor">@color/sl_ripple_text_button_secondary</item>
         <item name="android:textColor">@color/sl_tc_button_secondary</item>
     </style>
+
+    <style name="IconButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="android:layout_width">@dimen/min_touch_size</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:minWidth">@dimen/min_touch_size</item>
+        <item name="android:minHeight">@dimen/min_touch_size</item>
+
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">?attr/colorControlNormal</item>
+        <item name="strokeColor">@android:color/transparent</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
 
 </resources>

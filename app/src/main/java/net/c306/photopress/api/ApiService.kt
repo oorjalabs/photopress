@@ -69,7 +69,10 @@ interface ApiService {
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Part media: MultipartBody.Part,
-        @Part("attrs") attrs: List<WPMedia.MediaAttributes>
+        @Part caption: MultipartBody.Part,
+        @Part title: MultipartBody.Part,
+        @Part alt: MultipartBody.Part,
+        @Part description: MultipartBody.Part
     ): Call<WPMedia.UploadMediaResponse>
     
     

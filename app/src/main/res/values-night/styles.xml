@@ -5,7 +5,11 @@
     <style name="AppTheme" parent="BaseTheme.AppTheme">
         <item name="android:windowLightStatusBar">false</item>
     </style>
-
+    
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+    
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
+    
     <!-- Bottom sheet dialog styles -->
     <style name="AppTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle.Rounded</item>

@@ -45,4 +45,11 @@
     <string name="open_post">Open in browser</string>
     <string name="copy_post">Copy link to clipboard</string>
     <string name="share_post">Share post</string>
+    <string name="cd_change_photo">Change photo</string>
+    <string name="cd_photo_attributes">Change photo caption, description and alt text</string>
+    <string name="title_image_attributes">Image attributes</string>
+    <string name="text_label_image_caption">Caption</string>
+    <string name="text_label_image_alt_text">Alternate text</string>
+    <string name="text_label_image_description">Description</string>
+    <string name="text_label_image_title">Name</string>
 </resources>

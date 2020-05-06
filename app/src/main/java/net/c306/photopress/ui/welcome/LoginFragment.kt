@@ -18,6 +18,7 @@ import net.c306.photopress.R
 import net.c306.photopress.api.ApiConstants
 import net.c306.photopress.api.ApiConstants.ARG_CODE
 import net.c306.photopress.api.ApiConstants.ARG_ERROR
+import net.c306.photopress.ui.custom.NoBottomNavFragment
 import timber.log.Timber
 
 /**

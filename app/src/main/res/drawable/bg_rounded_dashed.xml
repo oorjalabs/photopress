@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape>
+            <stroke
+                android:dashGap="5dp"
+                android:dashWidth="5dp"
+                android:width="1dp"
+                android:color="@color/border_image_view" />
+<!--            <padding-->
+<!--                android:bottom="5dp"-->
+<!--                android:left="5dp"-->
+<!--                android:right="5dp"-->
+<!--                android:top="5dp" />-->
+        </shape>
+    </item>
+</layer-list>

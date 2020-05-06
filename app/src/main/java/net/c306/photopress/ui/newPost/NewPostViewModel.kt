@@ -59,7 +59,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val state: LiveData<State> = _state
     
     internal fun updateState() {
-        val title = titleText.value ?: ""
+        val title = postTitle.value ?: ""
         val image = imageUri.value
         val blogId = selectedBlogId.value
         val publishedPost = publishedPost.value
@@ -127,7 +127,14 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val imageUri: LiveData<Uri> = _imageUri
     
     fun setImageUri(value: Uri?) {
+        // Reset image attributes
+        imageTitle.value = null
+        imageCaption.value = null
+        imageAltText.value = null
+        imageDescription.value = null
+        
         _imageUri.value = value
+        
         updateState()
     }
     
@@ -146,10 +153,34 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     // Title text
-    val titleText = MutableLiveData<String>()
+    val postTitle = MutableLiveData<String>()
     
     // Post tags
     val postTags = MutableLiveData<String>()
+    
+    // Image caption
+    val imageCaption = MutableLiveData<String>()
+    
+    // Image caption
+    val imageTitle = MutableLiveData<String>()
+    
+    // Image altText
+    val imageAltText = MutableLiveData<String>()
+    
+    // Image description
+    val imageDescription = MutableLiveData<String>()
+    
+    // Image caption
+    val editingImageCaption = MutableLiveData<String>()
+    
+    // Image caption
+    val editingImageTitle = MutableLiveData<String>()
+    
+    // Image altText
+    val editingImageAltText = MutableLiveData<String>()
+    
+    // Image description
+    val editingImageDescription = MutableLiveData<String>()
     
     
     // Published post data
@@ -158,6 +189,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     fun newPost() {
         _publishedPost.value = null
+        postTitle.value = null
+        postTags.value = null
+        setImageUri(null)
+        updateState()
     }
     
     data class PublishedPost(
@@ -241,7 +276,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     fun publishPost() {
         val blogId = selectedBlogId.value
-        val title = titleText.value
+        val title = postTitle.value
         val image = imageUri.value
         val tags = postTags.value
             ?.split(",")
@@ -277,7 +312,11 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             val (media, mediaError) = uploadMedia(
                 blogId,
                 file,
-                mimeType.toMediaType()
+                mimeType.toMediaType(),
+                imageTitle.value,
+                imageCaption.value,
+                imageDescription.value,
+                imageAltText.value
             )
             
             if (mediaError != null || media == null) {
@@ -357,11 +396,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 ?.let { PublishedPost(it, false) }
                 ?: PublishedPost(uploadedPost, true)
             
-            // Clear current post fields
-            setImageUri(null)
-            titleText.value = null
-            postTags.value = null
-            
             updateState()
         }
     }
@@ -393,24 +427,35 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "media[0]",
-            file.name,
+            title ?: file.name,
             imageBody
         )
         
-        val attrs = listOf(
-            WPMedia.MediaAttributes(
-                title = title ?: file.nameWithoutExtension,
-                caption = caption ?: "",
-                description = description ?: "",
-                alt = alt ?: title ?: file.nameWithoutExtension
-            )
+        val captionAttr = MultipartBody.Part.createFormData(
+            "attrs[0][caption]",
+            caption ?: ""
+        )
+        val titleAttr = MultipartBody.Part.createFormData(
+            "attrs[0][title]",
+            title ?: file.nameWithoutExtension
+        )
+        val altAttr = MultipartBody.Part.createFormData(
+            "attrs[0][alt]",
+            alt ?: title?: file.nameWithoutExtension
+        )
+        val descriptionAttr = MultipartBody.Part.createFormData(
+            "attrs[0][description]",
+            description ?: ""
         )
         
         ApiClient().getApiService(applicationContext)
             .uploadMedia(
                 blogId = blogId.toString(),
                 media = filePart,
-                attrs = attrs,
+                title = titleAttr,
+                caption = captionAttr,
+                alt = altAttr,
+                description = descriptionAttr,
                 fields = WPMedia.FIELDS_STRING
             ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
                 
@@ -452,21 +497,31 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
-    @Suppress("unused")
-    private val bareTemplate = """
+    private val usingBlockEditor = true
+    
+    
+    private val singleImageClassicTemplate = """
+            [gallery ids="%%MEDIA_ID%%" columns="1" size="large"]
             <p class="has-text-color has-small-font-size has-dark-gray-color">
                 Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a>
             </p>
         """.trimIndent()
     
-    private val gallerySingleTemplate = """
-            [gallery ids="MEDIA_ID" columns="1" size="large"]
-            <p class="has-text-color has-small-font-size has-dark-gray-color">
-                Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a>
-            </p>
-        """.trimIndent()
+    private val singleImageBlockTemplate = """
+        <!-- wp:image {"id":%%MEDIA_ID%%,"align":"center","linkDestination":"media"} -->
+        <div class="wp-block-image"><figure class="aligncenter"><a href="%%MEDIA_URL%%"><img src="%%MEDIA_LARGE%%" alt="%%MEDIA_ALT%%" class="wp-image-%%MEDIA_ID%%"/></a><figcaption>%%MEDIA_CAPTION%%</figcaption></figure></div>
+        <!-- /wp:image -->
+        
+        <!-- wp:more -->
+        <!--more-->
+        <!-- /wp:more -->
+        
+        <!-- wp:paragraph {"fontSize":"small"} -->
+        <p class="has-small-font-size">Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a></p>
+        <!-- /wp:paragraph -->
+    """.trimIndent()
     
-    
+    @Suppress("ConstantConditionIf")
     private suspend fun uploadPost(
         blogId: Int,
         media: WPMedia,
@@ -474,8 +529,20 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         tags: List<String>
     ) = suspendCoroutine<UploadPostResponse> { cont ->
         
-        val content = gallerySingleTemplate
-            .replace("MEDIA_ID", media.id.toString())
+        val content = if (usingBlockEditor) {
+            singleImageBlockTemplate
+                .replace("%%MEDIA_ID%%", media.id.toString())
+                .replace("%%MEDIA_ALT%%", media.alt ?: "")
+                .replace("%%MEDIA_LARGE%%", media.thumbnails?.large ?: media.url)
+                .replace("%%MEDIA_URL%%", media.url)
+                .replace(
+                    "%%MEDIA_CAPTION%%",
+                    media.caption ?: title
+                )
+        } else {
+            singleImageClassicTemplate
+                .replace("%%MEDIA_ID%%", media.id.toString())
+        }
         
         ApiClient().getApiService(applicationContext)
             .uploadBlogpost(
@@ -485,7 +552,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     title = title,
                     content = content,
                     tags = tags,
-                    status = WPBlogPost.PublishStatus.DRAFT
+                    status = WPBlogPost.PublishStatus.DRAFT,
+                    featuredImage = if (usingBlockEditor) media.id.toString() else null
                 )
             ).enqueue(object : Callback<WPBlogPost> {
                 override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
@@ -510,18 +578,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     cont.resume(UploadPostResponse(uploadedPost = publishResponse))
                 }
             })
-    }
-    
-    @Suppress("unused")
-    private fun bodyToString(request: Request): String? {
-        return try {
-            val copy: Request = request.newBuilder().build()
-            val buffer = Buffer()
-            copy.body?.writeTo(buffer)
-            buffer.readUtf8()
-        } catch (e: IOException) {
-            "did not work"
-        }
     }
     
     
@@ -605,6 +661,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             })
     }
     
+    
     val publishedDialogMessage: String
         get() {
             val published = publishedPost.value ?: return ""
@@ -615,15 +672,33 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             )
         }
     
+    
     fun sharePost(post: WPBlogPost) {
         Utils.sendSharingIntent(applicationContext, post.url, post.title)
     }
+    
     
     fun openPostExternal(post: WPBlogPost) {
         applicationContext.startActivity(Utils.getIntentForUrl(post.url))
     }
     
+    
     fun copyPostToClipboard(post: WPBlogPost) {
         Utils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
     }
+    
+    
+    private fun requestBodyToString(request: Request): String? {
+        return try {
+            val copy: Request = request.newBuilder().build()
+            val buffer = Buffer()
+            copy.body?.writeTo(buffer)
+            buffer.readUtf8()
+        } catch (e: IOException) {
+            "did not work"
+        }
+    }
+    
+    
+    
 }

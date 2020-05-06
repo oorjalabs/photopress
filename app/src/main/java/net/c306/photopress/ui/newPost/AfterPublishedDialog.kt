@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import net.c306.photopress.R
 import net.c306.photopress.databinding.DialogAfterPublishBinding
-import net.c306.photopress.ui.BaseBottomSheetDialogFragment
+import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
 
 class AfterPublishedDialog : BaseBottomSheetDialogFragment() {
 

@@ -93,9 +93,14 @@ class NewPostFragment : Fragment() {
         
         // When image is selected, set image name as title if no title is present
         newPostViewModel.fileDetails.observe(viewLifecycleOwner, Observer {
-            if (it == null || it.fileName.isBlank() || !newPostViewModel.titleText.value.isNullOrBlank()) return@Observer
+            if (it == null || it.fileName.isBlank()) return@Observer
             
-            newPostViewModel.titleText.value = it.fileName
+            if (newPostViewModel.postTitle.value.isNullOrBlank()) {
+                newPostViewModel.postTitle.value = it.fileName
+            }
+            if (newPostViewModel.imageTitle.value.isNullOrBlank()) {
+                newPostViewModel.imageTitle.value = it.fileName
+            }
         })
         
         
@@ -118,7 +123,7 @@ class NewPostFragment : Fragment() {
         
         
         // Update state when title text changes
-        newPostViewModel.titleText.observe(viewLifecycleOwner, Observer {
+        newPostViewModel.postTitle.observe(viewLifecycleOwner, Observer {
             newPostViewModel.updateState()
         })
         
@@ -152,6 +157,15 @@ class NewPostFragment : Fragment() {
         )
         
         startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
+    }
+    
+    
+    fun openImageAttributes() {
+        newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
+        newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
+        newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
+        newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
+        findNavController().navigate(NewPostFragmentDirections.actionNavigationPostNewToImageAttributesFragment())
     }
     
     

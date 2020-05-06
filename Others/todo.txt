@@ -5,11 +5,6 @@
 
 v. 2020.X.X.X
 
-    --TBD-- Wireframe
-        [ ] List
-
-    --TBD-- Data binding
-
     --TBD-- For non supporters, add
         [ ] 'photopress for android' as tag
         [ ] 'Posted with photopress for android' with play store link as post footer
@@ -18,26 +13,67 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0506.0.7.1
+v. 2020.0507.0.8.1
 
-    Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
+    --TBD-- Settings
+        [ ] Use block editor or classic
+        [ ] Default tags
+        [ ] Default categories
+        [ ] Logout
+        [ ] Logged in as
 
-    --TBD-- Tap on selected image options
-        [ ] Change image
-        [ ] Add more images (gallery)
-        [ ] Add caption, description, alt text
+    --TBD-- Wireframe
+        [ ] List
 
-    --TBD-- Add caption
+    --TBD-- Support for categories
 
-    --TBD-- Show upload progress
-        [ ] Show message with state of progress - uploading image, uploading content, publishing
+    --TBD-- Update notes
+
+    --TBD-- Subscriptions
+
+    --TBD-- Layout: move publish button out of the way
 
     --TBD-- Upload multiple photos - gallery
+
+    --TBD-- Delete photo from app storage after successful publishing
 
     --TBD-- Show upload progress
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0506.0.7.3
+
+    [DONE] Border around image area when image is selected
+
+    [DONE] Tap on selected image options
+        [X] Add image title, caption, description, alt text
+
+    [DONE] Test twitter post with and without block editor formatting
+
+
+------------------
+
+
+v. 2020.0506.0.7.2
+
+    --TBD-- Tap on selected image options
+        [X] Change image
+
+    [DONE] Landscape layout for new photo screen
+
+
+------------------
+
+
+v. 2020.0506.0.7.1
+
+    [DONE] Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
+        [X] Use block editor template to publish posts :)
 
 
 ------------------

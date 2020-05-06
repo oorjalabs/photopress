@@ -22,5 +22,7 @@
 
     <!--source: https://meyerweb.com/eric/tools/color-blend/#000000:95E1D3:10:hex-->
     <color name="bg_list_item_activated">#1B2926</color>
+    
+    <color name="border_image_view">#42FFFFFF</color>
 
 </resources>

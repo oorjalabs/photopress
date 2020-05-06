@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_welcome.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
+import net.c306.photopress.ui.custom.NoBottomNavFragment
 
 /**
  * Holder fragment for the welcome fragment views
