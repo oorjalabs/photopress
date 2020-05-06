@@ -18,7 +18,9 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0506.0.5.4
+v. 2020.0506.0.7.1
+
+    Get post data from server with context edit to check how the post is formatted. Maybe that is how we need to upload it to make it look correct.
 
     --TBD-- Tap on selected image options
         [ ] Change image
@@ -36,6 +38,37 @@ v. 2020.0506.0.5.4
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0506.0.6.2
+
+    [DONE] Data binding new post fragment
+        [X] Bind visibility based on state
+            [X] Update state when inputs are updated
+            [X] Image view / drop target
+            [X] Title
+            [X] Tags
+            [X] Fab
+            [X] Progress scrim and spinner
+
+
+------------------
+
+
+v. 2020.0506.0.6.1
+
+    --TBD-- Data binding new post fragment
+        [X] Bind event listeners
+            [X] Photo area
+            [X] FAB
+        [X] Bind text input and image view
+            [X] Site title
+            [X] Image view
+            [X] Title
+            [X] Tags
 
 
 ------------------
