@@ -40,6 +40,10 @@
         android:name="net.c306.photopress.ui.welcome.WelcomeFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_welcome">
+        <argument
+            android:name="startScreenNumber"
+            android:defaultValue="0"
+            app:argType="integer" />
         <action
             android:id="@+id/action_go_to_app"
             app:destination="@id/navigation_post_new"
@@ -53,10 +57,6 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/welcomeFragment"
             app:popUpToInclusive="true" />
-        <argument
-            android:name="startScreenNumber"
-            android:defaultValue="-1"
-            app:argType="integer" />
         <action
             android:id="@+id/action_selectBlog"
             app:destination="@id/blogChooserDialogFragment" />

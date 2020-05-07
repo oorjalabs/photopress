@@ -17,7 +17,6 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_post_new.*
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
@@ -53,7 +52,7 @@ class NewPostFragment : BottomNavFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        input_post_tags?.apply {
+        binding.inputPostTags.apply {
             
             setAdapter(mTagsAdapter)
             setTokenizer(CommaTokenizer())
@@ -67,7 +66,7 @@ class NewPostFragment : BottomNavFragment() {
             }
         }
         
-        input_post_title?.setOnFocusChangeListener { v, hasFocus ->
+        binding.inputPostTitle.setOnFocusChangeListener { v, hasFocus ->
             setInputFocus(
                 v as EditText,
                 hasFocus,
@@ -101,10 +100,10 @@ class NewPostFragment : BottomNavFragment() {
         newPostViewModel.state.observe(viewLifecycleOwner, Observer {
             if (it == NewPostViewModel.State.PUBLISHING) {
                 // Show publishing progress indicator
-                progress_publishing?.show()
+                binding.progressPublishing.show()
             } else {
                 // Hide publishing progress indicator
-                progress_publishing?.hide()
+                binding.progressPublishing.hide()
             }
         })
         

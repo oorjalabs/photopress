@@ -18,13 +18,12 @@ v. 2020.0507.0.8.5
     --TBD-- Welcome fragment updates
         [ ] data binding
             [ ] Login
-            [ ] Welcome select blog
-            [ ] Blog chooser
 
     --TBD-- Implement saving blog as draft
 
     --TBD-- Settings
         [ ] Use block editor or classic
+        [ ] Add a featured image or not
         [ ] Default tags
         [ ] Default categories
         [ ] Logout
@@ -48,6 +47,16 @@ v. 2020.0507.0.8.5
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0507.0.8.5
+
+    --TBD-- Welcome fragment updates
+        [-] data binding
+            [X] Welcome select blog
 
 
 ------------------

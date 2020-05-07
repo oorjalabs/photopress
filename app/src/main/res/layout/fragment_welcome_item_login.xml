@@ -19,7 +19,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_status_bar"
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
         android:tag="welcome2">
         
@@ -70,7 +69,7 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:visibility="@{activityViewModel.isLoggedIn ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toTopOf="@id/message_wp_or_jetpack"
+            app:layout_constraintBottom_toTopOf="@id/button_go_to_select_blog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
@@ -89,11 +88,11 @@
             android:onClick="@{() -> handler.goToSelectBlog()}"
             android:text="@string/label_next_pick_a_blog"
             android:visibility="@{activityViewModel.isLoggedIn ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toTopOf="@id/message_wp_or_jetpack"
+            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/animation_view_done"
-            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
+            app:layout_constraintVertical_bias="0.9"
             tools:visibility="visible" />
         
         <Button
@@ -104,7 +103,8 @@
             android:onClick="@{() -> handler.openLoginFragment()}"
             android:text="@string/button_connect_with_wordpress"
             android:visibility="@{activityViewModel.isLoggedIn ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@id/message_wp_or_jetpack"
+            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
+            
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/subtitle_welcome" />
@@ -120,21 +120,15 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="?android:textColorSecondary"
             android:visibility="@{activityViewModel.isLoggedIn ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@id/progress_indicator"
+            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
         
-        <LinearLayout
-            android:id="@+id/progress_indicator"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_progress_indicator_space"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-            
-            <include layout="@layout/welcome_progress_indicator" />
-        
-        </LinearLayout>
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="48dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
