@@ -13,14 +13,18 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0507.0.8.1
+v. 2020.0507.0.8.2
+
+    --TBD-- Add credits screen
+        [ ] Show credits
+
+    --TBD-- Implement saving blog as draft
 
     --TBD-- Settings
         [ ] Use block editor or classic
         [ ] Default tags
         [ ] Default categories
         [ ] Logout
-        [ ] Logged in as
 
     --TBD-- Wireframe
         [ ] List
@@ -41,6 +45,28 @@ v. 2020.0507.0.8.1
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0507.0.8.1
+
+    [DONE] Add tag for +photopress in all posts
+
+    [DONE] Update changed tags (post count) from published post
+
+    [DONE] Display tags alphabetically in suggest box
+
+    --TBD-- Add credits screen
+        [X] Add screen
+
+    [DONE] Use base colour, not night-mode-dependent colour for app icon
+
+    --TBD-- Settings
+        [X] Logged in as
+
+    [DONE] Added image caption to landscape view of new post fragment
 
 
 ------------------

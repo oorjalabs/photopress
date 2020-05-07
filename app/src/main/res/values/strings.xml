@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">PhotoPress</string>
-
+    
+    <string name="app_post_tag">PhotoPress</string>
+    
     <string name="title_list">Posts</string>
     <string name="title_post_new">Add Post</string>
     <string name="title_settings">Settings</string>
@@ -15,7 +17,7 @@
     <string name="button_post">Post</string>
     <string name="cd_fab_publish">Publish</string>
     <string name="cd_photo_to_post">Photo to post</string>
-
+    
     <string name="cd_close_welcome_screen">Close welcome screen</string>
     <string name="title_welcome_to_photopress">Welcome to PhotoPress</string>
     <string name="subtitle_welcome_to_photopress">The photoblogging app for WordPress</string>
@@ -52,4 +54,13 @@
     <string name="text_label_image_alt_text">Alternate text</string>
     <string name="text_label_image_description">Description</string>
     <string name="text_label_image_title">Name</string>
+    
+    <string name="title_credits_fragment"><![CDATA[Credits & Thanks]]></string>
+    <string name="pref_title_select_blog">Select blog</string>
+    <string name="pref_cat_title_about">About</string>
+    <string name="pref_cat_title_posting">Posting</string>
+    <string name="pref_cat_title_user">User</string>
+    <string name="pref_title_logged_in">Logged in as %s</string>
+    <string name="pref_title_logout">Logout</string>
+    <string name="full_text_credits">SOME TEXT TO BE REPLACED WITH CREDITS</string>
 </resources>

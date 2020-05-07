@@ -37,6 +37,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="creditsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="493" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="imageAttributesFragment">
                     <value>
                       <LayoutPositions>

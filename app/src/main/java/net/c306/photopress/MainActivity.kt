@@ -12,10 +12,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import net.c306.photopress.ui.newPost.NewPostViewModel
+import net.c306.photopress.ui.settings.SettingsFragment
+import net.c306.photopress.ui.settings.SettingsFragmentDirections
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private val navController: NavController
         get() = findNavController(R.id.nav_host_fragment)
@@ -66,5 +70,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    
+    
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat?,
+        pref: Preference?
+    ): Boolean {
+        when (pref?.key) {
+            SettingsFragment.KEY_OPEN_CREDITS -> {
+                navController.navigate(SettingsFragmentDirections.actionOpenCreditsFragment())
+            }
+        }
+        return true
     }
 }

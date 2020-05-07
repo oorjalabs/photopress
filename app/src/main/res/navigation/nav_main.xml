@@ -29,7 +29,11 @@
         android:id="@+id/navigation_settings"
         android:name="net.c306.photopress.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_open_creditsFragment"
+            app:destination="@id/creditsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -91,4 +95,9 @@
         android:id="@+id/imageAttributesFragment"
         android:name="net.c306.photopress.ui.newPost.ImageAttributesFragment"
         android:label="ImageAttributesFragment" />
+    <fragment
+        android:id="@+id/creditsFragment"
+        android:name="net.c306.photopress.ui.CreditsFragment"
+        android:label="fragment_credits"
+        tools:layout="@layout/fragment_credits" />
 </navigation>

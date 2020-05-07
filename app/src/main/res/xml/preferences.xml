@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <Preference
+        app:isPreferenceVisible="true"
+        app:key="whats_new"
+        app:layout="@layout/pref_update_notes"
+        app:title="@string/pref_title_update_notes"
+        tools:summary="v. 1.0.0" />
+    
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/pref_cat_title_user">
+        
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="key_pref_logged_in_as"
+            app:persistent="false"
+            app:selectable="false"
+            app:title="@string/pref_title_logged_in" />
+        
+        <Preference
+            app:iconSpaceReserved="false"
+            app:title="@string/pref_title_logout" />
+    
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/pref_cat_title_posting">
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:key="key_selected_blog_id"
+            app:summary="%s"
+            app:title="@string/pref_title_select_blog" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/pref_cat_title_about">
+        
+        <Preference
+            app:fragment="net.c306.photopress.ui.CreditsFragment"
+            app:iconSpaceReserved="false"
+            app:key="key_open_credits"
+            app:title="@string/title_credits_fragment" />
+    
+    </PreferenceCategory>
+
+</PreferenceScreen>
