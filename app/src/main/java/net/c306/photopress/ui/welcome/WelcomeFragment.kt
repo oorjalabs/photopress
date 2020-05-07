@@ -95,7 +95,9 @@ class WelcomeFragment : NoBottomNavFragment() {
     
     
     override fun onDestroyView() {
-        binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
+        if (::binding.isInitialized) {
+            binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
+        }
         super.onDestroyView()
     }
     

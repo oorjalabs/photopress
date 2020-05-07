@@ -13,7 +13,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0507.0.8.3
+v. 2020.0507.0.8.5
 
     --TBD-- Welcome fragment updates
         [ ] data binding
@@ -48,6 +48,15 @@ v. 2020.0507.0.8.3
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0507.0.8.4
+
+    --TBD-- Welcome fragment updates
+        [X] Crash due to binding not initialised in destroyView
 
 
 ------------------
