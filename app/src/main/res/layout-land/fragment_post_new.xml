@@ -10,8 +10,8 @@
             type="net.c306.photopress.ui.newPost.NewPostViewModel" />
         
         <variable
-            name="fragmentEventHandler"
-            type="net.c306.photopress.ui.newPost.NewPostFragment" />
+            name="handler"
+            type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
         
         <import type="net.c306.photopress.ui.newPost.NewPostViewModel.State" />
         
@@ -41,7 +41,7 @@
                 android:enabled="@{viewmodel.state == State.EMPTY}"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
-                android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
+                android:onClick="@{() -> handler.openPhotoPicker()}"
                 android:text="@string/label_tap_to_add_photo"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="?android:textColorSecondary"
@@ -55,12 +55,12 @@
                 android:id="@+id/added_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/bg_rounded_dashed"
                 android:contentDescription="@string/cd_photo_to_post"
                 android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                 app:imageUri="@{viewmodel.imageUri}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:background="@drawable/bg_rounded_dashed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_height="match_parent" />
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/cd_change_photo"
-                android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
+                android:onClick="@{() -> handler.openPhotoPicker()}"
                 android:tooltipText="@string/cd_change_photo"
                 android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                 app:icon="@drawable/ic_swap"
@@ -84,13 +84,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/cd_photo_attributes"
+                android:onClick="@{() -> handler.openImageAttributes()}"
                 android:tooltipText="@string/cd_photo_attributes"
                 android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                 app:icon="@drawable/ic_photo_attributes"
-                android:onClick="@{() -> fragmentEventHandler.openImageAttributes()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-        
+            
+            <TextView
+                android:id="@+id/text_image_caption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="#64ffffff"
+                android:gravity="center"
+                android:minHeight="@dimen/min_touch_size"
+                android:paddingHorizontal="@dimen/min_touch_size"
+                android:paddingVertical="4dp"
+                android:text="@{viewmodel.imageCaption}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="?android:textColorSecondary"
+                android:translationZ="1dp"
+                android:visibility="@{viewmodel.imageUri == null || viewmodel.imageCaption == null || viewmodel.imageCaption.trim().empty ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Image Caption is a long line of text that can't fit in a single line, or preferably even in two lines." />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
         
         <ScrollView

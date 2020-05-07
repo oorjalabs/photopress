@@ -10,8 +10,8 @@
             type="net.c306.photopress.ui.newPost.NewPostViewModel" />
         
         <variable
-            name="fragmentEventHandler"
-            type="net.c306.photopress.ui.newPost.NewPostFragment" />
+            name="handler"
+            type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
         
         <import type="net.c306.photopress.ui.newPost.NewPostViewModel.State" />
         
@@ -65,7 +65,7 @@
                         android:enabled="@{viewmodel.state == State.EMPTY}"
                         android:foreground="?selectableItemBackground"
                         android:gravity="bottom|center_horizontal"
-                        android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
+                        android:onClick="@{() -> handler.openPhotoPicker()}"
                         android:paddingBottom="0dp"
                         android:text="@string/label_tap_to_add_photo"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
@@ -96,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/cd_change_photo"
-                        android:onClick="@{() -> fragmentEventHandler.openPhotoPicker()}"
+                        android:onClick="@{() -> handler.openPhotoPicker()}"
                         android:tooltipText="@string/cd_change_photo"
                         android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                         app:icon="@drawable/ic_swap"
@@ -109,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/cd_photo_attributes"
-                        android:onClick="@{() -> fragmentEventHandler.openImageAttributes()}"
+                        android:onClick="@{() -> handler.openImageAttributes()}"
                         android:tooltipText="@string/cd_photo_attributes"
                         android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                         app:icon="@drawable/ic_photo_attributes"
@@ -129,12 +129,12 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="?android:textColorSecondary"
                         android:translationZ="1dp"
-                        android:visibility="@{viewmodel.imageCaption == null || viewmodel.imageCaption.trim().empty ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{viewmodel.imageUri == null || viewmodel.imageCaption == null || viewmodel.imageCaption.trim().empty ? View.GONE : View.VISIBLE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         tools:text="Image Caption is a long line of text that can't fit in a single line, or preferably even in two lines." />
-                
+                    
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 
                 <com.google.android.material.textfield.TextInputLayout
@@ -179,10 +179,10 @@
                         android:completionThreshold="0"
                         android:enabled="@{viewmodel.inputsEnabled}"
                         android:imeOptions="actionDone"
-                        android:nextFocusDown="@id/photo_container"
                         android:importantForAutofill="no"
                         android:inputType="text"
                         android:lines="1"
+                        android:nextFocusDown="@id/photo_container"
                         android:text="@={viewmodel.postTags}"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>

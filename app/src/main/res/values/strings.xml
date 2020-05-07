@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">PhotoPress</string>
-
+    
+    <string name="app_post_tag">PhotoPress</string>
+    
     <string name="title_list">Posts</string>
     <string name="title_post_new">Add Post</string>
     <string name="title_settings">Settings</string>
@@ -15,7 +17,7 @@
     <string name="button_post">Post</string>
     <string name="cd_fab_publish">Publish</string>
     <string name="cd_photo_to_post">Photo to post</string>
-
+    
     <string name="cd_close_welcome_screen">Close welcome screen</string>
     <string name="title_welcome_to_photopress">Welcome to PhotoPress</string>
     <string name="subtitle_welcome_to_photopress">The photoblogging app for WordPress</string>
@@ -52,4 +54,33 @@
     <string name="text_label_image_alt_text">Alternate text</string>
     <string name="text_label_image_description">Description</string>
     <string name="text_label_image_title">Name</string>
+    
+    <string name="title_credits_fragment"><![CDATA[Credits & Thanks]]></string>
+    <string name="pref_title_select_blog">Select blog</string>
+    <string name="pref_cat_title_about">About</string>
+    <string name="pref_cat_title_posting">Posting</string>
+    <string name="pref_cat_title_user">User</string>
+    <string name="pref_title_logged_in">Logged in as %s</string>
+    <string name="pref_title_logout">Logout</string>
+    
+    <string name="message_welcome_no_blogs_found">No blogs found.\nCreate a blog on WordPress.com.</string>
+    
+    
+    
+    
+    
+    <string name="full_text_credits"><![CDATA[
+        <p>PhotoPress icon adapted from <a href="https://www.iconfinder.com/icons/5439767/animal_dog_pet_puppy_icon">puppy icon</a> by <a href="https://furbabyguide.com/">Gerald Sanders</a>.</p>
+        <p>Animated check mark is by <a href="https://lottiefiles.com/641-simple-tick">Hicy Wonder</a> on LottieFiles.</p>
+        <p>Animated right arrows are by <a href="https://lottiefiles.com/11515-swipe-right-arrows">MJ Mohiddin</a> on LottieFiles.</p>
+        <p>PhotoPress relies on <a href="https://developer.wordpress.com/docs/api/">the API</a> provided by <a href="https://automattic.com/">Automattic</a> + <a href="https://wordpress.com">WordPress.com</a>. PhotoPress is, however, a third-party app and is not associated in any way with Automattic or WordPress.com.</p>
+    ]]></string>
+    
+    
+    <string name="message_error_network">Error connecting to WordPress. Please try again later.</string>
+    <string name="message_error_token_validation">Error occurred while validating token. Please try again later.</string>
+    <string name="message_error_no_auth_token">Authentication error. Please try again later</string>
+    <string name="message_two_factor_code">If two-factor authentication is enabled, please use SMS or code based verification. WordPress app based verification does not work with PhotoPress.</string>
+    <string name="title_two_factor_code">Two-factor authentication</string>
+
 </resources>

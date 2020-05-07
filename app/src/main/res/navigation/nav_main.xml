@@ -5,13 +5,13 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/welcomeFragment">
     <!--    app:startDestination="@+id/navigation_post_new">-->
-
+    
     <fragment
         android:id="@+id/navigation_post_list"
         android:name="net.c306.photopress.ui.postList.PostListFragment"
         android:label="@string/title_list"
         tools:layout="@layout/fragment_post_list" />
-
+    
     <fragment
         android:id="@+id/navigation_post_new"
         android:name="net.c306.photopress.ui.newPost.NewPostFragment"
@@ -24,18 +24,26 @@
             android:id="@+id/action_navigation_post_new_to_imageAttributesFragment"
             app:destination="@id/imageAttributesFragment" />
     </fragment>
-
+    
     <fragment
         android:id="@+id/navigation_settings"
         android:name="net.c306.photopress.ui.settings.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
-
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_open_creditsFragment"
+            app:destination="@id/creditsFragment" />
+    </fragment>
+    
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="net.c306.photopress.ui.welcome.WelcomeFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_welcome">
+        <argument
+            android:name="startScreenNumber"
+            android:defaultValue="0"
+            app:argType="integer" />
         <action
             android:id="@+id/action_go_to_app"
             app:destination="@id/navigation_post_new"
@@ -49,10 +57,6 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/welcomeFragment"
             app:popUpToInclusive="true" />
-        <argument
-            android:name="startScreenNumber"
-            android:defaultValue="-1"
-            app:argType="integer" />
         <action
             android:id="@+id/action_selectBlog"
             app:destination="@id/blogChooserDialogFragment" />
@@ -63,7 +67,7 @@
         app:launchSingleTop="true" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="net.c306.photopress.ui.welcome.LoginFragment"
+        android:name="net.c306.photopress.ui.welcome.login.LoginFragment"
         android:label="@string/title_login_to_wordpress"
         tools:layout="@layout/fragment_login">
         <!-- Use this action to return to welcome, else adapter in welcome crashes -->
@@ -72,6 +76,9 @@
             app:destination="@id/welcomeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_show_two_factor_warning"
+            app:destination="@id/useCodeBasedTwoFactorWarningDialog" />
     </fragment>
     <dialog
         android:id="@+id/blogChooserDialogFragment"
@@ -91,4 +98,14 @@
         android:id="@+id/imageAttributesFragment"
         android:name="net.c306.photopress.ui.newPost.ImageAttributesFragment"
         android:label="ImageAttributesFragment" />
+    <fragment
+        android:id="@+id/creditsFragment"
+        android:name="net.c306.photopress.ui.CreditsFragment"
+        android:label="fragment_credits"
+        tools:layout="@layout/fragment_credits" />
+    <dialog
+        android:id="@+id/useCodeBasedTwoFactorWarningDialog"
+        android:name="net.c306.photopress.ui.welcome.login.UseCodeBasedTwoFactorWarningDialog"
+        android:label="dialog_use_code_based_two_factor"
+        tools:layout="@layout/dialog_use_code_based_two_factor" />
 </navigation>

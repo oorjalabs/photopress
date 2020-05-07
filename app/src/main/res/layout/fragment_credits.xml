@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="presenter"
+            type="net.c306.photopress.ui.CreditsFragment.Presenter" />
+    </data>
+    
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.CreditsFragment">
+        
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+            
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.PopupOverlay"
+                app:navigationIcon="@drawable/ic_back_arrow"
+                app:title="@string/title_credits_fragment" />
+        </com.google.android.material.appbar.AppBarLayout>
+        
+        <TextView
+            android:id="@+id/tv_credits"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:lineSpacingMultiplier="1.25"
+            android:text="@{presenter.creditText}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:text="@string/full_text_credits" />
+    
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -85,7 +85,10 @@ class AuthPrefs (context: Context) {
             } else {
                 putStringSet(
                     ARG_TAGS_LIST,
-                    list.distinctBy { it.id }.map { it.toJson() }.toSet()
+                    list
+                        .distinctBy { it.id }
+                        .map { it.toJson() }
+                        .toSet()
                 )
             }
         }
@@ -97,7 +100,7 @@ class AuthPrefs (context: Context) {
         
         return savedSet
             .map { WPTag.fromJson(it) }
-            .sortedByDescending { it.postCount }
+            .sortedBy { it.slug } // alphabetically, case independent (slugs are always lower case)
     }
     
     /**

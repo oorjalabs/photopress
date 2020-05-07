@@ -14,18 +14,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.fragment_post_new.*
-import net.c306.photopress.MainActivity
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
+import net.c306.photopress.ui.custom.BottomNavFragment
 
 
-class NewPostFragment : Fragment() {
+class NewPostFragment : BottomNavFragment() {
     
     private val newPostViewModel: NewPostViewModel by activityViewModels()
     
@@ -47,7 +44,7 @@ class NewPostFragment : Fragment() {
         binding = FragmentPostNewBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = newPostViewModel
-        binding.fragmentEventHandler = this@NewPostFragment
+        binding.handler = BindingHandler()
         return binding.root
     }
     
@@ -55,12 +52,7 @@ class NewPostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Instead load this from view model on login/welcome completion
-        (activity as? MainActivity)?.apply {
-            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
-        }
-        
-        input_post_tags?.apply {
+        binding.inputPostTags.apply {
             
             setAdapter(mTagsAdapter)
             setTokenizer(CommaTokenizer())
@@ -74,7 +66,7 @@ class NewPostFragment : Fragment() {
             }
         }
         
-        input_post_title?.setOnFocusChangeListener { v, hasFocus ->
+        binding.inputPostTitle.setOnFocusChangeListener { v, hasFocus ->
             setInputFocus(
                 v as EditText,
                 hasFocus,
@@ -108,10 +100,10 @@ class NewPostFragment : Fragment() {
         newPostViewModel.state.observe(viewLifecycleOwner, Observer {
             if (it == NewPostViewModel.State.PUBLISHING) {
                 // Show publishing progress indicator
-                progress_publishing?.show()
+                binding.progressPublishing.show()
             } else {
                 // Hide publishing progress indicator
-                progress_publishing?.hide()
+                binding.progressPublishing.hide()
             }
         })
         
@@ -148,28 +140,6 @@ class NewPostFragment : Fragment() {
     
     
     /**
-     * Open file picker to select file location for syncing
-     */
-    fun openPhotoPicker() {
-        val galleryIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        
-        startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
-    }
-    
-    
-    fun openImageAttributes() {
-        newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
-        newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
-        newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
-        newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
-        findNavController().navigate(NewPostFragmentDirections.actionNavigationPostNewToImageAttributesFragment())
-    }
-    
-    
-    /**
      * Photo picker returns here
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -193,6 +163,34 @@ class NewPostFragment : Fragment() {
     companion object {
         const val RC_PHOTO_PICKER = 9723
     }
+    
+    /**
+     * Public methods that can be called from data binding
+     */
+    inner class BindingHandler {
+        /**
+         * Open file picker to select file location for syncing
+         */
+        fun openPhotoPicker() {
+            val galleryIntent = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            )
+        
+            startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
+        }
+    
+    
+        fun openImageAttributes() {
+            newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
+            newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
+            newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
+            newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
+            findNavController().navigate(NewPostFragmentDirections.actionNavigationPostNewToImageAttributesFragment())
+        }
+        
+    }
+    
     
     class TagsAutocompleteAdapter(context: Context, list: MutableList<String>) :
         ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list) {

@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentImageAttributesBinding
-import net.c306.photopress.ui.custom.NoBottomNavFragment
+import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
 
-class ImageAttributesFragment: NoBottomNavFragment() {
+class ImageAttributesFragment: AppBarNoBottomNavFragment() {
     
     private lateinit var binding: FragmentImageAttributesBinding
+    
+    @IdRes
+    override val myNavId: Int = R.id.imageAttributesFragment
     
     private val newPostViewModel by activityViewModels<NewPostViewModel>()
     
@@ -35,13 +38,6 @@ class ImageAttributesFragment: NoBottomNavFragment() {
          * Close fragment without saving changes
          */
         binding.toolbar.setNavigationOnClickListener { dismiss() }
-    }
-    
-    /**
-     * Close fragment
-     */
-    private fun dismiss() {
-        findNavController().popBackStack(R.id.imageAttributesFragment, true)
     }
     
     /**

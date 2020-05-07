@@ -56,7 +56,7 @@ class BlogChooserDialogFragment: DialogFragment() {
 
             // Inflate and set the layout for the dialog (Pass null as the parent view because its going in the dialog layout)
             val contentView = it.layoutInflater.inflate(R.layout.dialog_blog_chooser, null).apply {
-
+                
                 // Create list view - add adapter and click listeners
                 val listView = findViewById<ListView>(R.id.blog_list)?.apply {
                     choiceMode = ListView.CHOICE_MODE_SINGLE

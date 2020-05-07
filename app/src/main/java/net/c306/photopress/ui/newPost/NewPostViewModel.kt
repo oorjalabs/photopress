@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.Html
 import android.widget.Toast
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
@@ -98,9 +99,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         updateState()
         
-        val selectedTags = AuthPrefs(applicationContext).getTagsList()
-        setBlogTags(selectedTags ?: emptyList())
-        if (selectedTags == null) updateTagsList()
+        val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
+        setBlogTags(selectedBlogTags ?: emptyList())
+        if (selectedBlogTags == null) updateTagsList()
     }
     
     
@@ -278,11 +279,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         val blogId = selectedBlogId.value
         val title = postTitle.value
         val image = imageUri.value
-        val tags = postTags.value
-            ?.split(",")
-            ?.filter { !it.isBlank() }
-            ?.distinct()
-            ?: emptyList()
+        val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
+            .apply { add(applicationContext.getString(R.string.app_post_tag)) }
+            .filter { !it.isBlank() }
+            .distinct()
         
         
         if (blogId == null || title.isNullOrBlank() || image == null) {
@@ -372,20 +372,25 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 ).show()
             }
             
+            // Add and update returned tags in tags list
+            val blogTags = blogTags.value?.toMutableList() ?: mutableListOf()
+            val newPostTags = (publishedPost?.tags ?: uploadedPost.tags).values
             
-            val blogTags = (blogTags.value ?: emptyList())
-            val newTags = (publishedPost?.tags ?: uploadedPost.tags)
-                .values
-                .filter { tag -> blogTags.none { it.id == tag.id } }
-            
-            // If there were new tags found, save them to blog tags list
-            if (newTags.isNotEmpty()) {
-                val updatedBlogTags = blogTags.toMutableList().apply {
-                    addAll(newTags)
-                }
+            if (newPostTags.isNotEmpty()) {
                 
-                AuthPrefs(applicationContext).saveTagsList(updatedBlogTags)
-                setBlogTags(updatedBlogTags)
+                // Remove tags that are present in new post's tags
+                blogTags.removeIf { tag -> !newPostTags.none { it.id == tag.id } }
+                
+                // Add all tags from new post
+                blogTags.addAll(newPostTags)
+                
+                // Sort alphabetically, ascending
+                blogTags.sortBy { it.slug }
+                
+                // Save and set updated list
+                AuthPrefs(applicationContext).saveTagsList(blogTags)
+                setBlogTags(blogTags)
+                
             }
             
             
@@ -668,7 +673,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             return applicationContext.getString(
                 if (published.isDraft) R.string.message_post_draft
                 else R.string.message_post_published,
-                published.post.title
+                Html.fromHtml(published.post.title, Html.FROM_HTML_MODE_COMPACT)
             )
         }
     

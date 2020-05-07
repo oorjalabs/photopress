@@ -18,8 +18,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="744" />
-                            <option name="y" value="410" />
+                            <option name="x" value="779" />
+                            <option name="y" value="552" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -30,8 +30,20 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
+                            <option name="x" value="491" />
+                            <option name="y" value="381" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="creditsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
                             <option name="x" value="500" />
-                            <option name="y" value="368" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -42,8 +54,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="744" />
-                            <option name="y" value="766" />
+                            <option name="x" value="779" />
+                            <option name="y" value="908" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -54,13 +66,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="681" />
+                            <option name="x" value="254" />
+                            <option name="y" value="1095" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_returnToWelcome">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_show_two_factor_warning">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -87,8 +104,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="724" />
+                            <option name="x" value="493" />
+                            <option name="y" value="726" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -117,6 +134,27 @@
                             <option name="y" value="12" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_open_creditsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="useCodeBasedTwoFactorWarningDialog">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="493" />
+                            <option name="y" value="1090" />
+                          </Point>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -126,7 +164,7 @@
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="256" />
-                            <option name="y" value="681" />
+                            <option name="y" value="723" />
                           </Point>
                         </option>
                         <option name="myPositions">

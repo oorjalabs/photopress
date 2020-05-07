@@ -10,11 +10,12 @@ data class WPTag(
     val id: Int,
     val name: String,
     @SerializedName("post_count")
-    val postCount: Int
+    val postCount: Int,
+    val slug: String
 ) {
     companion object {
         
-        const val FIELDS_STRING = "ID,name,post_count"
+        const val FIELDS_STRING = "ID,name,post_count,slug"
         
         fun fromJson(jsonString: String): WPTag {
             return Gson().fromJson(jsonString, WPTag::class.java)

@@ -14,11 +14,16 @@ class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
     override fun getItemCount() = mItemCount
 
     override fun createFragment(position: Int): Fragment {
-        return when(position) {
-            2 -> WelcomeItemFragmentSelectBlog()
-            1 -> WelcomeItemFragmentLogin()
-            else -> WelcomeItemFragmentInit()
+        return when (position) {
+            Screens.SELECT_BLOG.screenNumber -> WelcomeItemFragmentSelectBlog()
+            Screens.LOGIN.screenNumber     -> WelcomeItemFragmentLogin()
+            else                             -> WelcomeItemFragmentInit()
         }
     }
-
+    
+    enum class Screens(val screenNumber: Int) {
+        WELCOME (0),
+        LOGIN (1),
+        SELECT_BLOG (2)
+    }
 }

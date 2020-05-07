@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import net.c306.photopress.api.AuthPrefs
 import net.c306.photopress.api.UserDetails
 
@@ -14,6 +15,16 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
 
     private val _userDetails = MutableLiveData<UserDetails>()
     val userDetails: LiveData<UserDetails> = _userDetails
+    
+    val userDisplayName = Transformations.switchMap(userDetails) {
+        MutableLiveData<String>().apply {
+            if (it == null || (it.displayName.isNullOrBlank() && it.username.isNullOrBlank())) {
+                return@apply
+            }
+    
+            value = if (!it.displayName.isNullOrBlank()) it.displayName else it.username
+        }
+    }
 
     private val _selectedBlogId = MutableLiveData<Int>()
     val selectedBlogId: LiveData<Int> = _selectedBlogId

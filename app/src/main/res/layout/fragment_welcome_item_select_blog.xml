@@ -1,108 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_status_bar"
-    android:paddingHorizontal="@dimen/activity_horizontal_margin"
-    android:tag="welcome3">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/image_guide"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="selectBlogViewModel"
+            type="net.c306.photopress.ui.welcome.SelectBlogViewModel" />
+        
+        <variable
+            name="activityViewModel"
+            type="net.c306.photopress.ActivityViewModel" />
+        
+        <variable
+            name="handler"
+            type="net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Handler" />
+        
+        <import type="net.c306.photopress.api.Blog" />
+        
+        <import type="android.view.View" />
+    </data>
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25" />
-
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:contentDescription="@string/cd_photopress_logo"
-        android:src="@drawable/ic_puppy_full_white"
-        app:layout_constraintBottom_toTopOf="@id/image_guide"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/text_welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/title_welcome_last"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo" />
-
-    <TextView
-        android:id="@+id/subtitle_welcome_select_blog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/item_margin_half"
-        android:ellipsize="end"
-        android:lines="1"
-        android:text="@string/subtitle_welcome_select_blog"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_welcome" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_setup_complete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:constraint_referenced_ids="animation_view_done,button_start"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view_done"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        app:layout_constraintBottom_toTopOf="@id/button_start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome_select_blog"
-        app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/anim_done" />
-
-    <Button
-        android:id="@+id/button_start"
-        style="@style/OutlinedButton.Secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_get_started"
-        app:layout_constraintBottom_toTopOf="@id/progress_indicator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome_select_blog"
-        app:layout_constraintVertical_bias="0.9" />
-
-    <Button
-        android:id="@+id/button_select_blog"
-        style="@style/Button.Secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_select_blog"
-        app:layout_constraintBottom_toTopOf="@+id/progress_indicator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle_welcome_select_blog" />
-
-
-    <LinearLayout
-        android:id="@+id/progress_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <include layout="@layout/welcome_progress_indicator" />
-
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:tag="welcome3">
+        
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/image_guide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.25" />
+        
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:contentDescription="@string/cd_photopress_logo"
+            android:src="@drawable/ic_puppy_full_white"
+            app:layout_constraintBottom_toTopOf="@id/image_guide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        
+        <TextView
+            android:id="@+id/text_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/title_welcome_last"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logo" />
+        
+        <TextView
+            android:id="@+id/subtitle_welcome_select_blog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin_half"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{selectBlogViewModel.selectBlogWelcomeSubtitle}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_welcome"
+            tools:text="@string/subtitle_welcome_select_blog" />
+        
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_setup_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{activityViewModel.blogSelected ? View.VISIBLE : View.GONE}"
+            app:constraint_referenced_ids="animation_view_done,button_start"
+            tools:layout_editor_absoluteX="16dp"
+            tools:visibility="visible" />
+        
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view_done"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:visibility="@{activityViewModel.blogSelected ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@id/button_start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subtitle_welcome_select_blog"
+            app:lottie_autoPlay="false"
+            app:lottie_rawRes="@raw/anim_done" />
+        
+        <Button
+            android:id="@+id/button_start"
+            style="@style/OutlinedButton.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{handler::goToApp}"
+            android:text="@string/button_get_started"
+            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subtitle_welcome_select_blog"
+            app:layout_constraintVertical_bias="0.9" />
+        
+        <Button
+            android:id="@+id/button_select_blog"
+            style="@style/Button.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="@{!selectBlogViewModel.blogList.empty}"
+            android:onClick="@{handler::openBlogChooser}"
+            android:text="@string/button_select_blog"
+            android:visibility="@{activityViewModel.blogSelected ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitle_welcome_select_blog" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:autoLink="web"
+            android:lineSpacingMultiplier="1.25"
+            android:text="@string/message_welcome_no_blogs_found"
+            android:visibility="@{selectBlogViewModel.blogsAvailable == false ? View.VISIBLE : View.GONE}"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_select_blog"
+            
+            />
+        
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_progress_indicator_space"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="48dp" />
+    
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
