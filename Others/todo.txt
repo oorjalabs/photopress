@@ -17,9 +17,6 @@ v. 2020.0507.0.8.3
 
     --TBD-- Welcome fragment updates
         [ ] data binding
-            [ ] Welcome main
-            [ ] Welcome first
-            [ ] Welcome login
             [ ] Login
             [ ] Welcome select blog
             [ ] Blog chooser
@@ -51,6 +48,20 @@ v. 2020.0507.0.8.3
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0507.0.8.3
+
+    --TBD-- Welcome fragment updates
+        [X] Progress dots on parent fragment
+        [X] Show swipe right animation on welcome init screen
+        [-] data binding
+            [X] Welcome parent
+            [X] Welcome init
+            [X] Welcome login
 
 
 ------------------

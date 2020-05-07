@@ -16,7 +16,7 @@ class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             Screens.SELECT_BLOG.screenNumber -> WelcomeItemFragmentSelectBlog()
-            Screens.WELCOME.screenNumber     -> WelcomeItemFragmentLogin()
+            Screens.LOGIN.screenNumber     -> WelcomeItemFragmentLogin()
             else                             -> WelcomeItemFragmentInit()
         }
     }

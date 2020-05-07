@@ -1,24 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.welcome.WelcomeFragment">
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="activityViewModel"
+            type="net.c306.photopress.ActivityViewModel" />
+        
+        <variable
+            name="handler"
+            type="net.c306.photopress.ui.welcome.WelcomeFragment.Handler" />
+    </data>
+    
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageView
-        android:id="@+id/button_close_welcome"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="top|end"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:background="@drawable/rounded_button_with_ripple"
-        android:contentDescription="@string/cd_close_welcome_screen"
-        android:padding="12dp"
-        android:src="@drawable/ic_close"
-        android:tint="?colorControlNormal" />
-</FrameLayout>
+        android:layout_height="match_parent"
+        tools:context=".ui.welcome.WelcomeFragment">
+        
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        
+        <ImageView
+            android:id="@+id/button_close_welcome"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:background="@drawable/rounded_button_with_ripple"
+            android:contentDescription="@string/cd_close_welcome_screen"
+            android:onClick="@{() -> handler.goToApp()}"
+            android:padding="12dp"
+            android:src="@drawable/ic_close"
+            android:tint="?colorControlNormal"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:translationZ="1dp">
+            
+            <ImageView
+                android:id="@+id/progress_indicator_page_1"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="@dimen/item_margin_half"
+                android:alpha="@dimen/icon_alpha_default"
+                android:contentDescription="@string/cd_welcome_screen_progress_indicator"
+                android:src="@drawable/ic_circle_empty"
+                android:tint="?colorControlNormal" />
+            
+            <ImageView
+                android:id="@+id/progress_indicator_page_2"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="@dimen/item_margin_half"
+                android:alpha="@dimen/icon_alpha_default"
+                android:contentDescription="@string/cd_welcome_screen_progress_indicator"
+                android:src="@drawable/ic_circle_filled"
+                android:tint="?colorControlNormal" />
+            
+            <ImageView
+                android:id="@+id/progress_indicator_page_3"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="@dimen/item_margin_half"
+                android:alpha="@{activityViewModel.isLoggedIn ? handler.defaultIconAlpha : handler.disabledIconAlpha}"
+                android:contentDescription="@string/cd_welcome_screen_progress_indicator"
+                android:src="@drawable/ic_circle_empty"
+                android:tint="?colorControlNormal" />
+        
+        
+        </LinearLayout>
+    
+    </FrameLayout>
+</layout>
