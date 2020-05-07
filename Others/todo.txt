@@ -13,13 +13,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0507.0.8.5
-
-    --TBD-- Welcome fragment updates
-        [ ] data binding
-            [ ] Login
-
-    --TBD-- Implement saving blog as draft
+v. 2020.0508.0.9.1
 
     --TBD-- Settings
         [ ] Use block editor or classic
@@ -27,6 +21,8 @@ v. 2020.0507.0.8.5
         [ ] Default tags
         [ ] Default categories
         [ ] Logout
+
+    --TBD-- Implement saving blog as draft
 
     --TBD-- Wireframe
         [ ] List
@@ -47,6 +43,19 @@ v. 2020.0507.0.8.5
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0507.0.8.6
+
+    [DONE] LoginFragment
+        [X] Show message about two factor code
+        [X] Toolbar
+
+    [DONE] Welcome fragment updates
+        [X] Login - show error messages in snackbar
 
 
 ------------------

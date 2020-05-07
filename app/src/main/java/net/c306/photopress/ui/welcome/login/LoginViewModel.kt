@@ -1,9 +1,10 @@
-package net.c306.photopress.ui.welcome
+package net.c306.photopress.ui.welcome.login
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.ApiService.GetTokenResponse
 import net.c306.photopress.api.ApiService.ValidateTokenResponse
@@ -16,6 +17,8 @@ import retrofit2.Response
 import timber.log.Timber
 
 class LoginViewModel(application: Application): AndroidViewModel(application) {
+    
+    private val applicationContext = application.applicationContext
     
     internal data class AuthResponse(
         val accessToken: String? = null,
@@ -88,8 +91,10 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                 override fun onFailure(call: Call<GetTokenResponse>, t: Throwable) {
                     // Error logging in
                     Timber.w(t, "Error getting token!")
-                    AuthResponse(
-                        error = "Error getting token: $t"
+                    setAuthResult(
+                        AuthResponse(
+                            error = applicationContext.getString(R.string.message_error_no_auth_token)
+                        )
                     )
                 }
                 
@@ -99,18 +104,22 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                     if (tokenResponse?.accessToken != null) {
                         // sessionManager.saveAuthToken(loginResponse.authToken)
                         Timber.d("Got token: $tokenResponse")
-                        setAuthResult(AuthResponse(
-                            accessToken = tokenResponse.accessToken,
-                            tokenType = tokenResponse.tokenType,
-                            siteId = tokenResponse.blogId,
-                            blogUrl = tokenResponse.blogUrl,
-                            error = null
-                        ))
+                        setAuthResult(
+                            AuthResponse(
+                                accessToken = tokenResponse.accessToken,
+                                tokenType = tokenResponse.tokenType,
+                                siteId = tokenResponse.blogId,
+                                blogUrl = tokenResponse.blogUrl,
+                                error = null
+                            )
+                        )
                     } else {
                         // Error logging in
                         Timber.w("Got invalid response getting token: $tokenResponse")
-                        AuthResponse(
-                            error = tokenResponse?.error ?: "Got invalid response"
+                        setAuthResult(
+                            AuthResponse(
+                                error = applicationContext.getString(R.string.message_error_no_auth_token)
+                            )
                         )
                     }
                 }
@@ -128,8 +137,10 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                 override fun onFailure(call: Call<ValidateTokenResponse>, t: Throwable) {
                     // Error logging in
                     Timber.w(t, "Error getting token!")
-                    AuthResponse(
-                        error = "Error getting token: $t"
+                    setAuthResult(
+                        AuthResponse(
+                            error = applicationContext.getString(R.string.message_error_network)
+                        )
                     )
                 }
                 
@@ -138,23 +149,27 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                     
                     if (tokenResponse == null || !tokenResponse.error.isNullOrBlank()) {
                         Timber.w("Token not validated")
-                        setAuthResult(AuthResponse(
-                            accessToken = token,
-                            tokenValidated = false,
-                            error = "Token not validated"
-                        ))
+                        setAuthResult(
+                            AuthResponse(
+                                accessToken = token,
+                                tokenValidated = false,
+                                error = applicationContext.getString(R.string.message_error_token_validation)
+                            )
+                        )
                         return
                     }
                     
                     Timber.d("Token verified. Yay! $tokenResponse")
                     
-                    setAuthResult(AuthResponse(
-                        accessToken = token,
-                        tokenValidated = true,
-                        userId = tokenResponse.userId,
-                        siteId = tokenResponse.blogId,
-                        error = null
-                    ))
+                    setAuthResult(
+                        AuthResponse(
+                            accessToken = token,
+                            tokenValidated = true,
+                            userId = tokenResponse.userId,
+                            siteId = tokenResponse.blogId,
+                            error = null
+                        )
+                    )
                     
                 }
             })
@@ -171,9 +186,6 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
                 override fun onFailure(call: Call<UserDetails>, t: Throwable) {
                     // Error logging in
                     Timber.w(t, "Error getting token!")
-                    AuthResponse(
-                        error = "Error getting token: $t"
-                    )
                 }
                 
                 override fun onResponse(call: Call<UserDetails>, response: Response<UserDetails>) {
