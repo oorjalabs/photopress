@@ -73,8 +73,7 @@ class WelcomeItemFragmentLogin : Fragment() {
         })
         
         button_go_to_select_blog.setOnClickListener {
-            // TODO("Replace screen numbers with constants so they can be understood and changed in one position")
-            welcomeViewModel.setGoToScreen(2)
+            welcomeViewModel.setGoToScreen(WelcomeFragmentAdapter.Screens.SELECT_BLOG)
         }
     }
 

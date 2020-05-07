@@ -13,10 +13,16 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0507.0.8.2
+v. 2020.0507.0.8.3
 
-    --TBD-- Add credits screen
-        [ ] Show credits
+    --TBD-- Welcome fragment updates
+        [ ] data binding
+            [ ] Welcome main
+            [ ] Welcome first
+            [ ] Welcome login
+            [ ] Login
+            [ ] Welcome select blog
+            [ ] Blog chooser
 
     --TBD-- Implement saving blog as draft
 
@@ -45,6 +51,21 @@ v. 2020.0507.0.8.2
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0507.0.8.2
+
+    [DONE] Add credits screen
+        [X] Show credits
+            [X] app icon
+            [X] animated check mark
+            [X] WP API
+
+    --TBD-- Welcome fragment updates
+        [X] Use screen enum instead of numeric index values
 
 
 ------------------

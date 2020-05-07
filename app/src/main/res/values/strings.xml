@@ -62,5 +62,9 @@
     <string name="pref_cat_title_user">User</string>
     <string name="pref_title_logged_in">Logged in as %s</string>
     <string name="pref_title_logout">Logout</string>
-    <string name="full_text_credits">SOME TEXT TO BE REPLACED WITH CREDITS</string>
+    <string name="full_text_credits"><![CDATA[
+        <p>PhotoPress icon adapted from <a href="https://www.iconfinder.com/icons/5439767/animal_dog_pet_puppy_icon">puppy icon</a> by <a href="https://furbabyguide.com/">Gerald Sanders</a>.</p>
+        <p>Animated check mark is by <a href="https://lottiefiles.com/641-simple-tick">Hicy Wonder</a> on LottieFiles.</p>
+        <p>PhotoPress relies on <a href="https://developer.wordpress.com/docs/api/">the API</a> provided by <a href="https://automattic.com/">Automattic</a> + <a href="https://wordpress.com">WordPress.com</a>. PhotoPress is, however, a third-party app and is not associated in any way with Automattic or WordPress.com.</p>
+    ]]></string>
 </resources>

@@ -53,7 +53,11 @@ class LoginFragment : NoBottomNavFragment() {
 
         loginViewModel.authComplete.observe(viewLifecycleOwner, Observer {
             // Authorisation complete, navigate back to where we came from
-            if (it == true) findNavController().navigate(LoginFragmentDirections.actionReturnToWelcome(1))
+            if (it == true) {
+                findNavController().navigate(LoginFragmentDirections.actionReturnToWelcome(
+                    WelcomeFragmentAdapter.Screens.LOGIN.screenNumber
+                ))
+            }
         })
 
         loginViewModel.authResult.observe(viewLifecycleOwner, Observer {

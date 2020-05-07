@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_welcome.*
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
 import net.c306.photopress.ui.custom.NoBottomNavFragment
+import net.c306.photopress.ui.welcome.WelcomeFragmentAdapter.Screens
 
 /**
  * Holder fragment for the welcome fragment views
@@ -23,7 +24,6 @@ class WelcomeFragment : NoBottomNavFragment() {
     private val mPagerAdapter: WelcomeFragmentAdapter by lazy {
         WelcomeFragmentAdapter(this)
     }
-    
     
     private val args by navArgs<WelcomeFragmentArgs>()
     
@@ -69,7 +69,7 @@ class WelcomeFragment : NoBottomNavFragment() {
         // If not authenticated, disable screen 3
         activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
             mPagerAdapter.setMaxScreen(
-                if (it == true) 3 else 2
+                1 + if (it == true) Screens.SELECT_BLOG.screenNumber else Screens.LOGIN.screenNumber
             )
         })
         

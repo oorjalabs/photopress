@@ -34,8 +34,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_vertical_margin"
+            android:lineSpacingMultiplier="1.25"
             android:text="@{presenter.creditText}"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:text="@string/full_text_credits" />
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
