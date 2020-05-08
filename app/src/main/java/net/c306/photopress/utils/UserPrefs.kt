@@ -20,6 +20,7 @@ class UserPrefs (context: Context): BasePrefs() {
         const val KEY_DEFAULT_CATEGORIES = "key_default_categories"
         
         const val DEFAULT_USE_BLOCK_EDITOR = true
+        const val DEFAULT_ADD_FEATURED_IMAGE = true
     }
     
     fun setSelectedBlogId(value: Int) {
@@ -42,5 +43,10 @@ class UserPrefs (context: Context): BasePrefs() {
         val publishFormat = prefs.getString(KEY_PUBLISH_FORMAT, null)
                             ?: return DEFAULT_USE_BLOCK_EDITOR
         return publishFormat.toBoolean()
+    }
+    
+    
+    fun getAddFeaturedImage(): Boolean {
+        return prefs.getBoolean(KEY_ADD_FEATURED_IMAGE, DEFAULT_ADD_FEATURED_IMAGE)
     }
 }

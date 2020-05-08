@@ -84,6 +84,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     // Use block editor post format
     private val useBlockEditor = MutableLiveData<Boolean>()
+    private val addFeaturedImage = MutableLiveData<Boolean>()
     
     
     // Selected Blog
@@ -217,6 +218,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(userPrefs.getSelectedBlogId())
             
             UserPrefs.KEY_PUBLISH_FORMAT -> useBlockEditor.value = userPrefs.getUseBlockEditor()
+            
+            UserPrefs.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value = userPrefs.getAddFeaturedImage()
         }
     }
     
@@ -226,6 +229,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         val userPrefs = UserPrefs(applicationContext)
         useBlockEditor.value = userPrefs.getUseBlockEditor()
+        addFeaturedImage.value = userPrefs.getAddFeaturedImage()
         setSelectedBlogId(userPrefs.getSelectedBlogId())
         userPrefs.observe(observer)
     }
@@ -546,6 +550,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     ) = suspendCoroutine<UploadPostResponse> { cont ->
         
         val usingBlockEditor = useBlockEditor.value ?: UserPrefs.DEFAULT_USE_BLOCK_EDITOR
+        val addFeaturedImage = addFeaturedImage.value ?: UserPrefs.DEFAULT_ADD_FEATURED_IMAGE
         
         val content = if (usingBlockEditor) {
             singleImageBlockTemplate
@@ -571,7 +576,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     content = content,
                     tags = tags,
                     status = WPBlogPost.PublishStatus.DRAFT,
-                    featuredImage = if (usingBlockEditor) media.id.toString() else null
+                    featuredImage = if (addFeaturedImage) media.id.toString() else null
                 )
             ).enqueue(object : Callback<WPBlogPost> {
                 override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
