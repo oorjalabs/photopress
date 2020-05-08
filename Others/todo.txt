@@ -13,12 +13,11 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0508.0.9.3
+v. 2020.0508.0.9.4
 
     --TBD-- Settings
         [ ] Default tags
         [ ] Default categories
-        [ ] Logout
 
     --TBD-- Implement saving blog as draft
 
@@ -46,6 +45,15 @@ v. 2020.0508.0.9.3
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0508.0.9.3
+
+    --TBD-- Settings
+        [X] Logout
 
 
 ------------------

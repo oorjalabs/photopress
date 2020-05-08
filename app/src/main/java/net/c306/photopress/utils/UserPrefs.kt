@@ -42,7 +42,7 @@ class UserPrefs (context: Context): BasePrefs() {
     fun getUseBlockEditor(): Boolean {
         val publishFormat = prefs.getString(KEY_PUBLISH_FORMAT, null)
                             ?: return DEFAULT_USE_BLOCK_EDITOR
-        return publishFormat.toBoolean()
+        return publishFormat == "block"
     }
     
     

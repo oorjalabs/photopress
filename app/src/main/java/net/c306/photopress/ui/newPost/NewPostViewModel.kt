@@ -82,7 +82,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
-    // Use block editor post format
+    // Default post settings
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
     

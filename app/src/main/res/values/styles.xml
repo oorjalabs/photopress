@@ -34,7 +34,6 @@
     
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
     
-    
     <!-- Bottom sheet dialog styles -->
     <style name="BottomSheetStyle" parent="@style/Widget.MaterialComponents.BottomSheet.Modal" />
 
