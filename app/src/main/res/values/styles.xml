@@ -34,6 +34,26 @@
     
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
     
+    
+    <!-- Date chooser -->
+    
+    <style name="AppTheme.DateChooserDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <!-- Date - selected day's colour: define your own -->
+        <!--header background, buttons colour-->
+        <item name="colorAccent">@color/primaryColor</item>
+        <!--  Colour of ok/cancel buttons  -->
+<!--        <item name="materialButtonStyle">@style/TextButton.Secondary</item>-->
+        <!--calendar background-->
+        <!--        <item name="android:windowBackground">#5a5a5a</item>-->
+        <!--selected day-->
+        <!--        <item name="android:colorControlActivated">@color/colorAccent</item> -->
+        <!--days of the month-->
+        <!--        <item name="android:textColorPrimary">@color/colorPrimaryText</item> -->
+        <!--days of the week-->
+        <!--        <item name="android:textColorSecondary">@color/colorAccent</item>    -->
+    </style>
+    
+    
     <!-- Bottom sheet dialog styles -->
     <style name="BottomSheetStyle" parent="@style/Widget.MaterialComponents.BottomSheet.Modal" />
 
@@ -158,6 +178,7 @@
         <item name="strokeColor">@android:color/transparent</item>
         <item name="strokeWidth">0dp</item>
     </style>
+    
 
 
 </resources>

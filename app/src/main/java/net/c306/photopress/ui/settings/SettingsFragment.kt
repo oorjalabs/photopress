@@ -134,7 +134,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
             KEY_PREF_LOGOUT -> {
                 //Show confirmation dialog, then logout
                 findNavController().navigate(
-                    SettingsFragmentDirections.actionOpenConfirmationDialog(
+                    SettingsFragmentDirections.actionGlobalConfirmationDialog(
                         requestCode = RC_CONFIRM_LOGOUT,
                         dialogTitle = getString(R.string.pref_title_logout),
                         dialogMessage = getString(R.string.logout_confirm_text),

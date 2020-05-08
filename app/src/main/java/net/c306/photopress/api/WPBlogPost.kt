@@ -65,7 +65,8 @@ data class WPBlogPost(
     
     @Keep
     data class UpdatePostStatusRequest(
-        val status: PublishStatus
+        val status: PublishStatus,
+        val date: String? = null
     )
     
     @Keep

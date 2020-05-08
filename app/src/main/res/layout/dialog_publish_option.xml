@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    
     <data>
         <variable
-            name="viewmodel"
-            type="net.c306.photopress.ui.newPost.NewPostViewModel"/>
+            name="handler"
+            type="net.c306.photopress.ui.newPost.PublishOptionsDialog.Handler" />
     </data>
-
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,33 +16,31 @@
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
         android:paddingVertical="@dimen/activity_vertical_margin"
         tools:context=".ui.newPost.AfterPublishedDialog">
-
+        
         <TextView
-            android:id="@+id/highlight_action_title"
             style="@style/BottomSheetTitle"
-            tools:text="@string/message_post_published"
-            android:text="@{viewmodel.publishedDialogMessage}" />
-
+            android:text="@string/title_ready_to_publish" />
+        
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_share_post"
+            android:id="@+id/button_publish_now"
             style="@style/BottomSheetActionButtons"
-            android:onClick="@{() -> viewmodel.sharePost(viewmodel.publishedPost.post)}"
-            android:text="@string/share_post"
-            app:icon="@drawable/ic_share" />
-
+            android:text="@string/button_publish_now"
+            android:onClick="@{handler::publish}"
+            app:icon="@drawable/ic_photo" />
+        
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_copy_post_to_clipboard"
+            android:id="@+id/button_schedule_for_later"
             style="@style/BottomSheetActionButtons"
-            android:onClick="@{() -> viewmodel.copyPostToClipboard(viewmodel.publishedPost.post)}"
-            android:text="@string/copy_post"
-            app:icon="@drawable/ic_copy" />
-
+            android:onClick="@{handler::publishScheduled}"
+            android:text="@string/button_schedule_for_later"
+            app:icon="@drawable/ic_schedule" />
+        
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_open_post_in_browser"
+            android:id="@+id/button_save_as_draft"
             style="@style/BottomSheetActionButtons"
-            android:onClick="@{() -> viewmodel.openPostExternal(viewmodel.publishedPost.post)}"
-            android:text="@string/open_post"
-            app:icon="@drawable/ic_open_external" />
-
+            android:onClick="@{handler::uploadAsDraft}"
+            android:text="@string/button_upload_as_draft"
+            app:icon="@drawable/ic_upload_draft" />
+    
     </LinearLayout>
 </layout>
