@@ -8,12 +8,12 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="action_global_welcomeFragment">
+                  <entry key="action_global_confirmationDialog">
                     <value>
                       <LayoutPositions />
                     </value>
                   </entry>
-                  <entry key="action_open_confirmationDialog">
+                  <entry key="action_global_welcomeFragment">
                     <value>
                       <LayoutPositions />
                     </value>
@@ -137,7 +137,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_show_publishOptionsDialog">
+                            <entry key="action_show_publishOptions">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -175,6 +175,27 @@
                           <Point>
                             <option name="x" value="790" />
                             <option name="y" value="381" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_publishOptionsDialog_to_timeChooserDialogFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="timeChooserDialogFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1049" />
+                            <option name="y" value="382" />
                           </Point>
                         </option>
                       </LayoutPositions>

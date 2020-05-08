@@ -20,6 +20,7 @@
         <TextView
             android:id="@+id/highlight_action_title"
             style="@style/BottomSheetTitle"
+            tools:text="@string/message_post_published"
             android:text="@{viewmodel.publishedDialogMessage}" />
 
         <com.google.android.material.button.MaterialButton

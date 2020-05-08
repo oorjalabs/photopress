@@ -42,6 +42,7 @@
     <string name="posting_on_blog">Selected blog: %1$s</string>
     <string name="message_post_published">Post published: %1$s</string>
     <string name="message_post_draft">Post uploaded as draft: %1$s</string>
+    <string name="message_post_scheduled">Post scheduled: %1$s</string>
     <string name="message_posting_to">Posting to %1$s</string>
     <string name="message_no_blog_selected">No blog selected. Please first select a blog on the settings screen.</string>
     <string name="message_posting_as_author_to_blog">Posting to %2$s as %1$s</string>
@@ -102,6 +103,8 @@
     <string name="title_two_factor_code">Two-factor authentication</string>
     <string name="string_ok">OK</string>
     <string name="string_cancel">Cancel</string>
+    <string name="string_publish">Publish</string>
+    <string name="string_schedule">Schedule</string>
     <string name="logout_confirm_text">Do you really want to sign out?</string>
     <string name="title_ready_to_publish">Ready to publish</string>
     <string name="button_publish_now">Publish Immediately</string>
@@ -110,4 +113,7 @@
     <string name="toast_uploaded_as_draft">Post uploaded as draft</string>
     <string name="toast_published">Post published successfully</string>
     <string name="toast_post_scheduled">Post scheduled</string>
+    <string name="title_confirm_schedule_time">Confirm schedule</string>
+    <string name="message_confirm_schedule_time">Publish post at %1$s</string>
+    <string name="title_select_publish_date">Publishing date</string>
 </resources>

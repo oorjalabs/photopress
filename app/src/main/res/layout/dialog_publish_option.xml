@@ -30,7 +30,6 @@
         
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_schedule_for_later"
-            android:enabled="false"
             style="@style/BottomSheetActionButtons"
             android:onClick="@{handler::publishScheduled}"
             android:text="@string/button_schedule_for_later"

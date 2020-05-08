@@ -13,9 +13,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0508.0.10.3
-
-    --TBD-- Implement scheduling post
+v. 2020.0513.0.11.1
 
     --TBD-- Wireframe
         [ ] List
@@ -37,6 +35,14 @@ v. 2020.0508.0.10.3
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0508.0.10.3
+
+    [DONE] Implement scheduling post
 
 
 ------------------

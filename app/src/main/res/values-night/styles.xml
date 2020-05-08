@@ -14,5 +14,22 @@
     <style name="AppTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle.Rounded</item>
     </style>
+    
+    <style name="AppTheme.DateChooserDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <!-- Date - selected day's colour: define your own -->
+        <!--header background, buttons colour-->
+        <item name="colorAccent">@color/primaryColor</item>
+        <!--  Colour of ok/cancel buttons  -->
+<!--        <item name="materialButtonStyle">@style/TextButton.Secondary</item>-->
+        <!--calendar background-->
+<!--        <item name="android:windowBackground">@color/bg_calendar_date_picker_dark</item>-->
+        <!--selected day-->
+        <!--        <item name="android:colorControlActivated">@color/colorAccent</item> -->
+        <!--days of the month-->
+        <!--        <item name="android:textColorPrimary">@color/colorPrimaryText</item> -->
+        <!--days of the week-->
+        <!--        <item name="android:textColorSecondary">@color/colorAccent</item>    -->
+    </style>
+
 
 </resources>

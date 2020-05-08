@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/item_margin_half"
     android:orientation="vertical">
     
     <TextView
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_horizontal_margin"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        tools:text="ajjs" />
+        tools:text="Confirm this message?" />
     
     <ListView
         android:id="@+id/action_confirmation_list"

@@ -154,7 +154,20 @@
         app:destination="@id/confirmationDialog" />
     <dialog
         android:id="@+id/publishOptionsDialog"
-        tools:layout="@layout/dialog_publish_option"
         android:name="net.c306.photopress.ui.newPost.PublishOptionsDialog"
-         />
+        tools:layout="@layout/dialog_publish_option">
+        <action
+            android:id="@+id/action_publishOptionsDialog_to_timeChooserDialogFragment"
+            app:destination="@id/timeChooserDialogFragment"
+            app:popUpToInclusive="false" />
+    </dialog>
+    <dialog
+        android:id="@+id/timeChooserDialogFragment"
+        android:name="net.c306.photopress.ui.newPost.TimeChooserDialogFragment"
+        android:label="TimeChooserDialogFragment">
+        <argument
+            android:name="date"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </dialog>
 </navigation>

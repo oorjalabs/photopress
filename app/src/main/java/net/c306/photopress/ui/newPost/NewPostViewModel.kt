@@ -27,6 +27,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import java.io.File
+import java.time.Instant
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -194,6 +196,30 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val editingImageDescription = MutableLiveData<String>()
     
     
+    // Scheduled post time
+    private val _scheduledDateTime = MutableLiveData<Long>()
+    val scheduledDateTime: LiveData<Long> = _scheduledDateTime
+    
+    fun setScheduledDateTime(timestamp: Long) {
+        _scheduledDateTime.value = timestamp
+    }
+    
+    val gotDate = MutableLiveData<Boolean>()
+    
+    private val _scheduleReady = MutableLiveData<Boolean>()
+    val scheduleReady: LiveData<Boolean> = _scheduleReady
+    
+    fun setScheduleReady(ready: Boolean) {
+        _scheduleReady.value = ready
+        
+        if (!ready) {
+            // Reset values
+            setScheduledDateTime(-1)
+            gotDate.value = false
+        }
+    }
+    
+    
     // Published post data
     private val _publishedPost = MutableLiveData<PublishedPost>()
     val publishedPost: LiveData<PublishedPost> = _publishedPost
@@ -294,7 +320,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         return FileDetails(fileName, mimeType)
     }
     
-    fun publishPost(saveAsDraft: Boolean = false, scheduleTime: Long? = null) {
+    fun publishPost(saveAsDraft: Boolean = false, scheduledTime: Long? = null) {
         val blogId = selectedBlogId.value
         val title = postTitle.value
         val image = imageUri.value
@@ -378,10 +404,12 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             var publishedPost: WPBlogPost? = null
             
             if (!saveAsDraft) {
+                
                 // Change status to published
                 val publishResult = updateToPublished(
                     blogId,
-                    uploadedPost
+                    uploadedPost,
+                    scheduledTime
                 )
                 publishedPost = publishResult.uploadedPost
                 publishError = publishResult.errorMessage
@@ -389,8 +417,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
             val toastMessageId = when {
                 saveAsDraft || publishError != null -> R.string.toast_uploaded_as_draft
-                scheduleTime != null -> R.string.toast_post_scheduled
-                else -> R.string.toast_published
+                scheduledTime != null               -> R.string.toast_post_scheduled
+                else                                -> R.string.toast_published
             }
             
             Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
@@ -612,16 +640,20 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     private suspend fun updateToPublished(
         blogId: Int,
-        blogPost: WPBlogPost
+        blogPost: WPBlogPost,
+        scheduledTime: Long?
     ) = suspendCoroutine<UploadPostResponse> { cont ->
-        
+    
+        val scheduledDateString = scheduledTime?.let { Instant.ofEpochMilli(it).toString() }
+    
         ApiClient().getApiService(applicationContext)
             .updatePostStatus(
                 blogId = blogId.toString(),
                 postId = blogPost.id.toString(),
                 fields = WPBlogPost.FIELDS_STRING,
                 body = WPBlogPost.UpdatePostStatusRequest(
-                    status = WPBlogPost.PublishStatus.PUBLISH
+                    status = WPBlogPost.PublishStatus.PUBLISH,
+                    date = scheduledDateString
                 )
             )
             .enqueue(object : Callback<WPBlogPost> {
@@ -694,9 +726,13 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val publishedDialogMessage: String
         get() {
             val published = publishedPost.value ?: return ""
+            
             return applicationContext.getString(
-                if (published.isDraft) R.string.message_post_draft
-                else R.string.message_post_published,
+                when {
+                    published.isDraft                 -> R.string.message_post_draft
+                    published.post.date.after(Date()) -> R.string.message_post_scheduled
+                    else                              -> R.string.message_post_published
+                },
                 Html.fromHtml(published.post.title, Html.FROM_HTML_MODE_COMPACT)
             )
         }
@@ -727,7 +763,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             "did not work"
         }
     }
-    
     
     
 }
