@@ -85,6 +85,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Default post settings
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
+    val defaultTags = MutableLiveData<String>()
     
     
     // Selected Blog
@@ -200,7 +201,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     fun newPost() {
         _publishedPost.value = null
         postTitle.value = null
-        postTags.value = null
+        postTags.value = defaultTags.value
         setImageUri(null)
         updateState()
     }
@@ -220,16 +221,18 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             UserPrefs.KEY_PUBLISH_FORMAT -> useBlockEditor.value = userPrefs.getUseBlockEditor()
             
             UserPrefs.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value = userPrefs.getAddFeaturedImage()
+            
+            UserPrefs.KEY_DEFAULT_TAGS -> defaultTags.value = userPrefs.getDefaultTags()
         }
     }
     
     init {
         updateState()
-    
         
         val userPrefs = UserPrefs(applicationContext)
         useBlockEditor.value = userPrefs.getUseBlockEditor()
         addFeaturedImage.value = userPrefs.getAddFeaturedImage()
+        defaultTags.value = userPrefs.getDefaultTags()
         setSelectedBlogId(userPrefs.getSelectedBlogId())
         userPrefs.observe(observer)
     }

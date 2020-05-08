@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
 
 //        if (BuildConfig.DEBUG) {
 //        }
-
+        
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
 
@@ -66,6 +66,8 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             finish()
             startActivity(Intent.makeRestartActivityTask(componentName))
         })
+        
+        newPostViewModel.newPost()
         
         // Handle share intent, if provided
         intent?.also { intent ->

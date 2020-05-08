@@ -49,4 +49,8 @@ class UserPrefs (context: Context): BasePrefs() {
     fun getAddFeaturedImage(): Boolean {
         return prefs.getBoolean(KEY_ADD_FEATURED_IMAGE, DEFAULT_ADD_FEATURED_IMAGE)
     }
+    
+    fun getDefaultTags(): String {
+        return prefs.getStringSet(KEY_DEFAULT_TAGS, null)?.joinToString(", ") ?: ""
+    }
 }

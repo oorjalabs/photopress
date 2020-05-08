@@ -13,7 +13,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0508.0.10.1
+v. 2020.0508.0.10.2
 
     --TBD-- Implement saving blog as draft
 
@@ -42,6 +42,14 @@ v. 2020.0508.0.10.1
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0508.0.10.1
+
+    [DONE] Pre-fill default tags on new post
 
 
 ------------------
