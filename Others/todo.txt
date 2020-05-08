@@ -13,14 +13,9 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0508.0.10.2
-
-    --TBD-- Implement saving blog as draft
+v. 2020.0508.0.10.3
 
     --TBD-- Implement scheduling post
-
-    --TBD-- New post
-        [ ] Show posting as %author to %blog
 
     --TBD-- Wireframe
         [ ] List
@@ -42,6 +37,17 @@ v. 2020.0508.0.10.2
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0508.0.10.2
+
+    [DONE] Implement saving blog as draft
+
+    [DONE] New post
+        [X] Show posting as %author to %blog
 
 
 ------------------

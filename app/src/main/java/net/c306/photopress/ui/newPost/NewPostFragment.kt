@@ -16,7 +16,9 @@ import android.widget.*
 import androidx.annotation.StringRes
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
@@ -41,10 +43,12 @@ class NewPostFragment : BottomNavFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPostNewBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewmodel = newPostViewModel
-        binding.handler = BindingHandler()
+        binding = FragmentPostNewBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewmodel = newPostViewModel
+            handler = BindingHandler()
+            avm = ViewModelProvider(requireActivity()).get(ActivityViewModel::class.java)
+        }
         return binding.root
     }
     
@@ -179,14 +183,18 @@ class NewPostFragment : BottomNavFragment() {
         
             startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
         }
-    
-    
+        
+        
         fun openImageAttributes() {
             newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
             newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
             newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
             newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
             findNavController().navigate(NewPostFragmentDirections.actionNavigationPostNewToImageAttributesFragment())
+        }
+        
+        fun onPublishPressed(view: View) {
+            findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
         }
         
     }

@@ -85,7 +85,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Default post settings
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
-    val defaultTags = MutableLiveData<String>()
+    private val defaultTags = MutableLiveData<String>()
     
     
     // Selected Blog
@@ -294,8 +294,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         return FileDetails(fileName, mimeType)
     }
     
-    
-    fun publishPost() {
+    fun publishPost(saveAsDraft: Boolean = false, scheduleTime: Long? = null) {
         val blogId = selectedBlogId.value
         val title = postTitle.value
         val image = imageUri.value
@@ -352,6 +351,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 return@launch
             }
             
+            
             // Upload post as draft with embedded image
             val (uploadedPost, uploadError) = uploadPost(
                 blogId,
@@ -374,23 +374,26 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 return@launch
             }
             
+            var publishError: String? = null
+            var publishedPost: WPBlogPost? = null
             
-            // Change status to published
-            val (publishedPost, publishError) = updateToPublished(
-                blogId,
-                uploadedPost
-            )
-            
-            if (publishError != null || publishedPost == null) {
-                Toast.makeText(applicationContext, "Post uploaded as draft.", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(
-                    applicationContext,
-                    "Post published successfully.",
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (!saveAsDraft) {
+                // Change status to published
+                val publishResult = updateToPublished(
+                    blogId,
+                    uploadedPost
+                )
+                publishedPost = publishResult.uploadedPost
+                publishError = publishResult.errorMessage
             }
+            
+            val toastMessageId = when {
+                saveAsDraft || publishError != null -> R.string.toast_uploaded_as_draft
+                scheduleTime != null -> R.string.toast_post_scheduled
+                else -> R.string.toast_published
+            }
+            
+            Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
             
             // Add and update returned tags in tags list
             val blogTags = blogTags.value?.toMutableList() ?: mutableListOf()

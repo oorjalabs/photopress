@@ -15,7 +15,7 @@ class AfterPublishedDialog : BaseBottomSheetDialogFragment() {
     override val layoutId: Int = R.layout.dialog_after_publish
 
     private val newPostViewModel by activityViewModels<NewPostViewModel>()
-
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

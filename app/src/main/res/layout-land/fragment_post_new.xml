@@ -8,6 +8,10 @@
         <variable
             name="viewmodel"
             type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+    
+        <variable
+            name="avm"
+            type="net.c306.photopress.ActivityViewModel" />
         
         <variable
             name="handler"
@@ -131,7 +135,7 @@
                     android:id="@+id/blog_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewmodel.selectedBlog.name ?? @string/message_no_blog_selected}"
+                    android:text="@{viewmodel.selectedBlog.name.empty ? @string/message_no_blog_selected :  @string/message_posting_as_author_to_blog(avm.userDisplayName, viewmodel.selectedBlog.name)}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -199,7 +203,7 @@
             android:clickable="@{viewmodel.state == State.READY}"
             android:contentDescription="@string/cd_fab_publish"
             android:focusable="@{viewmodel.state == State.READY}"
-            android:onClick="@{() -> viewmodel.publishPost()}"
+            android:onClick="@{handler::onPublishPressed}"
             android:tooltipText="@string/cd_fab_publish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

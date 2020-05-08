@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/welcomeFragment">
-    <!--    app:startDestination="@+id/navigation_post_new">-->
     
     <fragment
         android:id="@+id/navigation_post_list"
@@ -23,6 +22,9 @@
         <action
             android:id="@+id/action_navigation_post_new_to_imageAttributesFragment"
             app:destination="@id/imageAttributesFragment" />
+        <action
+            android:id="@+id/action_show_publishOptions"
+            app:destination="@id/publishOptionsDialog" />
     </fragment>
     
     <fragment
@@ -148,6 +150,11 @@
             app:nullable="true" />
     </dialog>
     <action
-        android:id="@+id/action_open_confirmationDialog"
+        android:id="@+id/action_global_confirmationDialog"
         app:destination="@id/confirmationDialog" />
+    <dialog
+        android:id="@+id/publishOptionsDialog"
+        tools:layout="@layout/dialog_publish_option"
+        android:name="net.c306.photopress.ui.newPost.PublishOptionsDialog"
+         />
 </navigation>

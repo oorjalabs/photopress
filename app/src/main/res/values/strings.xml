@@ -44,6 +44,7 @@
     <string name="message_post_draft">Post uploaded as draft: %1$s</string>
     <string name="message_posting_to">Posting to %1$s</string>
     <string name="message_no_blog_selected">No blog selected. Please first select a blog on the settings screen.</string>
+    <string name="message_posting_as_author_to_blog">Posting to %2$s as %1$s</string>
     <string name="open_post">Open in browser</string>
     <string name="copy_post">Copy link to clipboard</string>
     <string name="share_post">Share post</string>
@@ -102,5 +103,11 @@
     <string name="string_ok">OK</string>
     <string name="string_cancel">Cancel</string>
     <string name="logout_confirm_text">Do you really want to sign out?</string>
-
+    <string name="title_ready_to_publish">Ready to publish</string>
+    <string name="button_publish_now">Publish Immediately</string>
+    <string name="button_schedule_for_later">Schedule for later</string>
+    <string name="button_upload_as_draft">Upload as draft</string>
+    <string name="toast_uploaded_as_draft">Post uploaded as draft</string>
+    <string name="toast_published">Post published successfully</string>
+    <string name="toast_post_scheduled">Post scheduled</string>
 </resources>

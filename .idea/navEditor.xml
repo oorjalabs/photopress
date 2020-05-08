@@ -13,13 +13,18 @@
                       <LayoutPositions />
                     </value>
                   </entry>
+                  <entry key="action_open_confirmationDialog">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="afterPublishedDialog">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="779" />
-                            <option name="y" value="552" />
+                            <option name="x" value="793" />
+                            <option name="y" value="726" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -66,8 +71,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="779" />
-                            <option name="y" value="908" />
+                            <option name="x" value="793" />
+                            <option name="y" value="1094" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -132,6 +137,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_show_publishOptionsDialog">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -158,13 +168,25 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="publishOptionsDialog">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="790" />
+                            <option name="y" value="381" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="useCodeBasedTwoFactorWarningDialog">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="493" />
-                            <option name="y" value="1090" />
+                            <option name="x" value="505" />
+                            <option name="y" value="1095" />
                           </Point>
                         </option>
                       </LayoutPositions>
