@@ -13,16 +13,20 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0508.0.9.1
+v. 2020.0508.0.9.2
 
     --TBD-- Settings
-        [ ] Use block editor or classic
         [ ] Add a featured image or not
         [ ] Default tags
         [ ] Default categories
         [ ] Logout
 
     --TBD-- Implement saving blog as draft
+
+    --TBD-- Implement scheduling post
+
+    --TBD-- New post
+        [ ] Show posting as %author to %blog
 
     --TBD-- Wireframe
         [ ] List
@@ -43,6 +47,19 @@ v. 2020.0508.0.9.1
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0508.0.9.1
+
+    --TBD-- Settings
+        [X] Use block editor or classic
+        [-] Add a featured image or not
+        [-] Default tags
+        [-] Default categories
+        [-] Logout
 
 
 ------------------

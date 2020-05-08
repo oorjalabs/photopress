@@ -6,8 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import net.c306.photopress.api.AuthPrefs
 import net.c306.photopress.api.UserDetails
+import net.c306.photopress.utils.AuthPrefs
+import net.c306.photopress.utils.UserPrefs
 
 class ActivityViewModel(application: Application): AndroidViewModel(application) {
     
@@ -30,7 +31,8 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
     val selectedBlogId: LiveData<Int> = _selectedBlogId
     
     private fun setSelectedBlog() {
-        val selectedBlog = UserPrefs(applicationContext).getSelectedBlogId()
+        val selectedBlog = UserPrefs(applicationContext)
+            .getSelectedBlogId()
         _selectedBlogId.value = selectedBlog
         _blogSelected.value = selectedBlog > -1
     }
@@ -44,13 +46,13 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
     private val observer =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             when (key) {
-                AuthPrefs.ARG_USER_TOKEN       -> _isLoggedIn.value =
+                AuthPrefs.ARG_USER_TOKEN   -> _isLoggedIn.value =
                         AuthPrefs(applicationContext).haveAuthToken()
                 
-                AuthPrefs.ARG_USER_DETAILS     -> _userDetails.value =
+                AuthPrefs.ARG_USER_DETAILS -> _userDetails.value =
                         AuthPrefs(applicationContext).getUserDetails()
                 
-                UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlog()
+                UserPrefs.KEY_SELECTED_BLOG_ID                                          -> setSelectedBlog()
             }
         }
 

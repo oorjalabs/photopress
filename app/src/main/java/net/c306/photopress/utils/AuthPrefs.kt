@@ -1,15 +1,18 @@
-package net.c306.photopress.api
+package net.c306.photopress.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import net.c306.photopress.api.Blog
+import net.c306.photopress.api.UserDetails
+import net.c306.photopress.api.WPTag
 
 /**
  * To save and fetch data from SharedPreferences
  */
-class AuthPrefs (context: Context) {
+class AuthPrefs (context: Context) : BasePrefs() {
     
-    private var prefs: SharedPreferences = context.getSharedPreferences(AUTH_PREFS_NAME, Context.MODE_PRIVATE)
+    override var prefs: SharedPreferences = context.getSharedPreferences(AUTH_PREFS_NAME, Context.MODE_PRIVATE)
     
     companion object {
         
@@ -21,10 +24,6 @@ class AuthPrefs (context: Context) {
         // This name is used in backup_descriptor to deny backups.
         // Change there too if you change here.
         private const val AUTH_PREFS_NAME = "gdeu82gd823eg339h238ghf"
-    }
-    
-    fun observe(observer: SharedPreferences.OnSharedPreferenceChangeListener) {
-        prefs.registerOnSharedPreferenceChangeListener(observer)
     }
     
     /**
@@ -103,13 +102,4 @@ class AuthPrefs (context: Context) {
             .sortedBy { it.slug } // alphabetically, case independent (slugs are always lower case)
     }
     
-    /**
-     * Clear all auth and user related data. Used on logout.
-     */
-    @Suppress("unused")
-    fun clear() {
-        prefs.edit(commit = true) {
-            clear()
-        }
-    }
 }

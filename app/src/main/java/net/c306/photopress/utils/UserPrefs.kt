@@ -1,4 +1,4 @@
-package net.c306.photopress
+package net.c306.photopress.utils
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,16 +8,18 @@ import androidx.preference.PreferenceManager
 /**
  * To save and fetch data from SharedPreferences
  */
-class UserPrefs (context: Context) {
+class UserPrefs (context: Context): BasePrefs() {
     
-    private var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    override var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     
     companion object {
         const val KEY_SELECTED_BLOG_ID = "key_selected_blog_id"
-    }
-    
-    fun observe(observer: SharedPreferences.OnSharedPreferenceChangeListener) {
-        prefs.registerOnSharedPreferenceChangeListener(observer)
+        const val KEY_PUBLISH_FORMAT = "key_publish_format"
+        const val KEY_ADD_FEATURED_IMAGE = "key_add_featured_image"
+        const val KEY_DEFAULT_TAGS = "key_default_tags"
+        const val KEY_DEFAULT_CATEGORIES = "key_default_categories"
+        
+        const val DEFAULT_USE_BLOCK_EDITOR = true
     }
     
     fun setSelectedBlogId(value: Int) {
@@ -35,13 +37,10 @@ class UserPrefs (context: Context) {
         return value.toInt()
     }
     
-    /**
-     * Clear all auth and user related data. Used on logout.
-     */
-    @Suppress("unused")
-    fun clear() {
-        prefs.edit(commit = true) {
-            clear()
-        }
+    
+    fun getUseBlockEditor(): Boolean {
+        val publishFormat = prefs.getString(KEY_PUBLISH_FORMAT, null)
+                            ?: return DEFAULT_USE_BLOCK_EDITOR
+        return publishFormat.toBoolean()
     }
 }

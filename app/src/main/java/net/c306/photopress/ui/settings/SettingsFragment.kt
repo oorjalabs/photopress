@@ -11,8 +11,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
-import net.c306.photopress.UserPrefs
-import net.c306.photopress.api.AuthPrefs
+import net.c306.photopress.utils.AuthPrefs
+import net.c306.photopress.utils.UserPrefs
 
 class SettingsFragment : PreferenceFragmentCompat() {
     

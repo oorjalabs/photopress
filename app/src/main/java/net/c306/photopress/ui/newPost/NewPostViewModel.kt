@@ -11,8 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.c306.photopress.R
-import net.c306.photopress.UserPrefs
 import net.c306.photopress.api.*
+import net.c306.photopress.utils.AuthPrefs
+import net.c306.photopress.utils.UserPrefs
 import net.c306.photopress.utils.Utils
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -81,6 +82,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
+    // Use block editor post format
+    private val useBlockEditor = MutableLiveData<Boolean>()
+    
+    
     // Selected Blog
     private val _selectedBlogId = MutableLiveData<Int>()
     private val selectedBlogId: LiveData<Int> = _selectedBlogId
@@ -99,7 +104,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         updateState()
         
-        val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
+        val selectedBlogTags = AuthPrefs(
+            applicationContext
+        ).getTagsList()
         setBlogTags(selectedBlogTags ?: emptyList())
         if (selectedBlogTags == null) updateTagsList()
     }
@@ -117,7 +124,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             refreshTags().tags?.let {
                 setBlogTags(it)
-                AuthPrefs(applicationContext).saveTagsList(it)
+                AuthPrefs(applicationContext)
+                    .saveTagsList(it)
             }
         }
     }
@@ -204,15 +212,20 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     // Observer for changes to selected blog id
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        val userPrefs = UserPrefs(applicationContext)
         when (key) {
-            UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(UserPrefs(applicationContext).getSelectedBlogId())
+            UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(userPrefs.getSelectedBlogId())
+            
+            UserPrefs.KEY_PUBLISH_FORMAT -> useBlockEditor.value = userPrefs.getUseBlockEditor()
         }
     }
     
     init {
         updateState()
+    
         
         val userPrefs = UserPrefs(applicationContext)
+        useBlockEditor.value = userPrefs.getUseBlockEditor()
         setSelectedBlogId(userPrefs.getSelectedBlogId())
         userPrefs.observe(observer)
     }
@@ -388,7 +401,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 blogTags.sortBy { it.slug }
                 
                 // Save and set updated list
-                AuthPrefs(applicationContext).saveTagsList(blogTags)
+                AuthPrefs(applicationContext)
+                    .saveTagsList(blogTags)
                 setBlogTags(blogTags)
                 
             }
@@ -502,9 +516,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
-    private val usingBlockEditor = true
-    
-    
     private val singleImageClassicTemplate = """
             [gallery ids="%%MEDIA_ID%%" columns="1" size="large"]
             <p class="has-text-color has-small-font-size has-dark-gray-color">
@@ -533,6 +544,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         title: String,
         tags: List<String>
     ) = suspendCoroutine<UploadPostResponse> { cont ->
+        
+        val usingBlockEditor = useBlockEditor.value ?: UserPrefs.DEFAULT_USE_BLOCK_EDITOR
         
         val content = if (usingBlockEditor) {
             singleImageBlockTemplate

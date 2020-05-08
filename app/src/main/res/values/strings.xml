@@ -63,6 +63,23 @@
     <string name="pref_title_logged_in">Logged in as %s</string>
     <string name="pref_title_logout">Logout</string>
     
+    <string name="pref_title_post_format">Post format for editor</string>
+    <string-array name="pref_entries_post_format">
+        <item>Block editor</item>
+        <item>Classic editor</item>
+    </string-array>
+    
+    <string-array name="pref_values_post_format">
+        <item>block</item>
+        <item>classic</item>
+    </string-array>
+    
+    <string name="pref_title_add_featured_image">Set as featured image</string>
+    <string name="pref_summary_add_featured_image">Also set the selected image as a featured image</string>
+    
+    <string name="pref_title_default_tags">Default tags</string>
+    <string name="pref_title_default_categories">Default categories</string>
+    
     <string name="message_welcome_no_blogs_found">No blogs found.\nCreate a blog on WordPress.com.</string>
     
     
