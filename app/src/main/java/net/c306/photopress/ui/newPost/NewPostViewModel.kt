@@ -105,10 +105,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         updateState()
         
-        val selectedBlogTags = AuthPrefs(
-            applicationContext
-        ).getTagsList()
+        val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
+        
         setBlogTags(selectedBlogTags ?: emptyList())
+        
         if (selectedBlogTags == null) updateTagsList()
     }
     

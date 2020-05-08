@@ -13,6 +13,9 @@ import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
 import net.c306.photopress.ui.custom.ConfirmationDialog
+import net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
+import net.c306.photopress.ui.custom.SearchableMultiSelectListPreferenceDialogFragment
+import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
 
@@ -23,10 +26,35 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
     
     private val activityViewModel by activityViewModels<ActivityViewModel>()
     private val confirmationViewModel: ConfirmationDialog.ConfirmationViewModel by activityViewModels()
+    private val newPosViewModel: NewPostViewModel by activityViewModels()
     
     
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
+    }
+    
+    
+    override fun onDisplayPreferenceDialog(preference: Preference?) {
+        val fm = parentFragment?.childFragmentManager
+        
+        when (preference) {
+            /**
+             * If this is our custom Preference, inflate and show dialog
+             */
+            is SearchableMultiSelectListPreference -> {
+                SearchableMultiSelectListPreferenceDialogFragment.newInstance(preference.key).run {
+                    fm?.let {
+                        setTargetFragment(this@SettingsFragment, 0)
+                        show(it, "android.support.v7.preference.PreferenceFragment.DIALOG")
+                    }
+                }
+            }
+            
+            else                                   -> {
+                super.onDisplayPreferenceDialog(preference)
+            }
+            
+        }
     }
     
     
@@ -78,10 +106,28 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
             }
         })
         
+        
+        newPosViewModel.blogTags.observe(viewLifecycleOwner, Observer { tags ->
+    
+            findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_TAGS)?.run {
+                if (tags.isNullOrEmpty()) {
+                    isEnabled = false
+                } else {
+                    isEnabled = true
+                    val tagNames = tags.map { it.name }
+                    entries = tagNames
+                        .map { SearchableMultiSelectListPreference.Entry(it) }
+                        .toTypedArray()
+                }
+            }
+        })
+        
     }
     
     
-    // Handle non-persistent preference clicks
+    /**
+     * Handle non-persistent preference clicks
+     */
     override fun onPreferenceClick(preference: Preference?): Boolean {
         when (preference?.key) {
             

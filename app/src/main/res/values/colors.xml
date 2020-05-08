@@ -22,7 +22,9 @@
     <color name="secondaryColor">@color/p3</color>
     <color name="secondaryDarkColor">#cc174e</color>
     <color name="secondaryLightColor">#fd90a8</color>
-
+    
+    <color name="background">@android:color/white</color>
+    
     <color name="bg_status_bar">@color/primaryLightColor</color>
 
     <color name="tint_updated_indicator">#D50000</color>
@@ -47,6 +49,10 @@
 
     <!--source: https://meyerweb.com/eric/tools/color-blend/#FFFFFF:00b8a9:10:hex-->
     <color name="bg_list_item_activated">#D1F2EF</color>
+    <color name="bg_list_item_disabled">@color/grey_300</color>
+    <color name="bg_list_item_focused">@color/grey_100</color>
+    <color name="bg_list_item_normal">@color/background</color>
+    <color name="bg_list_item_normal_searchable_pref">@android:color/transparent</color>
 
 
     <!-- Greys  -->

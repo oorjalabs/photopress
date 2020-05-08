@@ -54,18 +54,15 @@
             app:summary="@string/pref_summary_add_featured_image"
             app:title="@string/pref_title_add_featured_image" />
         
-        <MultiSelectListPreference
-            app:enabled="false"
+        <net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
             app:iconSpaceReserved="false"
             app:key="key_default_tags"
-            app:summary="%s"
             app:title="@string/pref_title_default_tags" />
         
-        <MultiSelectListPreference
+        <net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
             app:enabled="false"
             app:iconSpaceReserved="false"
             app:key="key_default_categories"
-            app:summary="%s"
             app:title="@string/pref_title_default_categories" />
     
     </PreferenceCategory>

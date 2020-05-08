@@ -33,7 +33,7 @@
     <string name="button_get_started">Let\'s begin</string>
     <string name="label_next_pick_a_blog">Next: Pick a blog</string>
     <string name="connected_as">Connected as %1$s</string>
-    <string name="hint_text_blog_search">Search</string>
+    <string name="hint_search">Search</string>
     <string name="dialog_blog_list_empty_view">No blogs found. Would you like to create a new blog?</string>
     <string name="blog_selector_title">Select blog</string>
     <string name="button_text_done">Done</string>
