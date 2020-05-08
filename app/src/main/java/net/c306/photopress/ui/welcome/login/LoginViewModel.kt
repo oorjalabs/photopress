@@ -8,9 +8,9 @@ import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.ApiService.GetTokenResponse
 import net.c306.photopress.api.ApiService.ValidateTokenResponse
-import net.c306.photopress.api.AuthPrefs
 import net.c306.photopress.api.TokenRequest
 import net.c306.photopress.api.UserDetails
+import net.c306.photopress.utils.AuthPrefs
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,7 +70,8 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
             !authResponse.accessToken.isNullOrBlank() -> {
                 // Token validated, save it to storage
                 Timber.d("Token validated, save it")
-                AuthPrefs(getApplication()).saveAuthToken(authResponse.accessToken)
+                AuthPrefs(getApplication())
+                    .saveAuthToken(authResponse.accessToken)
                 getToKnowMe()
                 _authComplete.value = true
             }

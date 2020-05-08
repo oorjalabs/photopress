@@ -22,6 +22,8 @@
         
         <Preference
             app:iconSpaceReserved="false"
+            app:key="key_pref_logout"
+            app:persistent="false"
             app:title="@string/pref_title_logout" />
     
     </PreferenceCategory>
@@ -29,11 +31,40 @@
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/pref_cat_title_posting">
+        
         <ListPreference
             app:iconSpaceReserved="false"
             app:key="key_selected_blog_id"
             app:summary="%s"
             app:title="@string/pref_title_select_blog" />
+        
+        <ListPreference
+            app:defaultValue="block"
+            app:entries="@array/pref_entries_post_format"
+            app:entryValues="@array/pref_values_post_format"
+            app:iconSpaceReserved="false"
+            app:key="key_publish_format"
+            app:summary="%s"
+            app:title="@string/pref_title_post_format" />
+        
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="key_add_featured_image"
+            app:summary="@string/pref_summary_add_featured_image"
+            app:title="@string/pref_title_add_featured_image" />
+        
+        <net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
+            app:iconSpaceReserved="false"
+            app:key="key_default_tags"
+            app:title="@string/pref_title_default_tags" />
+        
+        <net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
+            app:enabled="false"
+            app:iconSpaceReserved="false"
+            app:key="key_default_categories"
+            app:title="@string/pref_title_default_categories" />
+    
     </PreferenceCategory>
     
     <PreferenceCategory

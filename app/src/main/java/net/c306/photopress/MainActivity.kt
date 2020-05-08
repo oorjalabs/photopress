@@ -31,11 +31,8 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (BuildConfig.DEBUG) {
-//            AuthPrefs(applicationContext).saveTagsList(null)
-//            UserPrefs(applicationContext).setSelectedBlogId(-1)
-//            AuthPrefs(applicationContext).clear()
-        }
+//        if (BuildConfig.DEBUG) {
+//        }
 
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
@@ -59,6 +56,16 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         activityViewModel.isLoggedIn.observe(this, Observer {  })
         activityViewModel.selectedBlogId.observe(this, Observer {  })
         activityViewModel.blogSelected.observe(this, Observer {  })
+        
+        // Restart activity after logout
+        activityViewModel.doPostLogoutRestart.observe(this, Observer {
+            if (it != true) return@Observer
+            
+            activityViewModel.doPostLogoutRestart.value = false
+            
+            finish()
+            startActivity(Intent.makeRestartActivityTask(componentName))
+        })
         
         // Handle share intent, if provided
         intent?.also { intent ->

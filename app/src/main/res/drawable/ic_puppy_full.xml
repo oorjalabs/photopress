@@ -3,7 +3,11 @@
     android:height="256dp"
     android:viewportWidth="256"
     android:viewportHeight="256">
-    <!-- Credit: https://www.iconfinder.com/geraldsfbg -->
+<!--    <path android:pathData="M 0 0 h256 v256h-256z" android:fillColor="@color/p2_night"/>-->
+<!--    <path android:pathData="M 0 0 h256 v256h-256z" android:fillColor="@color/p2"/>-->
+<!--     Credit: https://www.iconfinder.com/geraldsfbg-->
+<!--    <path android:pathData="M 0 128 A 128 128 0 0 0 256 128 Z A 128 -128 0 0 0 256 128 Z" android:fillColor="@color/p2"/>-->
+<!--    <path android:pathData="M 0 128 A 128 128 0 0 0 256 128 Z A 128 -128 0 0 0 256 128 Z" android:fillColor="@color/p2_night"/>-->
     <path
         android:fillColor="@color/p1"
         android:pathData="M92.981,95.384c-7.189,-1.543 -14.431,3.805 -16.177,11.945c-1.743,8.139 2.668,15.984 9.859,17.525c7.189,1.541 14.431,-3.806 16.172,-11.945C104.583,104.769 100.17,96.925 92.981,95.384z" />

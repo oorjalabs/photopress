@@ -33,7 +33,7 @@
     <string name="button_get_started">Let\'s begin</string>
     <string name="label_next_pick_a_blog">Next: Pick a blog</string>
     <string name="connected_as">Connected as %1$s</string>
-    <string name="hint_text_blog_search">Search</string>
+    <string name="hint_search">Search</string>
     <string name="dialog_blog_list_empty_view">No blogs found. Would you like to create a new blog?</string>
     <string name="blog_selector_title">Select blog</string>
     <string name="button_text_done">Done</string>
@@ -63,6 +63,23 @@
     <string name="pref_title_logged_in">Logged in as %s</string>
     <string name="pref_title_logout">Logout</string>
     
+    <string name="pref_title_post_format">Post format for editor</string>
+    <string-array name="pref_entries_post_format">
+        <item>Block editor</item>
+        <item>Classic editor</item>
+    </string-array>
+    
+    <string-array name="pref_values_post_format">
+        <item>block</item>
+        <item>classic</item>
+    </string-array>
+    
+    <string name="pref_title_add_featured_image">Set as featured image</string>
+    <string name="pref_summary_add_featured_image">Also set the selected image as a featured image</string>
+    
+    <string name="pref_title_default_tags">Default tags</string>
+    <string name="pref_title_default_categories">Default categories</string>
+    
     <string name="message_welcome_no_blogs_found">No blogs found.\nCreate a blog on WordPress.com.</string>
     
     
@@ -82,5 +99,8 @@
     <string name="message_error_no_auth_token">Authentication error. Please try again later</string>
     <string name="message_two_factor_code">If two-factor authentication is enabled, please use SMS or code based verification. WordPress app based verification does not work with PhotoPress.</string>
     <string name="title_two_factor_code">Two-factor authentication</string>
+    <string name="string_ok">OK</string>
+    <string name="string_cancel">Cancel</string>
+    <string name="logout_confirm_text">Do you really want to sign out?</string>
 
 </resources>

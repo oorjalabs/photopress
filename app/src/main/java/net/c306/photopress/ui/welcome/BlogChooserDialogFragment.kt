@@ -15,8 +15,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import net.c306.photopress.R
-import net.c306.photopress.api.AuthPrefs
 import net.c306.photopress.api.Blog
+import net.c306.photopress.utils.AuthPrefs
 import java.util.*
 import kotlin.collections.ArrayList
 

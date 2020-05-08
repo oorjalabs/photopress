@@ -4,12 +4,13 @@
     <color name="primaryColor">@color/p4_night</color>
 <!--    <color name="primaryDarkColor">#44ad95</color>-->
     <color name="primaryLightColor">#e5f7f5</color>
-
-
+    
     <color name="secondaryColor">@color/p1_night</color>
     <color name="secondaryDarkColor">#e6443f</color>
     <color name="secondaryLightColor">#ffd3d8</color>
 
+    <color name="background">@color/grey_950</color>
+    
     <color name="bg_status_bar">@color/primaryDarkColor</color>
 
     <color name="bg_updated_indicator">#388b76</color> <!-- 800 of primary -->
@@ -22,6 +23,8 @@
 
     <!--source: https://meyerweb.com/eric/tools/color-blend/#000000:95E1D3:10:hex-->
     <color name="bg_list_item_activated">#1B2926</color>
+    <color name="bg_list_item_disabled">@color/grey_900</color>
+    <color name="bg_list_item_focused">@color/grey_800</color>
     
     <color name="border_image_view">#42FFFFFF</color>
 
