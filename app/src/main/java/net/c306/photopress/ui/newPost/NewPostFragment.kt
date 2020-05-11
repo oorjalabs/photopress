@@ -171,6 +171,7 @@ class NewPostFragment : BottomNavFragment() {
     /**
      * Public methods that can be called from data binding
      */
+    @Suppress("UNUSED_PARAMETER")
     inner class BindingHandler {
         /**
          * Open file picker to select file location for syncing
@@ -190,7 +191,7 @@ class NewPostFragment : BottomNavFragment() {
             newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
             newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
             newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
-            findNavController().navigate(NewPostFragmentDirections.actionNavigationPostNewToImageAttributesFragment())
+            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes())
         }
         
         fun onPublishPressed(view: View) {

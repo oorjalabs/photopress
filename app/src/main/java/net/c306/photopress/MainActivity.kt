@@ -20,14 +20,14 @@ import net.c306.photopress.ui.settings.SettingsFragment
 import net.c306.photopress.ui.settings.SettingsFragmentDirections
 
 class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-
+    
     private val navController: NavController
         get() = findNavController(R.id.nav_host_fragment)
-
+    
     private val activityViewModel by viewModels<ActivityViewModel>()
     private val newPostViewModel by viewModels<NewPostViewModel>()
 
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
-
+        
         // On Android P+, set app icon in app switcher view
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             setTaskDescription(
@@ -47,12 +47,12 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
                 )
             )
         }
-
-
+        
+        
         setContentView(R.layout.activity_main)
-
+        
         nav_view?.setupWithNavController(navController)
-
+        
         activityViewModel.isLoggedIn.observe(this, Observer {  })
         activityViewModel.selectedBlogId.observe(this, Observer {  })
         activityViewModel.blogSelected.observe(this, Observer {  })

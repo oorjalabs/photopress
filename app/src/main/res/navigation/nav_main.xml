@@ -20,7 +20,7 @@
             android:id="@+id/action_show_after_publish_dialog"
             app:destination="@id/afterPublishedDialog" />
         <action
-            android:id="@+id/action_navigation_post_new_to_imageAttributesFragment"
+            android:id="@+id/action_editImageAttributes"
             app:destination="@id/imageAttributesFragment" />
         <action
             android:id="@+id/action_show_publishOptions"
@@ -155,19 +155,14 @@
     <dialog
         android:id="@+id/publishOptionsDialog"
         android:name="net.c306.photopress.ui.newPost.PublishOptionsDialog"
+        android:label="Publish Options Dialog"
         tools:layout="@layout/dialog_publish_option">
         <action
-            android:id="@+id/action_publishOptionsDialog_to_timeChooserDialogFragment"
-            app:destination="@id/timeChooserDialogFragment"
-            app:popUpToInclusive="false" />
+            android:id="@+id/action_getPublishTime"
+            app:destination="@id/timeChooserDialogFragment" />
     </dialog>
     <dialog
         android:id="@+id/timeChooserDialogFragment"
         android:name="net.c306.photopress.ui.newPost.TimeChooserDialogFragment"
-        android:label="TimeChooserDialogFragment">
-        <argument
-            android:name="date"
-            android:defaultValue="-1L"
-            app:argType="long" />
-    </dialog>
+        android:label="TimeChooserDialogFragment" />
 </navigation>

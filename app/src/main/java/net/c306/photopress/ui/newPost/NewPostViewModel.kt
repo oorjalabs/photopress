@@ -200,23 +200,15 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _scheduledDateTime = MutableLiveData<Long>()
     val scheduledDateTime: LiveData<Long> = _scheduledDateTime
     
-    fun setScheduledDateTime(timestamp: Long) {
-        _scheduledDateTime.value = timestamp
-    }
-    
-    val gotDate = MutableLiveData<Boolean>()
+    val showTimePicker = MutableLiveData<Boolean>()
     
     private val _scheduleReady = MutableLiveData<Boolean>()
     val scheduleReady: LiveData<Boolean> = _scheduleReady
     
-    fun setScheduleReady(ready: Boolean) {
+    fun setSchedule(ready: Boolean, dateTime: Long, showTimePicker: Boolean) {
+        _scheduledDateTime.value = dateTime
+        this.showTimePicker.value = showTimePicker
         _scheduleReady.value = ready
-        
-        if (!ready) {
-            // Reset values
-            setScheduledDateTime(-1)
-            gotDate.value = false
-        }
     }
     
     
@@ -452,6 +444,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             _publishedPost.value = publishedPost
                 ?.let { PublishedPost(it, false) }
                 ?: PublishedPost(uploadedPost, true)
+            
+            setSchedule(false, -1L, false)
             
             updateState()
         }

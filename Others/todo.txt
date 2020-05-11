@@ -13,7 +13,9 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0513.0.11.1
+v. 2020.0511.0.11.2
+
+    --TBD-- If WordPress app is installed, give option to open post in app after publishing
 
     --TBD-- Wireframe
         [ ] List
@@ -21,20 +23,28 @@ v. 2020.0513.0.11.1
     --TBD-- Support for categories
         [ ] Setting for default categories
 
-    --TBD-- Update notes
-
-    --TBD-- Subscriptions
+    --TBD-- Upload multiple photos - gallery
 
     --TBD-- Layout: move publish button out of the way
 
-    --TBD-- Upload multiple photos - gallery
-
     --TBD-- Delete photo from app storage after successful publishing
+
+    --TBD-- Update notes
+
+    --TBD-- Subscriptions
 
     --TBD-- Show upload progress
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0511.0.11.1
+
+    --TBD-- BUG: Crash on next publish fab press after scheduling a post
 
 
 ------------------

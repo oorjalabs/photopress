@@ -40,6 +40,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
         return binding.root
     }
     
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
@@ -63,12 +64,12 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
             )
             findNavController().navigate(confirmation)
         })
-    
+        
         confirmationViewModel.result.observe(viewLifecycleOwner, Observer {
             if (it == null || it.callerTag != myTag) return@Observer
             
             confirmationViewModel.setResult(null)
-        
+            
             when (it.requestCode) {
                 confirmationRC ->  {
                     if (it.result) {
@@ -77,16 +78,15 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                         dismiss()
                     } else {
                         // Cancel everything
-                        newPostViewModel.setScheduleReady(false)
+                        newPostViewModel.setSchedule(ready = false, dateTime = -1L, showTimePicker = false)
                     }
                 }
             }
         })
-    
-        newPostViewModel.gotDate.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                findNavController().navigate(PublishOptionsDialogDirections.actionPublishOptionsDialogToTimeChooserDialogFragment())
-            }
+        
+        newPostViewModel.showTimePicker.observe(viewLifecycleOwner, Observer {
+            if (it != true) return@Observer
+            findNavController().navigate(PublishOptionsDialogDirections.actionGetPublishTime())
         })
         
     }
@@ -109,8 +109,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                 .setSelection(Date().time)
                 .build()
             datePicker.addOnPositiveButtonClickListener {
-                newPostViewModel.setScheduledDateTime(it)
-                newPostViewModel.gotDate.value = true
+                newPostViewModel.setSchedule(ready = false, dateTime = it, showTimePicker = true)
             }
             datePicker.show(parentFragmentManager, "datePicker")
         }
@@ -120,6 +119,5 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
             dismiss()
         }
     }
-    
     
 }
