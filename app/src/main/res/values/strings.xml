@@ -116,4 +116,5 @@
     <string name="title_confirm_schedule_time">Confirm schedule</string>
     <string name="message_confirm_schedule_time">Publish post at %1$s</string>
     <string name="title_select_publish_date">Publishing date</string>
+    <string name="open_in_wordpress_app">Open in WordPress</string>
 </resources>

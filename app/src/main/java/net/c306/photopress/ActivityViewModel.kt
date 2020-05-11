@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import net.c306.photopress.api.UserDetails
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.isPackageInstalled
 import timber.log.Timber
 
 class ActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -27,6 +28,9 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
             value = if (!it.displayName.isNullOrBlank()) it.displayName else it.username
         }
     }
+    
+    // WordPress app installed
+    val isWordPressAppInstalled = MutableLiveData<Boolean>()
     
     // Selected blog
     private val _selectedBlogId = MutableLiveData<Int>()
@@ -89,6 +93,9 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
         
         authPrefs.observe(observer)
         UserPrefs(applicationContext).observe(observer)
+        
+        isWordPressAppInstalled.value =
+            application.packageManager.isPackageInstalled("org.wordpress.android") == true
     }
     
 }

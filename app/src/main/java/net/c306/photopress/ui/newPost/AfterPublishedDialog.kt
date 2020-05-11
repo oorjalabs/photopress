@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.DialogAfterPublishBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
@@ -25,7 +27,7 @@ class AfterPublishedDialog : BaseBottomSheetDialogFragment() {
         val binding = DialogAfterPublishBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = newPostViewModel
-
+        binding.avm = ViewModelProvider(requireActivity()).get(ActivityViewModel::class.java)
         return binding.root
     }
 
@@ -33,4 +35,5 @@ class AfterPublishedDialog : BaseBottomSheetDialogFragment() {
         newPostViewModel.newPost()
         super.onDismiss(dialog)
     }
+    
 }

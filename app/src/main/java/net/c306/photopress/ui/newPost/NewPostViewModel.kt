@@ -1,6 +1,7 @@
 package net.c306.photopress.ui.newPost
 
 import android.app.Application
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.MediaStore
@@ -739,6 +740,20 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     fun openPostExternal(post: WPBlogPost) {
         applicationContext.startActivity(Utils.getIntentForUrl(post.url))
+    }
+    
+    
+    fun openPostInWordPress(post: WPBlogPost) {
+        applicationContext.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("wordpress://viewpost?blogId=${selectedBlogId.value}&postId=${post.id}")
+//                Uri.parse("wordpress://post?blogId=${selectedBlogId.value}&postId=${post.id}")
+//                Uri.parse("https://wordpress.com/post/${selectedBlogId.value}/${post.id}")
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
     }
     
     

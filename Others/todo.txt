@@ -13,9 +13,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0511.0.11.2
-
-    --TBD-- If WordPress app is installed, give option to open post in app after publishing
+v. 2020.0511.0.12.1
 
     --TBD-- Wireframe
         [ ] List
@@ -37,6 +35,20 @@ v. 2020.0511.0.11.2
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0511.0.11.2
+
+    [DONE] If WordPress app is installed, give option to open post in app after publishing
+        // org.wordpress.android
+        [X] Show option only if WordPress app is installed
+        [X] Open WordPress app with given post
+        // wordpress://post?blogId=blog_id\&postId=post_id
+        // wordpress://viewpost?blogId=blog_id\&postId=post_id
+        // https://wordpress.com/post/blog_id/post_id
 
 
 ------------------

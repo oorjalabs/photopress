@@ -2,13 +2,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    
     <data>
+        
         <variable
             name="viewmodel"
-            type="net.c306.photopress.ui.newPost.NewPostViewModel"/>
+            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+        
+        <variable
+            name="avm"
+            type="net.c306.photopress.ActivityViewModel" />
+        
+        <import type="android.view.View" />
     </data>
-
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,33 +23,41 @@
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
         android:paddingVertical="@dimen/activity_vertical_margin"
         tools:context=".ui.newPost.AfterPublishedDialog">
-
+        
         <TextView
             android:id="@+id/highlight_action_title"
             style="@style/BottomSheetTitle"
-            tools:text="@string/message_post_published"
-            android:text="@{viewmodel.publishedDialogMessage}" />
-
+            android:text="@{viewmodel.publishedDialogMessage}"
+            tools:text="@string/message_post_published" />
+        
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_share_post"
             style="@style/BottomSheetActionButtons"
             android:onClick="@{() -> viewmodel.sharePost(viewmodel.publishedPost.post)}"
             android:text="@string/share_post"
             app:icon="@drawable/ic_share" />
-
+        
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_copy_post_to_clipboard"
             style="@style/BottomSheetActionButtons"
             android:onClick="@{() -> viewmodel.copyPostToClipboard(viewmodel.publishedPost.post)}"
             android:text="@string/copy_post"
             app:icon="@drawable/ic_copy" />
-
+        
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_open_post_in_browser"
             style="@style/BottomSheetActionButtons"
             android:onClick="@{() -> viewmodel.openPostExternal(viewmodel.publishedPost.post)}"
             android:text="@string/open_post"
             app:icon="@drawable/ic_open_external" />
-
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_open_post_in_wordpress_app"
+            style="@style/BottomSheetActionButtons"
+            android:onClick="@{() -> viewmodel.openPostInWordPress(viewmodel.publishedPost.post)}"
+            android:text="@string/open_in_wordpress_app"
+            android:visibility="@{avm.isWordPressAppInstalled ? View.VISIBLE : View.GONE}"
+            app:icon="@drawable/ic_wp" />
+    
     </LinearLayout>
 </layout>
