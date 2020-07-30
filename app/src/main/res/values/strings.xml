@@ -120,4 +120,6 @@
     <string name="cd_add_more_photos">Add another photo (gallery mode)</string>
     
     <string name="placeholder_no_caption">Add caption</string>
+    
+    <string name="title_update_notes">What\'s new</string>
 </resources>

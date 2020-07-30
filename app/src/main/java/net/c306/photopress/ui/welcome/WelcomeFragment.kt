@@ -9,12 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import net.c306.customcomponents.utils.getFloatFromXml
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
 import net.c306.photopress.ui.welcome.WelcomeFragmentAdapter.Screens
-import net.c306.photopress.utils.getFloatFromXml
 
 /**
  * Holder fragment for the welcome fragment views

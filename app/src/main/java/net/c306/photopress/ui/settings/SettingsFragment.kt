@@ -16,6 +16,7 @@ import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
 import net.c306.photopress.ui.newPost.NewPostViewModel
+import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
 
@@ -41,7 +42,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
             // Do this to ensure that bottom nav is visible when we return from a fragment which hides it
             findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
         }
-    
+        
         // TODO: 30/07/2020 Implement post categories
         findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_CATEGORIES)?.run {
             isEnabled = false
@@ -83,13 +84,22 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
                 )
             }.toTypedArray()
         }
-        
-        // Show logged in user's name
-        findPreference<Preference>(KEY_PREF_LOGOUT)?.run {
+    
+        findPreference<Preference>(KEY_PREF_LOGOUT)?.onPreferenceClickListener = this
+    
+        // Set up update notes preference
+        val showUpdateNotes = AppPrefs(requireContext()).getShowUpdateNotes()
+        findPreference<Preference>(KEY_UPDATE_NOTES)?.apply {
             onPreferenceClickListener = this@SettingsFragment
+            isVisible = showUpdateNotes
+        }
+        findPreference<Preference>(KEY_UPDATE_NOTES_BOTTOM)?.apply {
+            onPreferenceClickListener = this@SettingsFragment
+            isVisible = !showUpdateNotes
         }
         
         
+        // Show logged in user's name
         activityViewModel.userDisplayName.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             
@@ -150,6 +160,10 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
                 )
             }
             
+            KEY_UPDATE_NOTES, KEY_UPDATE_NOTES_BOTTOM -> {
+                findNavController().navigate(SettingsFragmentDirections.actionShowUpdateNotes())
+            }
+            
             else            -> return false
             
         }
@@ -161,6 +175,8 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         const val KEY_OPEN_CREDITS = "key_open_credits"
         const val KEY_LOGGED_IN_AS = "key_pref_logged_in_as"
         const val KEY_PREF_LOGOUT = "key_pref_logout"
+        const val KEY_UPDATE_NOTES = "key_whats_new"
+        const val KEY_UPDATE_NOTES_BOTTOM = "key_update_notes_bottom"
         
         const val RC_CONFIRM_LOGOUT = 2731
     }

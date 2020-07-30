@@ -8,11 +8,6 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="action_global_confirmationDialog">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
                   <entry key="action_global_welcomeFragment">
                     <value>
                       <LayoutPositions />
@@ -59,8 +54,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="12" />
+                            <option name="x" value="508" />
+                            <option name="y" value="15" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -127,7 +122,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_navigation_post_new_to_imageAttributesFragment">
+                            <entry key="action_editImageAttributes">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -152,12 +147,17 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="12" />
+                            <option name="x" value="248" />
+                            <option name="y" value="-138" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_navigation_settings_to_update_notes_fragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_open_creditsFragment">
                               <value>
                                 <LayoutPositions />
@@ -179,7 +179,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_publishOptionsDialog_to_timeChooserDialogFragment">
+                            <entry key="action_getPublishTime">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -196,6 +196,18 @@
                           <Point>
                             <option name="x" value="1049" />
                             <option name="y" value="382" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="update_notes_fragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="506" />
+                            <option name="y" value="-298" />
                           </Point>
                         </option>
                       </LayoutPositions>

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     
     <Preference
-        app:isPreferenceVisible="true"
-        app:key="whats_new"
+        app:isPreferenceVisible="false"
+        app:key="key_whats_new"
         app:layout="@layout/pref_update_notes"
         app:title="@string/pref_title_update_notes"
         tools:summary="v. 1.0.0" />
@@ -68,6 +68,11 @@
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/pref_cat_title_about">
+        
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="key_update_notes_bottom"
+            app:title="@string/pref_title_update_notes" />
         
         <Preference
             app:fragment="net.c306.photopress.ui.CreditsFragment"

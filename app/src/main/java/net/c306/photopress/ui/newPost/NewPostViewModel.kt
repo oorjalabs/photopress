@@ -11,11 +11,11 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
 import net.c306.photopress.api.*
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
-import net.c306.photopress.utils.Utils
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -747,12 +747,16 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     fun sharePost(post: WPBlogPost) {
-        Utils.sendSharingIntent(applicationContext, post.url, post.title)
+        CommonUtils.sendSharingIntent(
+            context = applicationContext,
+            title = post.url,
+            text = post.title
+        )
     }
     
     
     fun openPostExternal(post: WPBlogPost) {
-        applicationContext.startActivity(Utils.getIntentForUrl(post.url))
+        applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
     }
     
     
@@ -771,7 +775,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     fun copyPostToClipboard(post: WPBlogPost) {
-        Utils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
+        CommonUtils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
     }
     
     
