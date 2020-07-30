@@ -12,7 +12,7 @@ import net.c306.photopress.utils.UserPrefs
 import net.c306.photopress.utils.isPackageInstalled
 import timber.log.Timber
 
-class ActivityViewModel(application: Application) : AndroidViewModel(application) {
+class AppViewModel(application: Application) : AndroidViewModel(application) {
     
     private val applicationContext = application.applicationContext
     

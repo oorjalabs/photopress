@@ -175,7 +175,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Image caption
     val imageCaption = MutableLiveData<String>()
     
-    private val noCaptionPlaceholder = applicationContext.getString(R.string.placeholder_no_caption)
+    private val noCaptionPlaceholder = applicationContext.getString(R.string.new_post_placeholder_no_caption)
     
     val imageCaptionDisplayText = Transformations.switchMap(imageCaption) {
         MutableLiveData<String>().apply {
@@ -420,11 +420,12 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 publishedPost = publishResult.uploadedPost
                 publishError = publishResult.errorMessage
             }
-            
+    
+            // TODO: 30/07/2020 Don't show toast from view model. Show from view
             val toastMessageId = when {
-                saveAsDraft || publishError != null -> R.string.toast_uploaded_as_draft
-                scheduledTime != null               -> R.string.toast_post_scheduled
-                else                                -> R.string.toast_published
+                saveAsDraft || publishError != null -> R.string.new_post_toast_uploaded_as_draft
+                scheduledTime != null               -> R.string.new_post_toast_post_scheduled
+                else                                -> R.string.new_post_toast_published
             }
             
             Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
@@ -737,9 +738,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
             return applicationContext.getString(
                 when {
-                    published.isDraft                 -> R.string.message_post_draft
-                    published.post.date.after(Date()) -> R.string.message_post_scheduled
-                    else                              -> R.string.message_post_published
+                    published.isDraft                 -> R.string.post_publish_title_post_draft
+                    published.post.date.after(Date()) -> R.string.post_publish_title_post_scheduled
+                    else                              -> R.string.post_publish_title_post_published
                 },
                 Html.fromHtml(published.post.title, Html.FROM_HTML_MODE_COMPACT)
             )

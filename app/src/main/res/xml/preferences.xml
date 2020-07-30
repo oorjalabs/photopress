@@ -78,7 +78,7 @@
             app:fragment="net.c306.photopress.ui.CreditsFragment"
             app:iconSpaceReserved="false"
             app:key="key_open_credits"
-            app:title="@string/title_credits_fragment" />
+            app:title="@string/credits_title" />
     
     </PreferenceCategory>
 

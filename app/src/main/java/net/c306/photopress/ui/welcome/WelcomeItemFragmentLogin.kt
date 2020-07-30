@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import net.c306.photopress.ActivityViewModel
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.databinding.FragmentWelcomeItemLoginBinding
 
 /**
@@ -16,7 +16,7 @@ import net.c306.photopress.databinding.FragmentWelcomeItemLoginBinding
  */
 class WelcomeItemFragmentLogin : Fragment() {
     
-    private val activityViewModel by activityViewModels<ActivityViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
     
     private lateinit var binding: FragmentWelcomeItemLoginBinding
@@ -28,7 +28,7 @@ class WelcomeItemFragmentLogin : Fragment() {
     ): View {
         binding = FragmentWelcomeItemLoginBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            activityViewModel = this@WelcomeItemFragmentLogin.activityViewModel
+            avm = this@WelcomeItemFragmentLogin.appViewModel
             handler = Handler()
         }
         return binding.root
@@ -37,7 +37,7 @@ class WelcomeItemFragmentLogin : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         
         // Animate done icon when logged in
-        activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
+        appViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
             if (it != true) return@Observer
             binding.animationViewDone.playAnimation()
         })

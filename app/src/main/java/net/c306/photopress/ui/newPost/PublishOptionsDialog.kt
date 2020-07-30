@@ -59,8 +59,8 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                 R.id.confirmationDialog,
                 bundleOf(ConfirmationDialog.KEY_CONFIRMATION_DETAILS to ConfirmationDialog.Details(
                     callerTag = myTag,
-                    dialogTitle = getString(R.string.title_confirm_schedule_time),
-                    dialogMessage = getString(R.string.message_confirm_schedule_time, dateString),
+                    dialogTitle = getString(R.string.schedule_post_title_confirm_schedule_time),
+                    dialogMessage = getString(R.string.schedule_post_message_confirm_schedule_time, dateString),
                     requestCode = confirmationRC,
                     positiveButtonTitle = getString(R.string.string_schedule)
                 ))
@@ -107,7 +107,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
          */
         fun publishScheduled(view: View) {
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.title_select_publish_date))
+                .setTitleText(getString(R.string.schedule_post_title_select_publish_date))
                 .setSelection(Date().time)
                 .build()
             datePicker.addOnPositiveButtonClickListener {

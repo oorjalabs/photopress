@@ -11,7 +11,7 @@
         
         <variable
             name="avm"
-            type="net.c306.photopress.ActivityViewModel" />
+            type="net.c306.photopress.AppViewModel" />
         
         <variable
             name="handler"
@@ -44,7 +44,7 @@
                     android:id="@+id/blog_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewmodel.selectedBlog.name.empty ? @string/message_no_blog_selected :  @string/message_posting_as_author_to_blog(avm.userDisplayName, viewmodel.selectedBlog.name)}"
+                    android:text="@{viewmodel.selectedBlog.name.empty ? @string/new_post_label_no_blog_selected :  @string/new_post_label_posting_as_author_to_blog(avm.userDisplayName, viewmodel.selectedBlog.name)}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -71,7 +71,7 @@
                         android:gravity="bottom|center_horizontal"
                         android:onClick="@{() -> handler.openPhotoPicker()}"
                         android:paddingBottom="0dp"
-                        android:text="@string/label_tap_to_add_photo"
+                        android:text="@string/new_post_label_tap_to_add_photo"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="?android:textColorSecondary"
                         android:visibility="@{viewmodel.imageUri != null ? View.GONE : View.VISIBLE}"
@@ -85,7 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/bg_rounded_dashed"
-                        android:contentDescription="@string/cd_photo_to_post"
+                        android:contentDescription="@string/new_post_cd_photo_to_post"
                         android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                         app:imageUri="@{viewmodel.imageUri}"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -111,16 +111,16 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:text="@string/placeholder_no_caption" />
+                        tools:text="@string/new_post_placeholder_no_caption" />
     
                     <Button
                         android:id="@+id/button_change_image"
                         style="@style/IconButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_change_photo"
+                        android:contentDescription="@string/new_post_cd_change_photo"
                         android:onClick="@{() -> handler.openPhotoPicker()}"
-                        android:tooltipText="@string/cd_change_photo"
+                        android:tooltipText="@string/new_post_cd_change_photo"
                         android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                         app:icon="@drawable/ic_swap"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -131,9 +131,9 @@
                         style="@style/IconButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_photo_attributes"
+                        android:contentDescription="@string/new_post_cd_photo_attributes"
                         android:onClick="@{() -> handler.openImageAttributes()}"
-                        android:tooltipText="@string/cd_photo_attributes"
+                        android:tooltipText="@string/new_post_cd_photo_attributes"
                         android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                         app:icon="@drawable/ic_photo_attributes"
                         app:layout_constraintTop_toTopOf="parent"
@@ -144,9 +144,9 @@
                         style="@style/IconButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_add_more_photos"
+                        android:contentDescription="@string/new_post_cd_add_more_photos"
                         android:onClick="@{() -> handler.openImageAttributes()}"
-                        android:tooltipText="@string/cd_add_more_photos"
+                        android:tooltipText="@string/new_post_cd_add_more_photos"
                         android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                         app:icon="@drawable/ic_add"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -160,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/item_margin_half"
-                    android:hint="@string/text_label_post_title"
+                    android:hint="@string/new_post_label_post_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/photo_container">
@@ -183,7 +183,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:hint="@string/text_label_tags"
+                    android:hint="@string/new_post_label_tags"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/holder_title">
@@ -216,10 +216,10 @@
             android:layout_margin="@dimen/activity_vertical_margin"
             android:backgroundTint="@{viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
             android:clickable="@{viewmodel.state == State.READY}"
-            android:contentDescription="@string/cd_fab_publish"
+            android:contentDescription="@string/new_post_cd_fab_publish"
             android:focusable="@{viewmodel.state == State.READY}"
             android:onClick="@{handler::onPublishPressed}"
-            android:tooltipText="@string/cd_fab_publish"
+            android:tooltipText="@string/new_post_cd_fab_publish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_publish"

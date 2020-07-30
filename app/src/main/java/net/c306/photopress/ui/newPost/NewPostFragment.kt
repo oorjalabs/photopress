@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +15,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import net.c306.photopress.ActivityViewModel
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
-
 
 class NewPostFragment : BottomNavFragment() {
     
@@ -47,7 +43,7 @@ class NewPostFragment : BottomNavFragment() {
             lifecycleOwner = viewLifecycleOwner
             viewmodel = newPostViewModel
             handler = BindingHandler()
-            avm = ViewModelProvider(requireActivity()).get(ActivityViewModel::class.java)
+            avm = ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
         }
         return binding.root
     }
@@ -59,13 +55,13 @@ class NewPostFragment : BottomNavFragment() {
         binding.inputPostTags.apply {
             
             setAdapter(mTagsAdapter)
-            setTokenizer(CommaTokenizer())
+            setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
             
             setOnFocusChangeListener { v, hasFocus ->
                 setInputFocus(
                     v as EditText,
                     hasFocus,
-                    R.string.hint_post_tags
+                    R.string.new_post_hint_post_tags
                 )
             }
         }
@@ -74,7 +70,7 @@ class NewPostFragment : BottomNavFragment() {
             setInputFocus(
                 v as EditText,
                 hasFocus,
-                R.string.hint_post_title
+                R.string.new_post_hint_post_title
             )
         }
         
@@ -151,22 +147,20 @@ class NewPostFragment : BottomNavFragment() {
         if (requestCode != RC_PHOTO_PICKER) return
         
         if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(requireContext(), "Image selection cancelled", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), R.string.new_post_toast_image_selection_cancelled, Toast.LENGTH_LONG).show()
             return
         }
         
-        val imageUri = data?.data
-        
-        if (imageUri != null) {
+        data?.data?.also {imageUri ->
             newPostViewModel.setImageUri(imageUri)
         }
-        
     }
     
     
     companion object {
         const val RC_PHOTO_PICKER = 9723
     }
+    
     
     /**
      * Public methods that can be called from data binding
@@ -225,54 +219,4 @@ class NewPostFragment : BottomNavFragment() {
         }
     }
     
-    
-    /**
-     * Taken from MultiAutoCompleteTextView.CommaTokenizer and adapted to remove trailing comma and
-     * space from the accepted suggestion. This places only selected text, then user can press comm
-     * to see more suggestions.
-     */
-    class CommaTokenizer : MultiAutoCompleteTextView.Tokenizer {
-        
-        override fun findTokenStart(text: CharSequence, cursor: Int): Int {
-            var i = cursor
-            while (i > 0 && text[i - 1] != ',') {
-                i--
-            }
-            while (i < cursor && text[i] == ' ') {
-                i++
-            }
-            return i
-        }
-        
-        override fun findTokenEnd(text: CharSequence, cursor: Int): Int {
-            val i = text.indexOf(',', cursor)
-            val len = text.length
-            
-            if (i in 0..len)
-                return i
-            
-            return len
-        }
-        
-        override fun terminateToken(text: CharSequence): CharSequence {
-            var i = text.length
-            while (i > 0 && text[i - 1] == ' ') {
-                i--
-            }
-            return if (i > 0 && text[i - 1] == ',') {
-                text
-            } else {
-                if (text is Spanned) {
-                    val sp = SpannableString("$text")
-                    TextUtils.copySpansFrom(
-                        text, 0, text.length,
-                        Any::class.java, sp, 0
-                    )
-                    sp
-                } else {
-                    "$text"
-                }
-            }
-        }
-    }
 }

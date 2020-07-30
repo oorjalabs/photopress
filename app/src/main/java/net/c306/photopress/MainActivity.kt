@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
     private val navController: NavController
         get() = findNavController(R.id.nav_host_fragment)
     
-    private val activityViewModel by viewModels<ActivityViewModel>()
+    private val appViewModel by viewModels<AppViewModel>()
     private val newPostViewModel by viewModels<NewPostViewModel>()
 
     
@@ -54,15 +54,15 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         
         nav_view?.setupWithNavController(navController)
         
-        activityViewModel.isLoggedIn.observe(this, Observer {  })
-        activityViewModel.selectedBlogId.observe(this, Observer {  })
-        activityViewModel.blogSelected.observe(this, Observer {  })
+        appViewModel.isLoggedIn.observe(this, Observer {  })
+        appViewModel.selectedBlogId.observe(this, Observer {  })
+        appViewModel.blogSelected.observe(this, Observer {  })
         
         // Restart activity after logout
-        activityViewModel.doPostLogoutRestart.observe(this, Observer {
+        appViewModel.doPostLogoutRestart.observe(this, Observer {
             if (it != true) return@Observer
             
-            activityViewModel.doPostLogoutRestart.value = false
+            appViewModel.doPostLogoutRestart.value = false
             
             finish()
             startActivity(Intent.makeRestartActivityTask(componentName))

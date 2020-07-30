@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/AppTheme.PopupOverlay"
                 app:navigationIcon="@drawable/ic_back_arrow"
-                app:title="@string/title_credits_fragment" />
+                app:title="@string/credits_title" />
         </com.google.android.material.appbar.AppBarLayout>
         
         <TextView
@@ -38,7 +38,7 @@
             android:text="@{presenter.creditText}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:text="@string/full_text_credits" />
+            tools:text="@string/credits_full_text" />
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

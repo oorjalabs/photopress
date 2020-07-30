@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import net.c306.photopress.ActivityViewModel
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
 
 /**
@@ -16,7 +16,7 @@ import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
  */
 class WelcomeItemFragmentSelectBlog : Fragment() {
     
-    private val activityViewModel by activityViewModels<ActivityViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     
     private val selectBlogViewModel by activityViewModels<SelectBlogViewModel>()
     
@@ -30,7 +30,7 @@ class WelcomeItemFragmentSelectBlog : Fragment() {
         binding = FragmentWelcomeItemSelectBlogBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             selectBlogViewModel = this@WelcomeItemFragmentSelectBlog.selectBlogViewModel
-            activityViewModel = this@WelcomeItemFragmentSelectBlog.activityViewModel
+            avm = this@WelcomeItemFragmentSelectBlog.appViewModel
             handler = Handler()
         }
         
@@ -45,7 +45,7 @@ class WelcomeItemFragmentSelectBlog : Fragment() {
             }
         })
         
-        activityViewModel.blogSelected.observe(viewLifecycleOwner, Observer {
+        appViewModel.blogSelected.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 binding.animationViewDone.playAnimation()
             }

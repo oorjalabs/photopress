@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/ic_close"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/title_image_attributes" />
+                app:title="@string/image_attributes_title" />
         
         </com.google.android.material.appbar.AppBarLayout>
         
@@ -45,7 +45,7 @@
                 style="@style/UnderlinedTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_label_image_title">
+                android:hint="@string/image_attributes_label_title">
                 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_post_title"
@@ -63,7 +63,7 @@
                 style="@style/UnderlinedTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_label_image_caption">
+                android:hint="@string/image_attributes_label_caption">
                 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_post_caption"
@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:hint="@string/text_label_image_alt_text">
+                android:hint="@string/image_attributes_label_alt_text">
                 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_post_alt_text"
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:hint="@string/text_label_image_description"
+                android:hint="@string/image_attributes_label_description"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:lineSpacingMultiplier="1.25"

@@ -10,8 +10,8 @@
             type="net.c306.photopress.ui.welcome.SelectBlogViewModel" />
         
         <variable
-            name="activityViewModel"
-            type="net.c306.photopress.ActivityViewModel" />
+            name="avm"
+            type="net.c306.photopress.AppViewModel" />
         
         <variable
             name="handler"
@@ -74,7 +74,7 @@
             android:id="@+id/group_setup_complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{activityViewModel.blogSelected ? View.VISIBLE : View.GONE}"
+            android:visibility="@{avm.blogSelected ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="animation_view_done,button_start"
             tools:layout_editor_absoluteX="16dp"
             tools:visibility="visible" />
@@ -83,7 +83,7 @@
             android:id="@+id/animation_view_done"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:visibility="@{activityViewModel.blogSelected ? View.VISIBLE : View.GONE}"
+            android:visibility="@{avm.blogSelected ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/button_start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +112,7 @@
             android:enabled="@{!selectBlogViewModel.blogList.empty}"
             android:onClick="@{handler::openBlogChooser}"
             android:text="@string/button_select_blog"
-            android:visibility="@{activityViewModel.blogSelected ? View.GONE : View.VISIBLE}"
+            android:visibility="@{avm.blogSelected ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

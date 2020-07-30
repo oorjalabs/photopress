@@ -12,7 +12,7 @@ import net.c306.customcomponents.confirmation.ConfirmationDialog
 import net.c306.customcomponents.preference.CustomPreferenceFragment
 import net.c306.customcomponents.preference.SearchableMultiSelectListPreference
 import net.c306.customcomponents.preference.UpgradedListPreference
-import net.c306.photopress.ActivityViewModel
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
 import net.c306.photopress.ui.newPost.NewPostViewModel
@@ -25,7 +25,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
     
     private val myTag = this::class.java.name
     
-    private val activityViewModel by activityViewModels<ActivityViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private val confirmationViewModel: ConfirmationDialog.ConfirmationViewModel by activityViewModels()
     private val newPostViewModel: NewPostViewModel by activityViewModels()
     
@@ -100,7 +100,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         
         
         // Show logged in user's name
-        activityViewModel.userDisplayName.observe(viewLifecycleOwner, Observer {
+        appViewModel.userDisplayName.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             
             // Show logged in user's name
@@ -117,7 +117,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
             
             // Logout
             if (it.result) {
-                activityViewModel.logout()
+                appViewModel.logout()
             }
         })
         

@@ -5,8 +5,8 @@
     <data>
         
         <variable
-            name="activityViewModel"
-            type="net.c306.photopress.ActivityViewModel" />
+            name="avm"
+            type="net.c306.photopress.AppViewModel" />
         
         <variable
             name="handler"
@@ -71,7 +71,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_margin="@dimen/item_margin_half"
-                android:alpha="@{activityViewModel.isLoggedIn ? handler.defaultIconAlpha : handler.disabledIconAlpha}"
+                android:alpha="@{avm.isLoggedIn ? handler.defaultIconAlpha : handler.disabledIconAlpha}"
                 android:contentDescription="@string/cd_welcome_screen_progress_indicator"
                 android:src="@drawable/ic_circle_empty"
                 android:tint="?colorControlNormal" />

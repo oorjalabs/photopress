@@ -100,7 +100,7 @@
     <dialog
         android:id="@+id/afterPublishedDialog"
         android:name="net.c306.photopress.ui.newPost.AfterPublishedDialog"
-        android:label="@string/message_post_published"
+        android:label="@string/post_publish_title_post_published"
         tools:layout="@layout/dialog_after_publish" />
     
     <fragment
