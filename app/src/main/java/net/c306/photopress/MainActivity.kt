@@ -67,7 +67,18 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             startActivity(Intent.makeRestartActivityTask(componentName))
         })
         
-        newPostViewModel.newPost()
+        
+        // If post tags are empty (app start or new post), set default tags as tags.
+        // Don't use `newPost` instead because it causes image and input loss on configuration
+        // change.
+        newPostViewModel.defaultTags.observe(this, Observer {
+            if (it.isNullOrBlank()) return@Observer
+            
+            if (newPostViewModel.postTags.value.isNullOrBlank()) {
+                newPostViewModel.postTags.value = it
+            }
+        })
+        
         
         // Handle share intent, if provided
         intent?.also { intent ->

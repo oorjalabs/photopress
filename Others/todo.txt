@@ -13,19 +13,17 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0511.0.12.1
+v. 2020.0801.0.13.1
+
+    --TBD-- Layout: move publish button out of the way
+
+    --TBD-- Delete photo from app storage after successful publishing
 
     --TBD-- Wireframe
         [ ] List
 
     --TBD-- Support for categories
         [ ] Setting for default categories
-
-    --TBD-- Upload multiple photos - gallery
-
-    --TBD-- Layout: move publish button out of the way
-
-    --TBD-- Delete photo from app storage after successful publishing
 
     --TBD-- Update notes
 
@@ -35,6 +33,36 @@ v. 2020.0511.0.12.1
         [ ] Show message with state of progress - uploading image, uploading content, publishing
 
     --TBD-- Refresh sites, tags and categories at least once a day
+
+
+------------------
+
+
+v. 2020.0730.0.12.2
+
+    --TBD-- Custom components
+        [ ] Use Searchable multi select list pref
+        [ ] Use upgraded list pref
+        [ ] Use update notes
+
+    --TBD-- Upload multiple photos - gallery
+        [ ] Add button
+        [ ] Select image
+        [ ] Make imageUri into a list
+        [ ] Show grid instead of single image when multiple images selected
+        [ ] Image attributes for each image
+        [ ] Remove images from grid
+        [ ] Reorder images in grid
+
+
+------------------
+
+
+v. 2020.0730.0.12.1
+
+    [DONE] Bug fix: New post inputs (viewmodel) was reset on configuration change
+
+    [DONE] Show 'Add caption' placeholder when no caption, touch to open image attributes
 
 
 ------------------

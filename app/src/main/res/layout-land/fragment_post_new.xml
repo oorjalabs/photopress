@@ -69,6 +69,25 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_height="match_parent" />
             
+            <TextView
+                android:id="@+id/text_image_caption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="#64ffffff"
+                android:gravity="center"
+                android:onClick="@{() -> handler.openImageAttributes()}"
+                android:minHeight="@dimen/min_touch_size"
+                android:paddingHorizontal="@dimen/min_touch_size"
+                android:paddingVertical="4dp"
+                android:text="@{viewmodel.imageCaptionDisplayText}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="?android:textColorSecondary"
+                android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@string/placeholder_no_caption" />
+            
             <Button
                 android:id="@+id/button_change_image"
                 style="@style/IconButton"
@@ -92,28 +111,22 @@
                 android:tooltipText="@string/cd_photo_attributes"
                 android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
                 app:icon="@drawable/ic_photo_attributes"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            
+            <Button
+                android:id="@+id/button_add_more_photos"
+                style="@style/IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/cd_add_more_photos"
+                android:onClick="@{() -> handler.openImageAttributes()}"
+                android:tooltipText="@string/cd_add_more_photos"
+                android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                app:icon="@drawable/ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
             
-            <TextView
-                android:id="@+id/text_image_caption"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="#64ffffff"
-                android:gravity="center"
-                android:minHeight="@dimen/min_touch_size"
-                android:paddingHorizontal="@dimen/min_touch_size"
-                android:paddingVertical="4dp"
-                android:text="@{viewmodel.imageCaption}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textColor="?android:textColorSecondary"
-                android:translationZ="1dp"
-                android:visibility="@{viewmodel.imageUri == null || viewmodel.imageCaption == null || viewmodel.imageCaption.trim().empty ? View.GONE : View.VISIBLE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="Image Caption is a long line of text that can't fit in a single line, or preferably even in two lines." />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
         
         <ScrollView

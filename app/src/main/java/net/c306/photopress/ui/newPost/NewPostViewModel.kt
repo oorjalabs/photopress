@@ -88,7 +88,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Default post settings
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
-    private val defaultTags = MutableLiveData<String>()
+    internal val defaultTags = MutableLiveData<String>()
     
     
     // Selected Blog
@@ -175,6 +175,16 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Image caption
     val imageCaption = MutableLiveData<String>()
     
+    private val noCaptionPlaceholder = applicationContext.getString(R.string.placeholder_no_caption)
+    
+    val imageCaptionDisplayText = Transformations.switchMap(imageCaption) {
+        MutableLiveData<String>().apply {
+            value =
+                if (it.isNullOrBlank()) noCaptionPlaceholder
+                else it.trim()
+        }
+    }
+    
     // Image caption
     val imageTitle = MutableLiveData<String>()
     
@@ -217,6 +227,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _publishedPost = MutableLiveData<PublishedPost>()
     val publishedPost: LiveData<PublishedPost> = _publishedPost
     
+    /**
+     * Reset view model state for a new post
+     */
     fun newPost() {
         _publishedPost.value = null
         postTitle.value = null
