@@ -2,31 +2,31 @@ package net.c306.photopress.ui.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import net.c306.customcomponents.confirmation.ConfirmationDialog
+import net.c306.customcomponents.preference.CustomPreferenceFragment
+import net.c306.customcomponents.preference.SearchableMultiSelectListPreference
+import net.c306.customcomponents.preference.UpgradedListPreference
 import net.c306.photopress.ActivityViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
-import net.c306.photopress.ui.custom.ConfirmationDialog
-import net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
-import net.c306.photopress.ui.custom.SearchableMultiSelectListPreferenceDialogFragment
 import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
 
 
-class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener {
+class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClickListener {
     
     private val myTag = this::class.java.name
     
     private val activityViewModel by activityViewModels<ActivityViewModel>()
     private val confirmationViewModel: ConfirmationDialog.ConfirmationViewModel by activityViewModels()
-    private val newPosViewModel: NewPostViewModel by activityViewModels()
+    private val newPostViewModel: NewPostViewModel by activityViewModels()
     
     
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -34,49 +34,54 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
     }
     
     
-    override fun onDisplayPreferenceDialog(preference: Preference?) {
-        val fm = parentFragment?.childFragmentManager
-        
-        when (preference) {
-            /**
-             * If this is our custom Preference, inflate and show dialog
-             */
-            is SearchableMultiSelectListPreference -> {
-                SearchableMultiSelectListPreferenceDialogFragment.newInstance(preference.key).run {
-                    fm?.let {
-                        setTargetFragment(this@SettingsFragment, 0)
-                        show(it, "android.support.v7.preference.PreferenceFragment.DIALOG")
-                    }
-                }
-            }
-            
-            else                                   -> {
-                super.onDisplayPreferenceDialog(preference)
-            }
-            
-        }
-    }
-    
-    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
         (activity as? MainActivity)?.apply {
+            // Do this to ensure that bottom nav is visible when we return from a fragment which hides it
             findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
+        }
+    
+        // TODO: 30/07/2020 Implement post categories
+        findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_CATEGORIES)?.run {
+            isEnabled = false
+            disabledSummary = "Not available yet"
         }
         
         // Set user's blog list
-        findPreference<ListPreference>(UserPrefs.KEY_SELECTED_BLOG_ID)?.run {
+        findPreference<UpgradedListPreference>(UserPrefs.KEY_SELECTED_BLOG_ID)?.run {
             val authPrefs = AuthPrefs(context)
             val blogs = authPrefs.getBlogsList()
-            entries = blogs.map { blog -> blog.name }.toTypedArray()
-            entryValues = blogs.map { it.id.toString() }.toTypedArray()
+            
+            entries = blogs.map {
+                UpgradedListPreference.Entry(
+                    entry = it.name,
+                    value = it.id.toString(),
+                    enabled = true
+                )
+            }.toTypedArray()
             
             setOnPreferenceChangeListener { _, _ ->
                 // Clear saved tags list when blog changes
                 authPrefs.saveTagsList(null)
                 true
             }
+        }
+        
+        // Setup blog format preference
+        findPreference<UpgradedListPreference>(UserPrefs.KEY_PUBLISH_FORMAT)?.run {
+            val entriesList = resources.getStringArray(R.array.pref_entries_post_format)
+            val valuesList = resources.getStringArray(R.array.pref_values_post_format)
+            
+            if (entriesList.size != valuesList.size) throw Exception("Entries and values are not the same size.")
+            
+            entries = entriesList.mapIndexed { index, s ->
+                UpgradedListPreference.Entry(
+                    entry = s,
+                    value = valuesList[index],
+                    enabled = true
+                )
+            }.toTypedArray()
         }
         
         // Show logged in user's name
@@ -98,17 +103,16 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
         confirmationViewModel.result.observe(viewLifecycleOwner, Observer {
             if (it == null || it.callerTag != myTag) return@Observer
             
-            confirmationViewModel.setResult(null)
+            confirmationViewModel.reset()
             
+            // Logout
             if (it.result) {
-                // Logout
                 activityViewModel.logout()
             }
         })
         
         
-        newPosViewModel.blogTags.observe(viewLifecycleOwner, Observer { tags ->
-    
+        newPostViewModel.blogTags.observe(viewLifecycleOwner, Observer { tags ->
             findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_TAGS)?.run {
                 if (tags.isNullOrEmpty()) {
                     isEnabled = false
@@ -134,15 +138,15 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
             KEY_PREF_LOGOUT -> {
                 //Show confirmation dialog, then logout
                 findNavController().navigate(
-                    SettingsFragmentDirections.actionGlobalConfirmationDialog(
+                    R.id.confirmationDialog,
+                    bundleOf(ConfirmationDialog.KEY_CONFIRMATION_DETAILS to ConfirmationDialog.Details(
                         requestCode = RC_CONFIRM_LOGOUT,
                         dialogTitle = getString(R.string.pref_title_logout),
                         dialogMessage = getString(R.string.logout_confirm_text),
                         positiveButtonTitle = getString(R.string.pref_title_logout),
-                        negativeButtonTitle = getString(R.string.string_cancel),
-                        iconResourceId = R.drawable.ic_warning,
+                        iconResourceId = R.drawable.ic_logout,
                         callerTag = myTag
-                    )
+                    ))
                 )
             }
             

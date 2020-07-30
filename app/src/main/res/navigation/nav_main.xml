@@ -112,46 +112,9 @@
         tools:layout="@layout/dialog_use_code_based_two_factor" />
     <dialog
         android:id="@+id/confirmationDialog"
-        android:name="net.c306.photopress.ui.custom.ConfirmationDialog"
-        android:label="ConfirmationDialog">
-        <argument
-            android:name="caller_tag"
-            app:argType="string" />
-        <argument
-            android:name="request_code"
-            app:argType="integer" />
-        <argument
-            android:name="dialog_title"
-            app:argType="string" />
-        <argument
-            android:name="dialog_message"
-            app:argType="string" />
-        <argument
-            android:name="positive_button_title"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="negative_button_title"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="iconResourceId"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
-            android:name="return_bundle"
-            android:defaultValue="@null"
-            app:argType="android.os.Bundle"
-            app:nullable="true" />
-        <argument
-            android:name="list"
-            android:defaultValue="@null"
-            app:argType="string[]"
-            app:nullable="true" />
-    </dialog>
-    <action
-        android:id="@+id/action_global_confirmationDialog"
-        app:destination="@id/confirmationDialog" />
+        android:name="net.c306.customcomponents.confirmation.ConfirmationDialog"
+        android:label="ConfirmationDialog"
+        tools:layout="@layout/dialog_action_confirmation_customcomponents" />
     <dialog
         android:id="@+id/publishOptionsDialog"
         android:name="net.c306.photopress.ui.newPost.PublishOptionsDialog"

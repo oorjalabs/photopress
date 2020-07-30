@@ -9,7 +9,7 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString = "0.12.1"
+def versionString = "0.12.2"
 def versionNumber = 21
 
 static def getDate() {
@@ -154,5 +154,8 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // My custom components
+    implementation "com.github.adityabhaskar:CustomComponents:0.1.17"
 
 }

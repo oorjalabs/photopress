@@ -38,12 +38,10 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0730.0.12.2
+v. 2020.0730.0.12.3
 
-    --TBD-- Custom components
-        [ ] Use Searchable multi select list pref
-        [ ] Use upgraded list pref
-        [ ] Use update notes
+    --TBD-- Use custom components
+        [ ] update notes
 
     --TBD-- Upload multiple photos - gallery
         [ ] Add button
@@ -53,6 +51,17 @@ v. 2020.0730.0.12.2
         [ ] Image attributes for each image
         [ ] Remove images from grid
         [ ] Reorder images in grid
+
+
+------------------
+
+
+v. 2020.0730.0.12.2
+
+    --TBD-- Use custom components
+        [X] Searchable multi select list pref
+        [X] confirmation dialog
+        [X] upgraded list pref
 
 
 ------------------
