@@ -14,6 +14,10 @@
             type="net.c306.photopress.AppViewModel" />
         
         <variable
+            name="galleryAdapter"
+            type="net.c306.photopress.ui.newPost.gallery.GalleryAdapter" />
+        
+        <variable
             name="handler"
             type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
         
@@ -81,7 +85,7 @@
                         android:text="@string/new_post_label_tap_to_add_photo"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="?android:textColorSecondary"
-                        android:visibility="@{viewmodel.imageUri != null ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{viewmodel.imageCount == 0 ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -95,6 +99,7 @@
                     <include
                         layout="@layout/image_section_multi_image_post"
                         app:handler="@{handler}"
+                        app:adapter="@{galleryAdapter}"
                         app:viewmodel="@{viewmodel}" />
                     
                     <Button
@@ -105,7 +110,7 @@
                         android:contentDescription="@string/new_post_cd_change_photo"
                         android:onClick="@{() -> handler.openPhotoPicker()}"
                         android:tooltipText="@string/new_post_cd_change_photo"
-                        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                         app:icon="@drawable/ic_swap"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
@@ -118,7 +123,7 @@
                         android:contentDescription="@string/new_post_cd_add_more_photos"
                         android:onClick="@{() -> handler.openImageAttributes()}"
                         android:tooltipText="@string/new_post_cd_add_more_photos"
-                        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                         app:icon="@drawable/ic_add"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent" />
@@ -139,7 +144,7 @@
                     android:text="@{viewmodel.imageCaptionDisplayText}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="?android:textColorSecondary"
-                    android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -170,34 +175,6 @@
                     android:lines="1"
                     android:text="@={viewmodel.postTitle}" />
             </com.google.android.material.textfield.TextInputLayout>
-            
-            <!--            <com.google.android.material.textfield.TextInputLayout-->
-            <!--                android:id="@+id/holder_tags"-->
-            <!--                style="@style/UnderlinedTextInputLayout"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:visibility="gone"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginTop="@dimen/activity_vertical_margin"-->
-            <!--                android:hint="@string/new_post_label_tags"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toBottomOf="@id/holder_title">-->
-            <!--                -->
-            <!--                <MultiAutoCompleteTextView-->
-            <!--                    android:id="@+id/input_post_tags"-->
-            <!--                    style="@style/UnderlinedTextInput"-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:completionThreshold="0"-->
-            <!--                    android:enabled="@{viewmodel.inputsEnabled}"-->
-            <!--                    android:imeOptions="actionDone"-->
-            <!--                    android:importantForAutofill="no"-->
-            <!--                    android:inputType="text"-->
-            <!--                    android:lines="1"-->
-            <!--                    android:nextFocusDown="@id/photo_container"-->
-            <!--                    android:text="@={viewmodel.postTags}"-->
-            <!--                    tools:ignore="LabelFor" />-->
-            <!--            </com.google.android.material.textfield.TextInputLayout>-->
             
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="wrap_content"

@@ -6,8 +6,8 @@
     <data>
         
         <variable
-            name="viewmodel"
-            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+            name="image"
+            type="net.c306.photopress.ui.newPost.PostImage" />
         
         <variable
             name="handler"
@@ -18,13 +18,13 @@
     
     <ImageView
         android:id="@+id/added_photo"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="@dimen/gallery_image_dimen_default"
+        android:layout_height="@dimen/gallery_image_dimen_default"
         android:contentDescription="@string/new_post_cd_photo_attributes"
         android:foreground="?selectableItemBackground"
-        android:onClick="@{() -> handler.openImageAttributes()}"
+        android:onClick="@{() -> handler.openImageAttributes(image)}"
         android:tooltipText="@string/new_post_cd_photo_attributes"
-        android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
-        app:imageUri="@{viewmodel.imageUri}"
+        android:visibility="@{image.uri == null ? View.GONE : View.VISIBLE}"
+        app:imageUri="@{image.uri}"
         tools:src="@tools:sample/avatars" />
 </layout>

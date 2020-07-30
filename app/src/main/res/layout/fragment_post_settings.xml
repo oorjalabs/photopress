@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="viewmodel"
+            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+        
+        <variable
+            name="fragmentHandler"
+            type="net.c306.photopress.ui.newPost.PostSettingsFragment.Handler" />
+    </data>
+    
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+            
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_close"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/image_attributes_title" />
+        
+        </com.google.android.material.appbar.AppBarLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+    
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/holder_tags"
+                style="@style/UnderlinedTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:hint="@string/new_post_label_tags">
+                
+                <MultiAutoCompleteTextView
+                    android:id="@+id/input_post_tags"
+                    style="@style/UnderlinedTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="0"
+                    android:enabled="@{viewmodel.inputsEnabled}"
+                    android:imeOptions="actionDone"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:nextFocusDown="@id/photo_container"
+                    android:text="@={viewmodel.postTags}"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/holder_title"-->
+<!--                style="@style/UnderlinedTextInputLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="@string/image_attributes_label_title">-->
+<!--                -->
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/input_post_title"-->
+<!--                    style="@style/UnderlinedTextInput"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:importantForAutofill="no"-->
+<!--                    android:inputType="textCapSentences"-->
+<!--                    android:lines="1"-->
+<!--                    android:text="@={viewmodel.editingImageTitle}" />-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
+<!--            -->
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/holder_caption"-->
+<!--                style="@style/UnderlinedTextInputLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="@string/image_attributes_label_caption">-->
+<!--                -->
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/input_post_caption"-->
+<!--                    style="@style/UnderlinedTextInput"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:importantForAutofill="no"-->
+<!--                    android:inputType="textCapSentences"-->
+<!--                    android:lines="1"-->
+<!--                    android:text="@={viewmodel.editingImageCaption}" />-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
+<!--            -->
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/holder_alt_text"-->
+<!--                style="@style/UnderlinedTextInputLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/activity_vertical_margin"-->
+<!--                android:hint="@string/image_attributes_label_alt_text">-->
+<!--                -->
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/input_post_alt_text"-->
+<!--                    style="@style/UnderlinedTextInput"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:importantForAutofill="no"-->
+<!--                    android:inputType="textCapSentences"-->
+<!--                    android:lines="1"-->
+<!--                    android:text="@={viewmodel.editingImageAltText}" />-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
+<!--            -->
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:id="@+id/input_post_description"-->
+<!--                style="@style/UnderlinedTextInput"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/activity_vertical_margin"-->
+<!--                android:hint="@string/image_attributes_label_description"-->
+<!--                android:importantForAutofill="no"-->
+<!--                android:inputType="textCapSentences|textMultiLine"-->
+<!--                android:lineSpacingMultiplier="1.25"-->
+<!--                android:lines="4"-->
+<!--                android:nextFocusDown="@string/button_text_done"-->
+<!--                android:text="@={viewmodel.editingImageDescription}" />-->
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            
+            <Button
+                android:id="@+id/button_cancel_image_attributes"
+                style="@style/Button.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:onClick="@{() -> fragmentHandler.done()}"
+                android:text="@string/button_text_done" />
+            
+        
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

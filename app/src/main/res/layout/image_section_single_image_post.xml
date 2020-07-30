@@ -29,9 +29,9 @@
             android:foreground="?selectableItemBackground"
             android:onClick="@{() -> handler.openImageAttributes()}"
             android:tooltipText="@string/new_post_cd_photo_attributes"
-            android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewmodel.imageCount == 1 ? View.VISIBLE : View.GONE}"
             app:imageUri="@{viewmodel.imageUri}"
             tools:layout_height="match_parent" />
-    
+        
     </FrameLayout>
 </layout>

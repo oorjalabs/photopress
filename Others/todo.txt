@@ -38,13 +38,17 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0730.0.12.5
+v. 2020.0730.0.12.6
 
     [ ] If single photo selected, show single photo. Else show gallery.
     [ ] On 'add photos', change to gallery view
+
     [ ] Gallery
+        [ ] Show all selected photos
+        [ ] Gallery should show photos as big as possible, max 4 photos a row
         [ ] Tapping individual photo in a gallery opens photo details screen
         [ ] Reorder photos (different screen with drag and drop?)
+
     [ ] Photo details screen
         [ ] Show photo thumbnail
         [ ] Caption
@@ -52,10 +56,13 @@ v. 2020.0730.0.12.5
         [ ] Detail
         [ ] Alt text
         [ ] Remove photo button (if multiple photos, aka gallery mode)
+
     [ ] Post settings screen
         [ ] Tags
         [ ] Category
         [ ] Status - publish / draft / schedule? (maybe not)
+
+    [ ] Landscape view updates
 
     --TBD-- Upload multiple photos - gallery
         [ ] Add button
@@ -65,6 +72,18 @@ v. 2020.0730.0.12.5
         [ ] Image attributes for each image
         [ ] Remove images from grid
         [ ] Reorder images in grid
+
+
+------------------
+
+
+v. 2020.0730.0.12.5
+
+    [X] Update view model to handle multiple photos
+
+    [X] Gallery recyclerview placeholders and core
+
+    [X] Post settings fragment init
 
 
 ------------------

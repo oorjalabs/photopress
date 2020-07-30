@@ -65,7 +65,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     internal fun updateState() {
         val title = postTitle.value ?: ""
-        val image = imageUri.value
+//        val image = imageUri.value
+        val image = postImages.value?.getOrNull(0)
         val blogId = selectedBlogId.value
         val publishedPost = publishedPost.value
         
@@ -135,10 +136,22 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         }
     }
     
+    // Post Images
+    private val _postImages = MutableLiveData<MutableList<PostImage>>()
+    val postImages: LiveData<MutableList<PostImage>> = _postImages
+    
+    internal fun setPostImages(list: List<PostImage>) {
+        _postImages.value = list.toMutableList()
+    }
     
     // Image Uri
-    private val _imageUri = MutableLiveData<Uri>()
-    val imageUri: LiveData<Uri> = _imageUri
+    val imageUri: LiveData<Uri?> = Transformations.switchMap(postImages) {
+        liveData { emit(it.getOrNull(0)?.uri) }
+    }
+    
+    val imageCount = Transformations.switchMap(postImages) { list ->
+        liveData { emit(list.filter { it.fileDetails != null }.size) }
+    }
     
     fun setImageUri(value: Uri?) {
         // Reset image attributes
@@ -146,25 +159,43 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         imageCaption.value = null
         imageAltText.value = null
         imageDescription.value = null
+        _postImages.value =
+            if (value != null) mutableListOf(PostImage(uri = value)) else mutableListOf()
         
-        _imageUri.value = value
+        updateState()
+    }
+    
+    fun setImageUris(value: List<Uri>?) {
+        
+        if (value.isNullOrEmpty()) {
+            // Reset image attributes
+            imageTitle.value = null
+            imageCaption.value = null
+            imageAltText.value = null
+            imageDescription.value = null
+    
+            _postImages.value = mutableListOf()
+        } else {
+            
+            // Reset image attributes
+            imageTitle.value = null
+            imageCaption.value = null
+            imageAltText.value = null
+            imageDescription.value = null
+            
+            _postImages.value = value.map { PostImage(uri = it) }.toMutableList()
+        }
         
         updateState()
     }
     
     
-    // Image File
-    val fileDetails = Transformations.switchMap(imageUri) {
-        MutableLiveData<FileDetails?>().apply {
-            value = if (it == null) null else getFileName(it)
-        }
-    }
-    
-    data class FileDetails(
-        val fileName: String,
-        val mimeType: String
-    )
-    
+//    // Image File
+//    val fileDetails = Transformations.switchMap(imageUri) {
+//        MutableLiveData<FileDetails?>().apply {
+//            value = if (it == null) null else getFileName(it)
+//        }
+//    }
     
     // Title text
     val postTitle = MutableLiveData<String>()
@@ -185,7 +216,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         }
     }
     
-    // Image caption
+    // Image name
     val imageTitle = MutableLiveData<String>()
     
     // Image altText
@@ -275,21 +306,21 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * Returns the app's copy of file and its mime type
      * @return Pair with file and its mime-type, or null if the uri couldn't be read
      */
-    private fun getFileForUri(uri: Uri): Pair<File, String>? {
+    private fun getFileForUri(postImage: PostImage): Pair<File, String>? {
         
-        val fileDetails = getFileName(uri)
+        if (postImage.fileDetails == null) return null
         
         // Open a specific media item using ParcelFileDescriptor.
         val resolver = applicationContext.contentResolver
         
         // Open selected file as input stream
-        resolver.openInputStream(uri)?.use { stream ->
+        resolver.openInputStream(postImage.uri)?.use { stream ->
             // Write it to app's storage as file
-            val imageFile = File(applicationContext.filesDir, fileDetails.fileName)
+            val imageFile = File(applicationContext.filesDir, postImage.fileDetails.fileName)
             imageFile.outputStream().use {
                 stream.copyTo(it)
             }
-            return Pair(imageFile, fileDetails.mimeType)
+            return Pair(imageFile, postImage.fileDetails.mimeType)
         }
         
         return null
@@ -299,7 +330,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     /**
      * Gets the file name and mime-type for the given content uri
      */
-    private fun getFileName(uri: Uri): FileDetails {
+    internal fun getFileName(uri: Uri): PostImage.FileDetails {
         
         val projection = arrayOf(
             MediaStore.MediaColumns.DISPLAY_NAME,
@@ -323,13 +354,17 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             }
         }
         
-        return FileDetails(fileName, mimeType)
+        return PostImage.FileDetails(
+            fileName,
+            mimeType
+        )
     }
+    
     
     fun publishPost(saveAsDraft: Boolean = false, scheduledTime: Long? = null) {
         val blogId = selectedBlogId.value
         val title = postTitle.value
-        val image = imageUri.value
+        val image = postImages.value?.getOrNull(0)
         val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
             .apply { add(applicationContext.getString(R.string.app_post_tag)) }
             .filter { !it.isBlank() }
