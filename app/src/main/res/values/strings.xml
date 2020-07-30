@@ -123,10 +123,13 @@
     <string name="new_post_hint_post_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>
     <string name="new_post_placeholder_no_caption">Add caption</string>
     
+    <string name="new_post_button_upload_post">Upload post</string>
+    <string name="new_post_cd_button_post_settings">Open post settings</string>
+    
     <string name="new_post_cd_fab_publish">Publish</string>
     <string name="new_post_cd_photo_to_post">Photo to post</string>
     <string name="new_post_cd_change_photo">Change photo</string>
-    <string name="new_post_cd_photo_attributes">Change photo caption, description and alt text</string>
+    <string name="new_post_cd_photo_attributes">Tap to set photo caption, description and alt text</string>
     <string name="new_post_cd_add_more_photos">Add another photo (gallery mode)</string>
     
     <string name="new_post_toast_image_selection_cancelled">No image selected</string>

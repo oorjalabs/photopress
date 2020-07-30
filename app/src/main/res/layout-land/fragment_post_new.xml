@@ -90,7 +90,7 @@
             
             <Button
                 android:id="@+id/button_change_image"
-                style="@style/IconButton"
+                style="@style/IconButton.NoBorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_post_cd_change_photo"
@@ -103,7 +103,7 @@
             
             <Button
                 android:id="@+id/button_change_photo_attributes"
-                style="@style/IconButton"
+                style="@style/IconButton.NoBorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_post_cd_photo_attributes"
@@ -116,7 +116,7 @@
             
             <Button
                 android:id="@+id/button_add_more_photos"
-                style="@style/IconButton"
+                style="@style/IconButton.NoBorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_post_cd_add_more_photos"
@@ -159,7 +159,7 @@
                     style="@style/UnderlinedTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/item_margin_half"
+                    android:layout_marginTop="@dimen/list_item_spacing_half"
                     android:hint="@string/new_post_label_post_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

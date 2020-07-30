@@ -171,14 +171,33 @@
         <item name="android:paddingRight">12dp</item>
         <item name="android:minWidth">@dimen/min_touch_size</item>
         <item name="android:minHeight">@dimen/min_touch_size</item>
-
+        
         <item name="iconPadding">0dp</item>
         <item name="iconGravity">textStart</item>
         <item name="iconTint">?attr/colorControlNormal</item>
+    </style>
+    
+    <style name="IconButton.NoBorder">
         <item name="strokeColor">@android:color/transparent</item>
         <item name="strokeWidth">0dp</item>
     </style>
     
-
-
+    <style name="GroupButton.IconOnly" parent="Button">
+        <item name="android:layout_width">@dimen/min_touch_size</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:minWidth">@dimen/min_touch_size</item>
+        <item name="android:minHeight">@dimen/min_touch_size</item>
+        
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">?attr/colorControlNormal</item>
+    </style>
+    
+    <style name="GroupButton.Secondary.IconOnly" parent="GroupButton.IconOnly">
+        <item name="android:backgroundTint">@color/sl_bg_button_secondary</item>
+        <item name="iconTint">?android:colorForegroundInverse</item>
+    </style>
+    
 </resources>

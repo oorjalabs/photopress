@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="viewmodel"
+            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+        
+        <variable
+            name="handler"
+            type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
+        
+        <import type="android.view.View" />
+    </data>
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_rounded_dashed">
+        
+        <ImageView
+            android:id="@+id/added_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/new_post_cd_photo_attributes"
+            android:foreground="?selectableItemBackground"
+            android:onClick="@{() -> handler.openImageAttributes()}"
+            android:tooltipText="@string/new_post_cd_photo_attributes"
+            android:visibility="@{viewmodel.imageUri == null ? View.GONE : View.VISIBLE}"
+            app:imageUri="@{viewmodel.imageUri}"
+            tools:layout_height="match_parent" />
+    
+    </FrameLayout>
+</layout>

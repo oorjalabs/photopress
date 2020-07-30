@@ -156,6 +156,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // My custom components
-    implementation "com.github.adityabhaskar:CustomComponents:0.1.17"
+    implementation "com.github.adityabhaskar:CustomComponents:0.1.19"
 
 }

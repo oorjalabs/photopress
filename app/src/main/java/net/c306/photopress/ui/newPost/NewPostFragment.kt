@@ -9,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -19,6 +22,7 @@ import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
+import timber.log.Timber
 
 class NewPostFragment : BottomNavFragment() {
     
@@ -52,19 +56,19 @@ class NewPostFragment : BottomNavFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        binding.inputPostTags.apply {
-            
-            setAdapter(mTagsAdapter)
-            setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
-            
-            setOnFocusChangeListener { v, hasFocus ->
-                setInputFocus(
-                    v as EditText,
-                    hasFocus,
-                    R.string.new_post_hint_post_tags
-                )
-            }
-        }
+//        binding.inputPostTags.apply {
+//
+//            setAdapter(mTagsAdapter)
+//            setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
+//
+//            setOnFocusChangeListener { v, hasFocus ->
+//                setInputFocus(
+//                    v as EditText,
+//                    hasFocus,
+//                    R.string.new_post_hint_post_tags
+//                )
+//            }
+//        }
         
         binding.inputPostTitle.setOnFocusChangeListener { v, hasFocus ->
             setInputFocus(
@@ -179,13 +183,17 @@ class NewPostFragment : BottomNavFragment() {
             startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
         }
         
-        
         fun openImageAttributes() {
             newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
             newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
             newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
             newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
             findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes())
+        }
+        
+        fun openPostSettings(view: View) {
+            // TODO: 30/07/2020 Implement and open post settings fragment
+            Timber.d("Open post settings fragment")
         }
         
         fun onPublishPressed(view: View) {

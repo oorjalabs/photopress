@@ -9,6 +9,6 @@
     android:gravity="center_vertical"
     android:lines="1"
     android:ellipsize="end"
-    android:paddingVertical="@dimen/item_margin_half"
+    android:paddingVertical="@dimen/list_item_spacing_half"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd" />

@@ -38,7 +38,7 @@
         android:id="@+id/subtitle_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/item_margin_half"
+        android:layout_marginTop="@dimen/list_item_spacing_half"
         android:text="@string/subtitle_welcome_to_photopress"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintEnd_toEndOf="parent"

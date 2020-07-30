@@ -60,7 +60,7 @@
             android:id="@+id/subtitle_welcome_select_blog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin_half"
+            android:layout_marginTop="@dimen/list_item_spacing_half"
             android:ellipsize="end"
             android:lines="1"
             android:text="@{selectBlogViewModel.selectBlogWelcomeSubtitle}"
