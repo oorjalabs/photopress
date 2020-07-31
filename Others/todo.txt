@@ -38,24 +38,14 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0731.0.12.7
-
-    [ ] If single photo selected, show single photo. Else show gallery.
-    [ ] On 'add photos', change to gallery view
+v. 2020.0731.0.12.8
 
     [ ] Gallery
-        [ ] Show all selected photos
-        [ ] Gallery should show photos as big as possible, max 4 photos a row
-        [ ] Tapping individual photo in a gallery opens photo details screen
         [ ] Reorder photos (different screen with drag and drop?)
         [ ] Set post caption (different from image caption in gallery posts)
 
     [ ] Photo details screen
         [ ] Show photo thumbnail
-        [ ] Caption
-        [ ] Title
-        [ ] Detail
-        [ ] Alt text
         [ ] Remove photo button (if multiple photos, aka gallery mode)
 
     [ ] Post settings screen
@@ -73,6 +63,27 @@ v. 2020.0731.0.12.7
         [ ] Image attributes for each image
         [ ] Remove images from grid
         [ ] Reorder images in grid
+
+
+------------------
+
+
+v. 2020.0731.0.12.7
+
+    [X] If single photo selected, show single photo. Else show gallery.
+    [X] On 'add photos', change to gallery view
+
+    [-] Gallery
+        [X] Select multiple photos
+        [X] Show all selected photos
+        [X] Gallery should show photos as big as possible, max 3 photos a row
+        [X] Tapping individual photo in a gallery opens photo details screen
+
+    [-] Photo details screen
+        [X] Caption
+        [X] Title
+        [X] Detail
+        [X] Alt text
 
 
 ------------------

@@ -20,15 +20,21 @@
         <import type="android.view.View" />
     </data>
     
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/added_gallery"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_rounded_dashed"
-        android:visibility="@{viewmodel.imageCount > 1 ? View.VISIBLE : View.GONE}"
-        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        app:recyclerViewAdapter="@{adapter}"
-        tools:itemCount="15"
-        tools:listitem="@layout/item_gallery_post" />
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_gravity="center"
+            android:id="@+id/added_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewmodel.imageCount > 1 ? View.VISIBLE : View.GONE}"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            android:padding="@dimen/list_item_spacing_quarter"
+            app:recyclerViewAdapter="@{adapter}"
+            tools:itemCount="51"
+            tools:spanCount="3"
+            tools:listitem="@layout/item_gallery_post" />
+    </FrameLayout>
     
 </layout>

@@ -2,6 +2,7 @@ package net.c306.photopress.ui.newPost
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -13,12 +14,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
 import net.c306.photopress.ui.newPost.gallery.GalleryAdapter
 import net.c306.photopress.utils.setInputFocus
+import kotlin.math.min
 
 class NewPostFragment : BottomNavFragment() {
     
@@ -39,6 +42,7 @@ class NewPostFragment : BottomNavFragment() {
             lifecycleOwner = viewLifecycleOwner
             viewmodel = newPostViewModel
             handler = mHandler
+            galleryAdapter = mGalleryAdapter
             avm = ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
         }
         return binding.root
@@ -83,7 +87,13 @@ class NewPostFragment : BottomNavFragment() {
             
             // All images already have file details
             
+            
+            
             if (postImagesList.size > 1) {
+                // Update grid layout manager's span count to image count limited by max
+                (binding.galleryViewImport?.addedGallery?.layoutManager as? StaggeredGridLayoutManager)
+                    ?.spanCount = min(postImagesList.size, MAX_ROW_IMAGES)
+                
                 // Update gallery adapter
                 mGalleryAdapter.setList(postImagesList)
             } else {
@@ -124,24 +134,36 @@ class NewPostFragment : BottomNavFragment() {
         newPostViewModel.postTitle.observe(viewLifecycleOwner, Observer {
             newPostViewModel.updateState()
         })
-        
     }
     
     
     /**
-     * Photo picker returns here
+     * Photo picker returns here for pick or add photos
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         
-        if (requestCode != RC_PHOTO_PICKER) return
+        if (requestCode != RC_PHOTO_PICKER && requestCode != RC_PHOTO_PICKER_ADD_PHOTOS) return
         
         if (resultCode != Activity.RESULT_OK) {
             Toast.makeText(requireContext(), R.string.new_post_toast_image_selection_cancelled, Toast.LENGTH_LONG).show()
             return
         }
         
-        // data.data contains imageUri in case of single image selection
-        data?.data?.also { newPostViewModel.setImageUris(listOf(it)) }
+        // Clip data contains selected items
+        data?.clipData?.also {
+            val uriList = mutableListOf<Uri>()
+            
+            for (i in 0 until it.itemCount) {
+                uriList.add(it.getItemAt(i).uri)
+            }
+            
+            if (requestCode == RC_PHOTO_PICKER_ADD_PHOTOS) {
+                // TODO: 31/07/2020 Add selected Uris to list
+            } else {
+                // Set selected Uris as new list
+                newPostViewModel.setImageUris(uriList)
+            }
+        }
     }
     
     
@@ -158,9 +180,11 @@ class NewPostFragment : BottomNavFragment() {
             val galleryIntent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
+            ).apply {
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            }
             
-            // TODO: 30/07/2020 Implement multiple photo picking https://stackoverflow.com/questions/19585815/select-multiple-images-from-android-gallery
+            // TODO: 31/07/2020 Implement 'add photos' picker
             
             startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
         }
@@ -201,6 +225,9 @@ class NewPostFragment : BottomNavFragment() {
     
     companion object {
         const val RC_PHOTO_PICKER = 9723
+        const val RC_PHOTO_PICKER_ADD_PHOTOS = 3942
+        
+        const val MAX_ROW_IMAGES = 3
     }
     
 }

@@ -18,13 +18,18 @@
     
     <ImageView
         android:id="@+id/added_photo"
-        android:layout_width="@dimen/gallery_image_dimen_default"
-        android:layout_height="@dimen/gallery_image_dimen_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/gallery_grid_item_margin"
+        android:adjustViewBounds="true"
+        android:background="@drawable/bg_rounded_solid"
         android:contentDescription="@string/new_post_cd_photo_attributes"
         android:foreground="?selectableItemBackground"
         android:onClick="@{() -> handler.openImageAttributes(image)}"
         android:tooltipText="@string/new_post_cd_photo_attributes"
         android:visibility="@{image.uri == null ? View.GONE : View.VISIBLE}"
         app:imageUri="@{image.uri}"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/backgrounds/scenic" />
+    <!--        tools:src="@tools:sample/avatars" />-->
+
 </layout>

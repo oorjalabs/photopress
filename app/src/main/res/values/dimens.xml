@@ -3,4 +3,5 @@
     <item name="alpha_scrim_publishing" format="float" type="dimen">0.375</item>
     
     <dimen name="gallery_image_dimen_default">72dp</dimen>
+    <dimen name="gallery_grid_item_margin">2dp</dimen>
 </resources>

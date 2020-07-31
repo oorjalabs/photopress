@@ -85,11 +85,13 @@
                         app:layout_constraintTop_toTopOf="parent" />
                     
                     <include
+                        android:id="@+id/photo_view_import"
                         layout="@layout/image_section_single_image_post"
                         app:handler="@{handler}"
                         app:viewmodel="@{viewmodel}" />
                     
                     <include
+                        android:id="@+id/gallery_view_import"
                         layout="@layout/image_section_multi_image_post"
                         tools:visibility="gone"
                         app:handler="@{handler}"

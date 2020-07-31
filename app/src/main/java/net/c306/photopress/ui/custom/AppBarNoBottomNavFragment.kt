@@ -1,7 +1,7 @@
 package net.c306.photopress.ui.custom
 
 import androidx.navigation.fragment.findNavController
-import net.c306.photopress.utils.hideKeyboard
+import net.c306.customcomponents.utils.hideKeyboard
 
 abstract class AppBarNoBottomNavFragment: NoBottomNavFragment(), AppBarFragmentInterface {
     
