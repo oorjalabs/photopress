@@ -65,7 +65,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     internal fun updateState() {
         val title = postTitle.value ?: ""
-//        val image = imageUri.value
         val image = postImages.value?.getOrNull(0)
         val blogId = selectedBlogId.value
         val publishedPost = publishedPost.value
@@ -136,7 +135,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         }
     }
     
-    // Post Images
+    /**
+     * Post Images
+     */
+    
     private val _postImages = MutableLiveData<MutableList<PostImage>>()
     val postImages: LiveData<MutableList<PostImage>> = _postImages
     
@@ -151,11 +153,21 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         updateState()
     }
     
+    fun addImageUris(newUris: List<Uri>) {
+        val list = _postImages.value ?: mutableListOf()
+        
+        list.addAll(newUris.map { PostImage(uri = it) })
+        
+        _postImages.value = list
+        updateState()
+    }
+    
     /**
      * Update [_postImages], usually called after [PostImage.FileDetails] attributes are updated.
      */
     internal fun setPostImages(list: List<PostImage>) {
         _postImages.value = list.toMutableList()
+        updateState()
     }
     
     
@@ -174,11 +186,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         else list.add(image)
         
         _postImages.value = list.toMutableList()
-    }
-    
-    // Image Uri
-    val singlePostImage = Transformations.switchMap(postImages) {
-        liveData { emit(it.getOrNull(0)) }
+        updateState()
     }
     
     val imageCount = Transformations.switchMap(postImages) { list ->
@@ -197,8 +205,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _postCaption = MutableLiveData<CharSequence>()
     val postCaption: LiveData<CharSequence> = _postCaption
     
-    internal fun setCaption(caption: CharSequence?) {
-        _postCaption.value = caption
+    private fun resetPostCaption() {
+        _postCaption.value = null
     }
     
     // Image whose attributes are being edited
@@ -237,7 +245,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         postTitle.value = null
         postTags.value = defaultTags.value
         
-        setCaption(null)
+        resetPostCaption()
         setImageUris(null)
         updateState()
     }

@@ -73,7 +73,7 @@
                         android:enabled="@{viewmodel.state == State.EMPTY}"
                         android:foreground="?selectableItemBackground"
                         android:gravity="bottom|center_horizontal"
-                        android:onClick="@{() -> handler.openPhotoPicker()}"
+                        android:onClick="@{() -> handler.openPhotoPicker(false)}"
                         android:paddingBottom="40dp"
                         android:text="@string/new_post_label_tap_to_add_photo"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
@@ -84,19 +84,24 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                     
-                    <include
-                        android:id="@+id/photo_view_import"
-                        layout="@layout/image_section_single_image_post"
-                        app:handler="@{handler}"
-                        app:viewmodel="@{viewmodel}" />
-                    
-                    <include
-                        android:id="@+id/gallery_view_import"
-                        layout="@layout/image_section_multi_image_post"
-                        tools:visibility="gone"
-                        app:handler="@{handler}"
-                        app:adapter="@{galleryAdapter}"
-                        app:viewmodel="@{viewmodel}" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_gravity="center"
+                            android:id="@+id/added_gallery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
+                            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                            android:padding="@dimen/list_item_spacing_quarter"
+                            app:recyclerViewAdapter="@{galleryAdapter}"
+                            tools:itemCount="15"
+                            tools:spanCount="3"
+                            tools:listitem="@layout/item_gallery_post" />
+                        
+                    </FrameLayout>
                     
                     <Button
                         android:id="@+id/button_change_image"
@@ -104,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/new_post_cd_change_photo"
-                        android:onClick="@{() -> handler.openPhotoPicker()}"
+                        android:onClick="@{() -> handler.openPhotoPicker(false)}"
                         android:tooltipText="@string/new_post_cd_change_photo"
                         android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                         app:icon="@drawable/ic_swap"
@@ -117,7 +122,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/new_post_cd_add_more_photos"
-                        android:onClick="@{() -> handler.openImageAttributes()}"
+                        android:onClick="@{() -> handler.openPhotoPicker(true)}"
                         android:tooltipText="@string/new_post_cd_add_more_photos"
                         android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                         app:icon="@drawable/ic_add"

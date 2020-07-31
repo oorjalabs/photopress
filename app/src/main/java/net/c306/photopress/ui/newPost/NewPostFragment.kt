@@ -87,34 +87,12 @@ class NewPostFragment : BottomNavFragment() {
             
             // All images already have file details
             
+            // Update grid layout manager's span count to image count limited by max
+            (binding.addedGallery.layoutManager as? StaggeredGridLayoutManager)
+                ?.spanCount = min(postImagesList.size, MAX_ROW_IMAGES)
             
-            
-            if (postImagesList.size > 1) {
-                // Update grid layout manager's span count to image count limited by max
-                (binding.galleryViewImport?.addedGallery?.layoutManager as? StaggeredGridLayoutManager)
-                    ?.spanCount = min(postImagesList.size, MAX_ROW_IMAGES)
-                
-                // Update gallery adapter
-                mGalleryAdapter.setList(postImagesList)
-            } else {
-                
-                // When only one image is selected, set image name as title if no title is present
-                val image = postImagesList[0]
-                val imageFileDetails = image.fileDetails!!
-                val imageCaption = image.caption
-                
-                if (imageFileDetails.fileName.isBlank()) return@Observer
-                
-                // Set image caption as post caption if not already set
-                if (newPostViewModel.postCaption.value.isNullOrBlank() && !imageCaption.isNullOrBlank()) {
-                    newPostViewModel.setCaption(imageCaption)
-                }
-                
-                // Set image name as post title if not already set
-                if (newPostViewModel.postTitle.value.isNullOrBlank()) {
-                    newPostViewModel.postTitle.value = imageFileDetails.fileName
-                }
-            }
+            // Update gallery adapter
+            mGalleryAdapter.setList(postImagesList)
             
         })
         
@@ -158,7 +136,8 @@ class NewPostFragment : BottomNavFragment() {
             }
             
             if (requestCode == RC_PHOTO_PICKER_ADD_PHOTOS) {
-                // TODO: 31/07/2020 Add selected Uris to list
+                // Add selected Uris to list
+                newPostViewModel.addImageUris(uriList)
             } else {
                 // Set selected Uris as new list
                 newPostViewModel.setImageUris(uriList)
@@ -176,7 +155,7 @@ class NewPostFragment : BottomNavFragment() {
         /**
          * Open file picker to select file location for syncing
          */
-        fun openPhotoPicker() {
+        fun openPhotoPicker(addPhotos: Boolean = false) {
             val galleryIntent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -184,9 +163,10 @@ class NewPostFragment : BottomNavFragment() {
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             }
             
-            // TODO: 31/07/2020 Implement 'add photos' picker
-            
-            startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
+            startActivityForResult(
+                galleryIntent,
+                if (addPhotos) RC_PHOTO_PICKER_ADD_PHOTOS else RC_PHOTO_PICKER
+            )
         }
     
         /**

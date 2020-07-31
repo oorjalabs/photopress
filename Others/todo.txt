@@ -38,11 +38,13 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0731.0.12.8
+v. 2020.0801.0.12.9
 
     [ ] Gallery
+        [ ] Upload all photos then publish as gallery
         [ ] Reorder photos (different screen with drag and drop?)
         [ ] Set post caption (different from image caption in gallery posts)
+        [ ] Remove photos button on each photo
 
     [ ] Photo details screen
         [ ] Show photo thumbnail
@@ -55,14 +57,16 @@ v. 2020.0731.0.12.8
 
     [ ] Landscape view updates
 
-    --TBD-- Upload multiple photos - gallery
-        [ ] Add button
-        [ ] Select image
-        [ ] Make imageUri into a list
-        [ ] Show grid instead of single image when multiple images selected
-        [ ] Image attributes for each image
-        [ ] Remove images from grid
-        [ ] Reorder images in grid
+
+------------------
+
+
+v. 2020.0731.0.12.8
+
+    [X] Remove single image view, just use recycler view for all images
+
+    [-] Gallery
+        [X] Add more photos
 
 
 ------------------
