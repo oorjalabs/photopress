@@ -31,18 +31,11 @@
         android:layout_height="match_parent"
         tools:context=".ui.newPost.NewPostFragment">
         
-        <!--        <ScrollView-->
-        <!--            android:id="@+id/post_content_container"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintTop_toTopOf="parent">-->
-        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:focusableInTouchMode="true"
             android:padding="@dimen/activity_vertical_margin">
             
             <TextView
@@ -81,7 +74,7 @@
                         android:foreground="?selectableItemBackground"
                         android:gravity="bottom|center_horizontal"
                         android:onClick="@{() -> handler.openPhotoPicker()}"
-                        android:paddingBottom="@dimen/list_item_spacing_quarter"
+                        android:paddingBottom="40dp"
                         android:text="@string/new_post_label_tap_to_add_photo"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="?android:textColorSecondary"
@@ -98,6 +91,7 @@
                     
                     <include
                         layout="@layout/image_section_multi_image_post"
+                        tools:visibility="gone"
                         app:handler="@{handler}"
                         app:adapter="@{galleryAdapter}"
                         app:viewmodel="@{viewmodel}" />
@@ -129,28 +123,29 @@
                         app:layout_constraintEnd_toEndOf="parent" />
                 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                
+    
                 <TextView
                     android:id="@+id/text_image_caption"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/list_item_spacing_half"
-                    android:background="#64ffffff"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:minHeight="@dimen/min_touch_size"
-                    android:onClick="@{() -> handler.openImageAttributes()}"
+                    android:onClick="@{handler::openPostCaptionDialog}"
                     android:paddingHorizontal="@dimen/min_touch_size"
-                    android:text="@{viewmodel.imageCaptionDisplayText}"
+                    android:text="@{viewmodel.postCaption ?? @string/new_post_placeholder_no_caption}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="?android:textColorSecondary"
-                    android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewmodel.imageCount > 1 || viewmodel.postCaption != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/photo_container"
-                    tools:text="@string/new_post_placeholder_no_caption" />
-            
+                    tools:text="@string/new_post_placeholder_no_caption">
+                    <requestFocus />
+                </TextView>
+                
             </androidx.constraintlayout.widget.ConstraintLayout>
             
             <com.google.android.material.textfield.TextInputLayout

@@ -110,7 +110,12 @@
         android:id="@+id/imageAttributesFragment"
         android:name="net.c306.photopress.ui.newPost.ImageAttributesFragment"
         tools:layout="@layout/fragment_image_attributes"
-        android:label="ImageAttributesFragment" />
+        android:label="ImageAttributesFragment" >
+        <argument
+            android:name="imageId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
     
     <fragment
         android:id="@+id/post_settings_fragment"

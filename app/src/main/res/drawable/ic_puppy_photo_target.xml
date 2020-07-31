@@ -1,10 +1,11 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="256dp"
-    android:height="256dp"
+    android:width="200dp"
+    android:height="200dp"
     android:alpha="0.2"
     android:tint="?colorControlNormal"
     android:viewportWidth="256"
     android:viewportHeight="256">
+<!--    <path android:pathData="M0,0 h 2556v 2556h -2556z" android:fillColor="?colorOnPrimary" android:fillAlpha="0.3" />-->
     <group
         android:scaleX="0.8"
         android:scaleY="0.8"
@@ -27,7 +28,7 @@
 
     <!-- Frame -->
     <path
-        android:pathData="M16,6 h224 v224 h -224 z"
+        android:pathData="M16,16 h224 v224 h -224 z"
         android:strokeWidth="12"
         android:strokeColor="@color/grey_50"
         android:strokeLineJoin="round" />

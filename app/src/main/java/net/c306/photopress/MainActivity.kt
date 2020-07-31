@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true) {
                 (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
                     // Update UI to reflect image being shared
-                    newPostViewModel.setImageUri(it)
+                    newPostViewModel.setImageUris(listOf(it))
                     this.intent = null
                 }
             }

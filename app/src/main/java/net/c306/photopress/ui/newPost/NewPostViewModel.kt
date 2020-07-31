@@ -140,62 +140,52 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _postImages = MutableLiveData<MutableList<PostImage>>()
     val postImages: LiveData<MutableList<PostImage>> = _postImages
     
+    /**
+     * Set or clear selected image Uri(s). Called on selection of images by user, or on `newPost`.
+     */
+    fun setImageUris(value: List<Uri>?) {
+        _postImages.value =
+            if (value.isNullOrEmpty()) mutableListOf()
+            else value.map { PostImage(uri = it) }.toMutableList()
+        
+        updateState()
+    }
+    
+    /**
+     * Update [_postImages], usually called after [PostImage.FileDetails] attributes are updated.
+     */
     internal fun setPostImages(list: List<PostImage>) {
         _postImages.value = list.toMutableList()
     }
     
+    
+    /**
+     * Update a particular [PostImage] in [_postImages].
+     * Usually called after editing image attributes.
+     * If image is not in list, it is added at the end.
+     */
+    internal fun updatePostImage(image: PostImage) {
+        val list = _postImages.value ?: mutableListOf()
+        
+        val index = list.indexOfFirst { it.id == image.id }
+        
+        // If image in list, update it, else add it
+        if (index > -1) list[index] = image
+        else list.add(image)
+        
+        _postImages.value = list.toMutableList()
+    }
+    
     // Image Uri
-    val imageUri: LiveData<Uri?> = Transformations.switchMap(postImages) {
-        liveData { emit(it.getOrNull(0)?.uri) }
+    val singlePostImage = Transformations.switchMap(postImages) {
+        liveData { emit(it.getOrNull(0)) }
     }
     
     val imageCount = Transformations.switchMap(postImages) { list ->
         liveData { emit(list.filter { it.fileDetails != null }.size) }
     }
     
-    fun setImageUri(value: Uri?) {
-        // Reset image attributes
-        imageTitle.value = null
-        imageCaption.value = null
-        imageAltText.value = null
-        imageDescription.value = null
-        _postImages.value =
-            if (value != null) mutableListOf(PostImage(uri = value)) else mutableListOf()
-        
-        updateState()
-    }
     
-    fun setImageUris(value: List<Uri>?) {
-        
-        if (value.isNullOrEmpty()) {
-            // Reset image attributes
-            imageTitle.value = null
-            imageCaption.value = null
-            imageAltText.value = null
-            imageDescription.value = null
-    
-            _postImages.value = mutableListOf()
-        } else {
-            
-            // Reset image attributes
-            imageTitle.value = null
-            imageCaption.value = null
-            imageAltText.value = null
-            imageDescription.value = null
-            
-            _postImages.value = value.map { PostImage(uri = it) }.toMutableList()
-        }
-        
-        updateState()
-    }
-    
-    
-//    // Image File
-//    val fileDetails = Transformations.switchMap(imageUri) {
-//        MutableLiveData<FileDetails?>().apply {
-//            value = if (it == null) null else getFileName(it)
-//        }
-//    }
     
     // Title text
     val postTitle = MutableLiveData<String>()
@@ -203,40 +193,21 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Post tags
     val postTags = MutableLiveData<String>()
     
-    // Image caption
-    val imageCaption = MutableLiveData<String>()
+    // Post caption (same as image caption in case of single image post)
+    private val _postCaption = MutableLiveData<CharSequence>()
+    val postCaption: LiveData<CharSequence> = _postCaption
     
-    private val noCaptionPlaceholder = applicationContext.getString(R.string.new_post_placeholder_no_caption)
-    
-    val imageCaptionDisplayText = Transformations.switchMap(imageCaption) {
-        MutableLiveData<String>().apply {
-            value =
-                if (it.isNullOrBlank()) noCaptionPlaceholder
-                else it.trim()
-        }
+    internal fun setCaption(caption: CharSequence?) {
+        _postCaption.value = caption
     }
     
-    // Image name
-    val imageTitle = MutableLiveData<String>()
+    // Image whose attributes are being edited
+    val editingImage = MutableLiveData<PostImage?>()
     
-    // Image altText
-    val imageAltText = MutableLiveData<String>()
     
-    // Image description
-    val imageDescription = MutableLiveData<String>()
-    
-    // Image caption
-    val editingImageCaption = MutableLiveData<String>()
-    
-    // Image caption
-    val editingImageTitle = MutableLiveData<String>()
-    
-    // Image altText
-    val editingImageAltText = MutableLiveData<String>()
-    
-    // Image description
-    val editingImageDescription = MutableLiveData<String>()
-    
+    /**
+     * Post scheduling
+     */
     
     // Scheduled post time
     private val _scheduledDateTime = MutableLiveData<Long>()
@@ -265,7 +236,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         _publishedPost.value = null
         postTitle.value = null
         postTags.value = defaultTags.value
-        setImageUri(null)
+        
+        setCaption(null)
+        setImageUris(null)
         updateState()
     }
     
@@ -399,10 +372,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 blogId,
                 file,
                 mimeType.toMediaType(),
-                imageTitle.value,
-                imageCaption.value,
-                imageDescription.value,
-                imageAltText.value
+                image.name,
+                image.caption,
+                image.description,
+                image.altText
             )
             
             if (mediaError != null || media == null) {
@@ -518,35 +491,35 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         blogId: Int,
         file: File,
         mimeType: MediaType,
-        title: String? = null,
-        caption: String? = null,
-        description: String? = null,
-        alt: String? = null
+        title: CharSequence? = null,
+        caption: CharSequence? = null,
+        description: CharSequence? = null,
+        alt: CharSequence? = null
     ) = suspendCoroutine<UploadMediaResponse> { cont ->
         
         val imageBody = file.asRequestBody(mimeType)
         
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "media[0]",
-            title ?: file.name,
+            title?.toString() ?: file.name,
             imageBody
         )
         
         val captionAttr = MultipartBody.Part.createFormData(
             "attrs[0][caption]",
-            caption ?: ""
+            caption?.toString() ?: ""
         )
         val titleAttr = MultipartBody.Part.createFormData(
             "attrs[0][title]",
-            title ?: file.nameWithoutExtension
+            title?.toString() ?: file.nameWithoutExtension
         )
         val altAttr = MultipartBody.Part.createFormData(
             "attrs[0][alt]",
-            alt ?: title?: file.nameWithoutExtension
+            alt?.toString() ?: title?.toString() ?: file.nameWithoutExtension
         )
         val descriptionAttr = MultipartBody.Part.createFormData(
             "attrs[0][description]",
-            description ?: ""
+            description?.toString() ?: ""
         )
         
         ApiClient().getApiService(applicationContext)

@@ -10,7 +10,7 @@
         
         <variable
             name="fragmentHandler"
-            type="net.c306.photopress.ui.newPost.ImageAttributesFragment" />
+            type="net.c306.photopress.ui.newPost.ImageAttributesFragment.Handler" />
     </data>
     
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,7 +29,22 @@
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/ic_close"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/image_attributes_title" />
+                app:title="@string/image_attributes_title">
+                
+                <Button
+                    android:id="@+id/button_select_none"
+                    style="@style/IconButton.NoBorder"
+                    android:layout_marginEnd="@dimen/list_item_spacing_half"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:contentDescription="@string/string_done"
+                    android:drawableTint="@color/text_primary_on_surface"
+                    android:onClick="@{fragmentHandler::done}"
+                    android:tooltipText="@string/string_done"
+                    app:icon="@drawable/ic_checked" />
+                
+            </androidx.appcompat.widget.Toolbar>
         
         </com.google.android.material.appbar.AppBarLayout>
         
@@ -55,7 +70,7 @@
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences"
                     android:lines="1"
-                    android:text="@={viewmodel.editingImageTitle}" />
+                    android:text="@={viewmodel.editingImage.name}" />
             </com.google.android.material.textfield.TextInputLayout>
             
             <com.google.android.material.textfield.TextInputLayout
@@ -73,7 +88,7 @@
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences"
                     android:lines="1"
-                    android:text="@={viewmodel.editingImageCaption}" />
+                    android:text="@={viewmodel.editingImage.caption}" />
             </com.google.android.material.textfield.TextInputLayout>
             
             <com.google.android.material.textfield.TextInputLayout
@@ -92,7 +107,7 @@
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences"
                     android:lines="1"
-                    android:text="@={viewmodel.editingImageAltText}" />
+                    android:text="@={viewmodel.editingImage.altText}" />
             </com.google.android.material.textfield.TextInputLayout>
             
             <com.google.android.material.textfield.TextInputEditText
@@ -107,23 +122,13 @@
                 android:lineSpacingMultiplier="1.25"
                 android:lines="4"
                 android:nextFocusDown="@string/button_text_done"
-                android:text="@={viewmodel.editingImageDescription}" />
+                android:text="@={viewmodel.editingImage.description}" />
             
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
             
-            <Button
-                android:id="@+id/button_cancel_image_attributes"
-                style="@style/Button.Secondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:onClick="@{() -> fragmentHandler.done()}"
-                android:text="@string/button_text_done" />
-        
-        
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

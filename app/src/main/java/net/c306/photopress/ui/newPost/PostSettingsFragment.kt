@@ -69,15 +69,12 @@ class PostSettingsFragment: AppBarNoBottomNavFragment() {
     }
     
     
-    inner class Handler() {
+    inner class Handler {
         /**
          * Save values to real variables and close fragment
          */
         fun done() {
-            newPostViewModel.imageTitle.value = newPostViewModel.editingImageTitle.value
-            newPostViewModel.imageAltText.value = newPostViewModel.editingImageAltText.value
-            newPostViewModel.imageCaption.value = newPostViewModel.editingImageCaption.value
-            newPostViewModel.imageDescription.value = newPostViewModel.editingImageDescription.value
+            // TODO: 31/07/2020 Save post settings to view model
             dismiss()
         }
     }

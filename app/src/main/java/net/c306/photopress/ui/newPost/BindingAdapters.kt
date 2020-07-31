@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 object BindingAdapters {
@@ -21,5 +22,12 @@ object BindingAdapters {
             .optionalFitCenter()
             .into(view)
     }
-
+    
+    
+    @BindingAdapter("app:recyclerViewAdapter")
+    @JvmStatic
+    fun setRecyclerViewAdapter(view: RecyclerView, adapter: RecyclerView.Adapter<*>?) {
+        adapter?.also { view.adapter = it }
+    }
+    
 }

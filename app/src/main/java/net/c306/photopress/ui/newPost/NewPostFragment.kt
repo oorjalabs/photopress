@@ -9,12 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostNewBinding
@@ -71,7 +69,11 @@ class NewPostFragment : BottomNavFragment() {
                 val updatedWithFileDetails = postImagesList.map {
                     if (it.fileDetails != null) return@map it
                     
-                    it.copy(fileDetails = newPostViewModel.getFileName(it.uri))
+                    val fileDetails = newPostViewModel.getFileName(it.uri)
+                    it.copy(
+                        fileDetails = fileDetails,
+                        name = fileDetails.fileName
+                    )
                 }
                 
                 newPostViewModel.setPostImages(updatedWithFileDetails)
@@ -87,15 +89,20 @@ class NewPostFragment : BottomNavFragment() {
             } else {
                 
                 // When only one image is selected, set image name as title if no title is present
-                val image = postImagesList[0].fileDetails!!
+                val image = postImagesList[0]
+                val imageFileDetails = image.fileDetails!!
+                val imageCaption = image.caption
                 
-                if (image.fileName.isBlank()) return@Observer
+                if (imageFileDetails.fileName.isBlank()) return@Observer
                 
-                if (newPostViewModel.postTitle.value.isNullOrBlank()) {
-                    newPostViewModel.postTitle.value = image.fileName
+                // Set image caption as post caption if not already set
+                if (newPostViewModel.postCaption.value.isNullOrBlank() && !imageCaption.isNullOrBlank()) {
+                    newPostViewModel.setCaption(imageCaption)
                 }
-                if (newPostViewModel.imageTitle.value.isNullOrBlank()) {
-                    newPostViewModel.imageTitle.value = image.fileName
+                
+                // Set image name as post title if not already set
+                if (newPostViewModel.postTitle.value.isNullOrBlank()) {
+                    newPostViewModel.postTitle.value = imageFileDetails.fileName
                 }
             }
             
@@ -133,20 +140,8 @@ class NewPostFragment : BottomNavFragment() {
             return
         }
         
-        data?.data?.also {imageUri ->
-            newPostViewModel.setImageUri(imageUri)
-        }
-    }
-    
-    
-    companion object {
-        const val RC_PHOTO_PICKER = 9723
-        
-        @BindingAdapter("app:recyclerViewAdapter")
-        @JvmStatic
-        fun setRecyclerViewAdapter(view: RecyclerView, adapter: RecyclerView.Adapter<*>?) {
-            adapter?.also { view.adapter = it }
-        }
+        // data.data contains imageUri in case of single image selection
+        data?.data?.also { newPostViewModel.setImageUris(listOf(it)) }
     }
     
     
@@ -169,18 +164,28 @@ class NewPostFragment : BottomNavFragment() {
             
             startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
         }
-        
+    
+        /**
+         * Open image attributes for the first image in postImages. If there are no images, do nothing and return
+         */
         fun openImageAttributes() {
             openImageAttributes(newPostViewModel.postImages.value?.getOrNull(0) ?: return)
         }
-        
+    
+        /**
+         * Open image attributes for editing
+         */
         fun openImageAttributes(image: PostImage) {
-            // TODO: 30/07/2020 use selected image
-            newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
-            newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
-            newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
-            newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
-            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes())
+            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
+        }
+        
+        
+        /**
+         * Open post caption dialog, only relevant in gallery mode
+         */
+        fun openPostCaptionDialog(view: View) {
+            // TODO: 31/07/2020 Open post caption dialog, only relevant in gallery mode
+//            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
         }
         
         fun openPostSettings(view: View) {
@@ -191,6 +196,11 @@ class NewPostFragment : BottomNavFragment() {
             findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
         }
         
+    }
+    
+    
+    companion object {
+        const val RC_PHOTO_PICKER = 9723
     }
     
 }

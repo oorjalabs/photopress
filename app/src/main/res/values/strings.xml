@@ -30,7 +30,7 @@
     <string name="hint_search">Search</string>
     <string name="dialog_blog_list_empty_view">No blogs found. Would you like to create a new blog?</string>
     <string name="blog_selector_title">Select blog</string>
-    <string name="button_text_done">Done</string>
+    <string name="button_text_done">@string/string_done</string>
     <string name="button_text_cancel">Cancel</string>
     <string name="button_select_blog">Select a blog</string>
     <string name="posting_on_blog">Selected blog: %1$s</string>
@@ -71,6 +71,7 @@
     
     <!--  Generic strings  -->
     <string name="string_ok">OK</string>
+    <string name="string_done">Done</string>
     <string name="string_cancel">Cancel</string>
     <string name="string_publish">Publish</string>
     <string name="string_schedule">Schedule</string>
