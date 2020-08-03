@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/welcomeFragment">
+<!--    app:startDestination="@+id/navigation_post_new">-->
     
     <fragment
         android:id="@+id/navigation_post_list"

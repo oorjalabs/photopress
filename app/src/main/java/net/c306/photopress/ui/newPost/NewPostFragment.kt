@@ -94,7 +94,28 @@ class NewPostFragment : BottomNavFragment() {
             // Update gallery adapter
             mGalleryAdapter.setList(postImagesList)
             
+            // Set image caption as post caption if there is only one image
+            if (postImagesList.size == 1 && !postImagesList[0].caption.isNullOrBlank()) {
+                val imageCaption = postImagesList[0].caption
+                val postCaption = newPostViewModel.postCaption.value
+                
+                if (imageCaption != postCaption) newPostViewModel.postCaption.value = postImagesList[0].caption
+            }
         })
+        
+        
+        // Update image caption from post caption if there is only one image
+        newPostViewModel.postCaption.observe(viewLifecycleOwner, Observer {
+            if (it.isNullOrBlank() || newPostViewModel.imageCount.value != 1) return@Observer
+            
+            val image = newPostViewModel.postImages.value?.getOrNull(0) ?: return@Observer
+    
+            val imageCaption = image.caption
+            val postCaption = it
+            
+            if (imageCaption != postCaption) newPostViewModel.updatePostImage(image.copy(caption = it))
+        })
+        
         
         // Update enabled state for inputs based on fragment state
         newPostViewModel.state.observe(viewLifecycleOwner, Observer {
@@ -182,16 +203,8 @@ class NewPostFragment : BottomNavFragment() {
         fun openImageAttributes(image: PostImage) {
             findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
         }
-        
-        
-        /**
-         * Open post caption dialog, only relevant in gallery mode
-         */
-        fun openPostCaptionDialog(view: View) {
-            // TODO: 31/07/2020 Open post caption dialog, only relevant in gallery mode
-//            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
-        }
-        
+    
+    
         fun openPostSettings(view: View) {
             findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
         }

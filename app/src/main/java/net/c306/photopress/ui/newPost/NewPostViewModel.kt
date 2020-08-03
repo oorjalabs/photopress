@@ -202,12 +202,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val postTags = MutableLiveData<String>()
     
     // Post caption (same as image caption in case of single image post)
-    private val _postCaption = MutableLiveData<CharSequence>()
-    val postCaption: LiveData<CharSequence> = _postCaption
-    
-    private fun resetPostCaption() {
-        _postCaption.value = null
-    }
+    val postCaption = MutableLiveData<CharSequence>()
     
     // Image whose attributes are being edited
     val editingImage = MutableLiveData<PostImage?>()
@@ -244,8 +239,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         _publishedPost.value = null
         postTitle.value = null
         postTags.value = defaultTags.value
+        postCaption.value = null
         
-        resetPostCaption()
         setImageUris(null)
         updateState()
     }

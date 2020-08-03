@@ -122,7 +122,8 @@
     <string name="new_post_hint_post_title">Cycle Love</string>
     <string name="new_post_label_tags">Tags (comma separated)</string>
     <string name="new_post_hint_post_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>
-    <string name="new_post_placeholder_no_caption">Add caption</string>
+    <string name="new_post_placeholder_image_caption">Add image caption</string>
+    <string name="new_post_placeholder_gallery_caption">Add gallery caption</string>
     
     <string name="new_post_button_upload_post">Upload post</string>
     <string name="new_post_cd_button_post_settings">Open post settings</string>

@@ -38,12 +38,11 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0801.0.12.9
+v. 2020.0803.0.12.10
 
     [ ] Gallery
         [ ] Upload all photos then publish as gallery
         [ ] Reorder photos (different screen with drag and drop?)
-        [ ] Set post caption (different from image caption in gallery posts)
         [ ] Remove photos button on each photo
 
     [ ] Photo details screen
@@ -56,6 +55,18 @@ v. 2020.0801.0.12.9
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0803.0.12.9
+
+    [-] Gallery
+        [X] Set post caption (different from image caption in gallery posts)
+        [X] Show image captions in gallery
+
+    [-] Landscape view updates
 
 
 ------------------

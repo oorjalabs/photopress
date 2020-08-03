@@ -8,11 +8,11 @@
         <variable
             name="viewmodel"
             type="net.c306.photopress.ui.newPost.NewPostViewModel" />
-    
+        
         <variable
             name="avm"
             type="net.c306.photopress.AppViewModel" />
-    
+        
         <variable
             name="galleryAdapter"
             type="net.c306.photopress.ui.newPost.gallery.GalleryAdapter" />
@@ -35,6 +35,7 @@
             android:id="@+id/photo_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@drawable/bg_rounded_dashed"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,50 +59,33 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-    
+            
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-        
+                
                 <androidx.recyclerview.widget.RecyclerView
-                    android:layout_gravity="center"
                     android:id="@+id/added_gallery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/list_item_spacing_quarter"
                     android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                    android:padding="@dimen/list_item_spacing_quarter"
                     app:recyclerViewAdapter="@{galleryAdapter}"
                     tools:itemCount="15"
-                    tools:spanCount="3"
-                    tools:listitem="@layout/item_gallery_post" />
-    
+                    tools:listitem="@layout/item_gallery_post"
+                    tools:spanCount="3" />
+            
             </FrameLayout>
-    
-            <TextView
-                android:id="@+id/text_image_caption"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="#64ffffff"
-                android:gravity="center"
-                android:onClick="@{() -> handler.openImageAttributes()}"
-                android:minHeight="@dimen/min_touch_size"
-                android:paddingHorizontal="@dimen/min_touch_size"
-                android:paddingVertical="4dp"
-                android:text="@{viewmodel.postCaption}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textColor="?android:textColorSecondary"
-                android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="@string/new_post_placeholder_no_caption" />
+            
             
             <Button
                 android:id="@+id/button_change_image"
                 style="@style/IconButton.NoBorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#64ffffff"
                 android:contentDescription="@string/new_post_cd_change_photo"
                 android:onClick="@{() -> handler.openPhotoPicker(false)}"
                 android:tooltipText="@string/new_post_cd_change_photo"
@@ -115,13 +99,14 @@
                 style="@style/IconButton.NoBorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#64ffffff"
                 android:contentDescription="@string/new_post_cd_photo_attributes"
                 android:onClick="@{() -> handler.openPhotoPicker(true)}"
                 android:tooltipText="@string/new_post_cd_photo_attributes"
                 android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/ic_photo_attributes"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
             
             <Button
                 android:id="@+id/button_add_more_photos"
@@ -135,33 +120,33 @@
                 app:icon="@drawable/ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-            
+        
         </androidx.constraintlayout.widget.ConstraintLayout>
         
         <ScrollView
             android:id="@+id/post_content_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/photo_container"
             app:layout_constraintTop_toTopOf="parent">
             
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:padding="@dimen/activity_vertical_margin">
                 
                 <TextView
                     android:id="@+id/blog_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:text="@{viewmodel.selectedBlog.name.empty ? @string/new_post_label_no_blog_selected :  @string/new_post_label_posting_as_author_to_blog(avm.userDisplayName, viewmodel.selectedBlog.name)}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Selected blog name" />
+                    tools:text="@string/new_post_label_no_blog_selected" />
                 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/holder_title"
@@ -169,10 +154,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/list_item_spacing_half"
-                    android:hint="@string/new_post_label_post_title"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/blog_name">
+                    android:hint="@string/new_post_label_post_title">
                     
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/input_post_title"
@@ -187,50 +169,77 @@
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/holder_tags"
+                    android:id="@+id/holder_post_caption"
                     style="@style/UnderlinedTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:hint="@string/new_post_label_tags"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/holder_title">
+                    android:layout_marginTop="@dimen/list_item_spacing_half"
+                    android:enabled="@{viewmodel.inputsEnabled}"
+                    android:hint="@{viewmodel.imageCount &lt; 2 ? @string/new_post_placeholder_image_caption : @string/new_post_placeholder_gallery_caption}"
+                    tools:hint="@string/new_post_placeholder_image_caption">
                     
-                    <MultiAutoCompleteTextView
-                        android:id="@+id/input_post_tags"
+                    <EditText
+                        android:id="@+id/input_post_caption"
                         style="@style/UnderlinedTextInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:completionThreshold="0"
                         android:enabled="@{viewmodel.inputsEnabled}"
                         android:importantForAutofill="no"
-                        android:inputType="text"
-                        android:lines="1"
-                        android:text="@={viewmodel.postTags}"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:text="@={viewmodel.postCaption}"
+                        tools:text="This is a long caption to test what happens to the layout when the caption and title are both long, very long..."
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
+                
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/list_item_spacing_half">
+                    
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_upload"
+                        style="@style/Button.Secondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@{viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
+                        android:clickable="@{viewmodel.state == State.READY}"
+                        android:contentDescription="@string/new_post_cd_fab_publish"
+                        android:focusable="@{viewmodel.state == State.READY}"
+                        android:onClick="@{handler::onPublishPressed}"
+                        android:text="@string/new_post_button_upload_post"
+                        android:tooltipText="@string/new_post_cd_fab_publish"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/button_post_settings"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_post_settings"
+                        style="@style/GroupButton.Secondary.IconOnly"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@{viewmodel.state == State.HAVE_IMAGE || viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
+                        android:clickable="@{viewmodel.state == State.HAVE_IMAGE || viewmodel.state == State.READY}"
+                        android:contentDescription="@string/new_post_cd_button_post_settings"
+                        android:focusable="@{viewmodel.state == State.HAVE_IMAGE || viewmodel.state == State.READY}"
+                        android:onClick="@{handler::openPostSettings}"
+                        android:tooltipText="@string/new_post_cd_button_post_settings"
+                        app:icon="@drawable/ic_settings"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/button_upload"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                
+                </com.google.android.material.button.MaterialButtonToggleGroup>
             
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
         
         </ScrollView>
-        
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_publish"
-            style="@style/Widget.MaterialComponents.FloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:backgroundTint="@{viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
-            android:clickable="@{viewmodel.state == State.READY}"
-            android:contentDescription="@string/new_post_cd_fab_publish"
-            android:focusable="@{viewmodel.state == State.READY}"
-            android:onClick="@{handler::onPublishPressed}"
-            android:tooltipText="@string/new_post_cd_fab_publish"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_publish"
-            app:tint="?android:textColorPrimaryInverse" />
         
         <View
             android:id="@+id/scrim_publishing"
