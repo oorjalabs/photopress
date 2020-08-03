@@ -7,11 +7,15 @@
         
         <variable
             name="image"
-            type="net.c306.photopress.ui.newPost.PostImage" />
+            type="net.c306.photopress.database.PostImage" />
+        
+        <variable
+            name="imageCount"
+            type="Integer" />
         
         <variable
             name="handler"
-            type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
+            type="net.c306.photopress.ui.newPost.NewPostFragment.Handler" />
         
         <import type="android.view.View" />
     </data>
@@ -46,7 +50,7 @@
             android:paddingHorizontal="@dimen/list_item_spacing_half"
             android:paddingVertical="@dimen/list_item_spacing_quarter"
             android:text="@{image.caption}"
-            android:visibility="@{image.caption == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{image.caption == null || imageCount &lt; 2 ? View.GONE : View.VISIBLE}"
             tools:text="Caption for this image" />
     </FrameLayout>
 </layout>

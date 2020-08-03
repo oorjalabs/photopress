@@ -1,8 +1,8 @@
 package net.c306.photopress.api
 
 import androidx.annotation.Keep
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import net.c306.photopress.utils.Json
 
 @Keep
 data class WPTag(
@@ -18,7 +18,7 @@ data class WPTag(
         const val FIELDS_STRING = "ID,name,post_count,slug"
         
         fun fromJson(jsonString: String): WPTag {
-            return Gson().fromJson(jsonString, WPTag::class.java)
+            return Json.getInstance().fromJson(jsonString, WPTag::class.java)
         }
         
         const val ARG_ORDER_BY = "order_by"
@@ -42,7 +42,7 @@ data class WPTag(
     )
     
     fun toJson(): String {
-        return Gson().toJson(this)
+        return Json.getInstance().toJson(this)
     }
     
 }

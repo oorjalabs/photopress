@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
+import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
 import net.c306.photopress.ui.newPost.gallery.GalleryAdapter
@@ -29,7 +30,7 @@ class NewPostFragment : BottomNavFragment() {
     
     private lateinit var binding: FragmentPostNewBinding
     
-    private val mHandler = BindingHandler()
+    private val mHandler = Handler()
     
     private val mGalleryAdapter by lazy { GalleryAdapter(mHandler) }
     
@@ -171,7 +172,7 @@ class NewPostFragment : BottomNavFragment() {
      * Public methods that can be called from data binding
      */
     @Suppress("UNUSED_PARAMETER")
-    inner class BindingHandler {
+    inner class Handler {
         
         /**
          * Open file picker to select file location for syncing

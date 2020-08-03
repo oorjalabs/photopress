@@ -3,11 +3,11 @@ package net.c306.photopress.ui.newPost.gallery
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.ItemGalleryPostBinding
 import net.c306.photopress.ui.newPost.NewPostFragment
-import net.c306.photopress.ui.newPost.PostImage
 
-class GalleryAdapter(private val handler: NewPostFragment.BindingHandler) : RecyclerView.Adapter<GalleryAdapter.ImageItemViewHolder>() {
+class GalleryAdapter(private val handler: NewPostFragment.Handler) : RecyclerView.Adapter<GalleryAdapter.ImageItemViewHolder>() {
     
     private var list: List<PostImage> = emptyList()
     
@@ -29,7 +29,11 @@ class GalleryAdapter(private val handler: NewPostFragment.BindingHandler) : Recy
     
     override fun onBindViewHolder(holder: ImageItemViewHolder, position: Int) {
         list.getOrNull(position)?.also {
-            holder.bind(it, handler)
+            holder.bind(
+                it,
+                list.size,
+                handler
+            )
         }
     }
     
@@ -38,10 +42,12 @@ class GalleryAdapter(private val handler: NewPostFragment.BindingHandler) : Recy
         
         fun bind(
             image: PostImage,
-            handler: NewPostFragment.BindingHandler
+            imageCount: Int,
+            handler: NewPostFragment.Handler
         ) {
             binding.image = image
             binding.handler = handler
+            binding.imageCount = imageCount
             binding.root.tag = image
             binding.executePendingBindings()
         }

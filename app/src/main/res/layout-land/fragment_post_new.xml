@@ -19,7 +19,7 @@
         
         <variable
             name="handler"
-            type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
+            type="net.c306.photopress.ui.newPost.NewPostFragment.Handler" />
         
         <import type="net.c306.photopress.ui.newPost.NewPostViewModel.State" />
         

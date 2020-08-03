@@ -1,8 +1,8 @@
 package net.c306.photopress.api
 
 import androidx.annotation.Keep
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import net.c306.photopress.utils.Json
 
 @Keep
 data class WPCategory(
@@ -19,7 +19,7 @@ data class WPCategory(
         const val FIELDS_STRING = "ID,name,post_count,parent"
         
         fun fromJson(jsonString: String): WPCategory {
-            return Gson().fromJson(jsonString, WPCategory::class.java)
+            return Json.getInstance().fromJson(jsonString, WPCategory::class.java)
         }
         
         const val ARG_ORDER_BY = "order_by"
@@ -43,7 +43,7 @@ data class WPCategory(
                                     )
     
     fun toJson(): String {
-        return Gson().toJson(this)
+        return Json.getInstance().toJson(this)
     }
     
 }

@@ -9,7 +9,7 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString = "0.12.9"
+def versionString = "0.12.10"
 def versionNumber = 22
 
 static def getDate() {
@@ -151,6 +151,13 @@ dependencies {
     // Viewpager for welcome screen
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'com.airbnb.android:lottie:3.4.1'
+
+    // Room database
+    def room_version = "2.2.5"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    // testImplementation "androidx.room:room-testing:$room_version"
 
     // Testing
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

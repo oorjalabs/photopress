@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
 import net.c306.photopress.api.*
+import net.c306.photopress.database.PostImage
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
 import okhttp3.MediaType
@@ -202,7 +203,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val postTags = MutableLiveData<String>()
     
     // Post caption (same as image caption in case of single image post)
-    val postCaption = MutableLiveData<CharSequence>()
+    val postCaption = MutableLiveData<String>()
     
     // Image whose attributes are being edited
     val editingImage = MutableLiveData<PostImage?>()
@@ -612,10 +613,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 .replace("%%MEDIA_ALT%%", media.alt ?: "")
                 .replace("%%MEDIA_LARGE%%", media.thumbnails?.large ?: media.url)
                 .replace("%%MEDIA_URL%%", media.url)
-                .replace(
-                    "%%MEDIA_CAPTION%%",
-                    media.caption ?: title
-                )
+                .replace("%%MEDIA_CAPTION%%", media.caption ?: title)
         } else {
             singleImageClassicTemplate
                 .replace("%%MEDIA_ID%%", media.id.toString())

@@ -19,7 +19,7 @@
         
         <variable
             name="handler"
-            type="net.c306.photopress.ui.newPost.NewPostFragment.BindingHandler" />
+            type="net.c306.photopress.ui.newPost.NewPostFragment.Handler" />
         
         <import type="net.c306.photopress.ui.newPost.NewPostViewModel.State" />
         
@@ -239,6 +239,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="@dimen/alpha_scrim_publishing"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
             android:background="?colorSurface"
             android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
             tools:visibility="gone" />

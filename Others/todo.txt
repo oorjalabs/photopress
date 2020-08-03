@@ -38,15 +38,23 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0803.0.12.10
+v. 2020.0803.0.12.11
+
+    [ ] Add database
+        [ ] Store post as `uploadPending` true in database
+
+    [ ] Add worker
+        [ ] Upload all `uploadPending` posts from database
 
     [ ] Gallery
         [ ] Upload all photos then publish as gallery
         [ ] Reorder photos (different screen with drag and drop?)
         [ ] Remove photos button on each photo
+        [ ] Indicate featured image with pin
 
     [ ] Photo details screen
         [ ] Show photo thumbnail
+        [ ] Mark image as featured image
         [ ] Remove photo button (if multiple photos, aka gallery mode)
 
     [ ] Post settings screen
@@ -55,6 +63,15 @@ v. 2020.0803.0.12.10
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0803.0.12.10
+
+    [-] Add database
+        [X] Add entities, dao, app database
 
 
 ------------------
