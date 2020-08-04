@@ -41,63 +41,6 @@ class UploadWorker(context: Context, workerParams: WorkerParameters) :
         
 //        pendingPosts.forEach { pendingPost ->
 //
-//            // Get local images for pending posts from database and upload them
-//            val uploadedImages = pendingPost.postImages
-//                .filter { it.uploadedImageId != null || it.localImageId != null }
-//                .map {
-//                    it.localImageId?.let { localImageId ->
-//                        // Get local image from database
-//                        val localImage = localImagesDb.getById(localImageId) ?: return@map null
-//
-//                        // Upload image to server
-//                        val uploadImageResult = uploadImage(pendingPost.blogId, localImage)
-//
-//                        if (uploadImageResult.media == null) {
-//                            // Error uploading image
-//                            Timber.w("Error uploading image: ${uploadImageResult.errorMessage}")
-//                            return@map null
-//                        }
-//
-//                        // Save uploaded media details to database
-//                        val uploadedMedia = uploadImageResult.media.toUploadedMedia()
-//                        uploadedImagesDb.insert(uploadedMedia)
-//
-//                        Pair(it, uploadedMedia.id)
-//                    }
-//                    ?: Pair(it, it.uploadedImageId)
-//                }
-//
-//
-//            // If error uploading some images, write post back to database (in case some of images were updated) then return with error/retry
-//            val hadFailedUploads = uploadedImages.any { it == null }
-//            if (hadFailedUploads) {
-//
-//                val updatedImages = pendingPost.postImages.map { image ->
-//
-//                    // Get image id if image was uploaded successfully
-//                    val uploadedImageId = uploadedImages.find {
-//                        image.localImageId != null && it?.first?.localImageId == image.localImageId
-//                    }?.second
-//
-//                    // Return uploaded image or original image
-//                    uploadedImageId?.let {
-//                        PhotoPressPost.PhotoPostImage(
-//                            image.order,
-//                            uploadedImageId = uploadedImageId
-//                        )
-//                    } ?: image
-//                }
-//
-//                // Update post in db with updated images
-//                postsDb.update(pendingPost.copy(postImages = updatedImages))
-//
-//                return@forEach
-//            }
-//
-//
-//            // TODO: 04/08/2020 Create and upload post content
-//
-//
 //        }
         
         return@withContext Result.success()

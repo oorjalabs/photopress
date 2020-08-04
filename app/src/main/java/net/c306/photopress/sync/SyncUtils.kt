@@ -144,7 +144,6 @@ class SyncUtils(context: Context) {
             
             val firstFailedUpload = uploadedMedia.firstOrNull { it.errorMessage != null }
             if (firstFailedUpload != null) {
-                // TODO: 04/08/2020 update image list and return an error response
                 return@withContext PublishPostResponse(
                     errorMessage = firstFailedUpload.errorMessage,
                     publishedPost = null,
@@ -341,18 +340,19 @@ class SyncUtils(context: Context) {
             
             usingBlockEditor                     -> {
                 // Top section of gallery post including image ids
-                BLOCK_TEMPLATE_GALLERY_TOP.replace("", galleryImagesString) +
+                BLOCK_TEMPLATE_GALLERY_TOP.replace("%%MEDIA_ID_LIST%%", galleryImagesString) +
                 // Images
                 images.joinToString {
+                    val imageMedia = it.media!!
                     BLOCK_TEMPLATE_GALLERY_IMAGE
-                        .replace("%%MEDIA_ID%%", images[0].media!!.id.toString())
-                        .replace("%%MEDIA_ALT%%", images[0].media!!.alt ?: "")
+                        .replace("%%MEDIA_ID%%", imageMedia.id.toString())
+                        .replace("%%MEDIA_ALT%%", imageMedia.alt ?: "")
                         .replace(
                             "%%MEDIA_LARGE%%",
-                            images[0].media!!.thumbnails?.large ?: images[0].media!!.url
+                            imageMedia.thumbnails?.large ?: imageMedia.url
                         )
-                        .replace("%%MEDIA_URL%%", images[0].media!!.url)
-                        .replace("%%MEDIA_CAPTION%%", images[0].media!!.caption ?: post.title)
+                        .replace("%%MEDIA_URL%%", imageMedia.url)
+                        .replace("%%MEDIA_CAPTION%%", imageMedia.caption ?: post.title)
                 } +
                 // Bottom section of gallery post, including post caption
                 BLOCK_TEMPLATE_GALLERY_BOTTOM.replace("%%POST_CAPTION%%", post.postCaption) +
@@ -362,7 +362,8 @@ class SyncUtils(context: Context) {
             
             else                                 -> {
                 CLASSIC_TEMPLATE_GALLERY
-                    .replace("%%MEDIA_ID%%", galleryImagesString)
+                    .replace("%%MEDIA_ID_LIST%%", galleryImagesString)
+                    .replace("%%POST_CAPTION%%", post.postCaption)
             }
         }
         
@@ -467,7 +468,7 @@ class SyncUtils(context: Context) {
     """
         
         private const val CLASSIC_TEMPLATE_GALLERY = """
-            [gallery ids="%%MEDIA_IDS%%" columns="1" size="large"]
+            [gallery ids="%%MEDIA_ID_LIST%%" columns="1" size="large"]
             %%POST_CAPTION%%
             <p class="has-text-color has-small-font-size has-dark-gray-color">
                 Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a>

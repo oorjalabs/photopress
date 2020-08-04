@@ -1,4 +1,6 @@
-
+WP Console
+/sites/133419388/posts/226?status=any&context=edit
+/me/sites
 
 ------------------
 
@@ -38,7 +40,7 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0805.0.12.13
+v. 2020.0805.0.12.14
 
     [ ] Sync
         [ ] ViewModel
@@ -68,6 +70,15 @@ v. 2020.0805.0.12.13
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0804.0.12.13
+
+    [-] Gallery
+        [X] Upload all photos then publish as gallery - bug fix
 
 
 ------------------
