@@ -38,10 +38,7 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0803.0.12.11
-
-    [ ] Add database
-        [ ] Store post as `uploadPending` true in database
+v. 2020.0804.0.12.12
 
     [ ] Add worker
         [ ] Upload all `uploadPending` posts from database
@@ -63,6 +60,15 @@ v. 2020.0803.0.12.11
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0803.0.12.11
+
+    [X] Add database
+        [X] Store post as `uploadPending` true in database
 
 
 ------------------

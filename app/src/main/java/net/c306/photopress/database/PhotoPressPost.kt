@@ -27,8 +27,8 @@ data class PhotoPressPost(
     @ColumnInfo(name = "title")
     val title: String,
     
-    @ColumnInfo(name = "content")
-    val content: String,
+    @ColumnInfo(name = "post_caption")
+    val postCaption: String,
     
     @ColumnInfo(name = "tags")
     val tags: List<String> = emptyList(),
@@ -43,7 +43,7 @@ data class PhotoPressPost(
     val postThumbnail: PhotoPostImage,
     
     @ColumnInfo(name = "status")
-    val status: PhotoPostStatus = PhotoPostStatus.PUBLISH,
+    val status: PhotoPostStatus = PhotoPostStatus.LOCAL_DRAFT,
     
     @ColumnInfo(name = "format")
     val format: WPBlogPost.PostFormat = WPBlogPost.PostFormat.DEFAULT,

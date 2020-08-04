@@ -6,6 +6,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlin.random.Random
 
 /**
  * Class stored to save image details.
@@ -15,8 +16,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "local_media", indices = [Index(value = ["id"], unique = true)])
 data class PostImage(
     
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Int = generateId(),
     
     @ColumnInfo(name = "uri")
     val uri: Uri,
@@ -41,4 +42,8 @@ data class PostImage(
         val fileName: String,
         val mimeType: String
     )
+    
+    companion object {
+        fun generateId(): Int = Random.nextInt(0, Int.MAX_VALUE)
+    }
 }

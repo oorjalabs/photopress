@@ -14,6 +14,8 @@ import kotlinx.coroutines.withContext
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
 import net.c306.photopress.api.*
+import net.c306.photopress.database.AppDatabase
+import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.UserPrefs
@@ -38,7 +40,7 @@ import kotlin.coroutines.suspendCoroutine
 class NewPostViewModel(application: Application) : AndroidViewModel(application) {
     
     private val applicationContext = application.applicationContext
-    
+    private val postsDatabase = AppDatabase.getPostsInstance(applicationContext)
     
     // Fragment state
     enum class State {
@@ -335,6 +337,64 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             fileName,
             mimeType
         )
+    }
+    
+    
+    /**
+     * Save post details to database and start worker to upload post
+     */
+    fun publishPostEnqueue(saveAsDraft: Boolean = false, scheduledTime: Long? = null) {
+        
+        val blogId = selectedBlogId.value
+        val title = postTitle.value
+        val images = postImages.value
+        val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
+            .apply { add(applicationContext.getString(R.string.app_post_tag)) }
+            .filter { !it.isBlank() }
+            .distinct()
+    
+        if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
+            Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
+            Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+        
+        val status = when {
+            saveAsDraft           -> PhotoPressPost.PhotoPostStatus.DRAFT
+            scheduledTime != null -> PhotoPressPost.PhotoPostStatus.SCHEDULE
+            else                  -> PhotoPressPost.PhotoPostStatus.PUBLISH
+        }
+        
+        viewModelScope.launch {
+            
+            // Save all images to local images database
+            AppDatabase.getLocalImagesInstance(applicationContext)
+                .insertAll(images)
+            
+            // Convert images to PhotoPostImage objects
+            val postImages = images.mapIndexed { index, postImage ->
+                PhotoPressPost.PhotoPostImage(order = index, localImageId = postImage.id)
+            }
+            
+            // Save post to database
+            postsDatabase.insert(
+                    PhotoPressPost(
+                        blogId = blogId,
+                        title = title,
+                        postCaption = postCaption.value ?: "",
+                        tags = tags,
+                        postImages = postImages,
+                        // TODO: 03/08/2020 First image if only one image, else get set image
+                        postThumbnail = postImages[0],
+                        status = status,
+                        uploadPending = true
+                    )
+                )
+            
+            // TODO: 04/08/2020 Schedule worker to start posting
+            
+        }
     }
     
     
