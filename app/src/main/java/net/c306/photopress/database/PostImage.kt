@@ -2,10 +2,7 @@ package net.c306.photopress.database
 
 import android.net.Uri
 import androidx.annotation.Keep
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import kotlin.random.Random
 
 /**
@@ -13,11 +10,29 @@ import kotlin.random.Random
  * Some properties are `var` so they can be updated using two-way data binding.
  */
 @Keep
-@Entity(tableName = "local_media", indices = [Index(value = ["id"], unique = true)])
+@Entity(
+    tableName = "local_media",
+    foreignKeys = [
+        ForeignKey(
+            entity = UploadedMedia::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("uploaded_media_id")
+        ),
+        ForeignKey(
+            entity = PhotoPressPost::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("post_id")
+        )
+    ],
+    indices = [Index(value = ["id"], unique = true)]
+)
 data class PostImage(
     
     @PrimaryKey
     val id: Int = generateId(),
+    
+    @ColumnInfo(name = "order")
+    val order: Int,
     
     @ColumnInfo(name = "uri")
     val uri: Uri,
@@ -25,7 +40,7 @@ data class PostImage(
     @ColumnInfo(name = "caption")
     var caption: String? = null,
     
-    @ColumnInfo(name = "altText")
+    @ColumnInfo(name = "alt_text")
     var altText: String? = null,
     
     @ColumnInfo(name = "description")
@@ -34,8 +49,14 @@ data class PostImage(
     @ColumnInfo(name = "name")
     var name: String? = null,
     
-    @ColumnInfo(name = "fileDetails")
-    val fileDetails: FileDetails? = null
+    @ColumnInfo(name = "file_details")
+    val fileDetails: FileDetails? = null,
+    
+    @ColumnInfo(name = "uploaded_media_id")
+    val uploadedMediaId: Int? = null,
+    
+    @ColumnInfo(name = "post_id")
+    val postId: Int? = null
     
 ) {
     data class FileDetails(

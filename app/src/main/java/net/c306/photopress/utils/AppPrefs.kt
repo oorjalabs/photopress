@@ -22,8 +22,8 @@ class AppPrefs (context: Context) : BasePrefs() {
         private const val KEY_APP_VERSION = "key_app_version"
         private const val KEY_NAMED_APP_VERSION = "key_named_app_version"
         private const val KEY_SHOW_UPDATE_NOTES = "key_app_updated_ohf8whf38bi"
-    
-    
+        
+        
         // This name is used in backup_descriptor to deny backups.
         // Change there too if you change here.
         private const val APP_PREFS_NAME = "SL6DpzcSt1jL2aIZ"

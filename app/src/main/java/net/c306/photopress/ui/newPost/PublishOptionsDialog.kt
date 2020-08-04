@@ -76,7 +76,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                 confirmationRC ->  {
                     if (it.result) {
                         // Publish with schedule and close dialog
-                        newPostViewModel.publishPost(scheduledTime = newPostViewModel.scheduledDateTime.value)
+                        newPostViewModel.publishPostEnqueue(scheduledTime = newPostViewModel.scheduledDateTime.value)
                         dismiss()
                     } else {
                         // Cancel everything
@@ -98,7 +98,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
     inner class Handler {
         
         fun publish(view: View) {
-            newPostViewModel.publishPost()
+            newPostViewModel.publishPostEnqueue()
             dismiss()
         }
         
@@ -117,7 +117,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
         }
         
         fun uploadAsDraft(view: View) {
-            newPostViewModel.publishPost(saveAsDraft = true)
+            newPostViewModel.publishPostEnqueue(saveAsDraft = true)
             dismiss()
         }
     }

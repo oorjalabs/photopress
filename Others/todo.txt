@@ -38,13 +38,21 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0804.0.12.12
+v. 2020.0805.0.12.13
 
-    [ ] Add worker
-        [ ] Upload all `uploadPending` posts from database
+    [ ] Sync
+        [ ] ViewModel
+            [ ] Save uploaded images in database, if sync stopped midway
+            [ ] Save post and images in database before syncing, delete from db after syncing
+        [ ] Worker
+            [ ] Upload all `uploadPending` posts from database
+            [ ] Delete after successful syncing
+
+    [ ] SyncUtils
+        [ ] Update progress by returning liveData
+        [ ] Delete image from app storage after successful upload
 
     [ ] Gallery
-        [ ] Upload all photos then publish as gallery
         [ ] Reorder photos (different screen with drag and drop?)
         [ ] Remove photos button on each photo
         [ ] Indicate featured image with pin
@@ -60,6 +68,15 @@ v. 2020.0804.0.12.12
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0804.0.12.12
+
+    [-] Gallery
+        [X] Upload all photos then publish as gallery
 
 
 ------------------
