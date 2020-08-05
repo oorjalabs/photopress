@@ -70,16 +70,16 @@ data class WPBlogPost(
     )
     
     @Keep
-    enum class PostFormat {
+    enum class PostFormat (val value: String) {
         /** (default) Use default post format */
         @SerializedName("default")
-        DEFAULT,
+        DEFAULT("default"),
         @SerializedName("standard")
-        STANDARD,
+        STANDARD("standard"),
         @SerializedName("image")
-        IMAGE,
+        IMAGE("image"),
         @SerializedName("gallery")
-        GALLERY
+        GALLERY("gallery")
     }
     
     //https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/posts/new/

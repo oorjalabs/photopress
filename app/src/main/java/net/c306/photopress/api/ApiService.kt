@@ -76,6 +76,14 @@ interface ApiService {
     ): Call<WPMedia.UploadMediaResponse>
     
     
+    @POST(ApiConstants.UPLOAD_MEDIA)
+    fun uploadMediaMulti(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Body contents: MultipartBody
+    ): Call<WPMedia.UploadMediaResponse>
+    
+    
     @Keep
     data class ValidateTokenResponse(
         @SerializedName(ApiConstants.ARG_CLIENT_ID)

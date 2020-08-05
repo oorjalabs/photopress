@@ -78,6 +78,7 @@ class SyncUtils(context: Context) {
         val errorMessage: String? = null
     )
     
+    
     suspend fun publishPost(
         post: PhotoPressPost,
         images: List<PostImage>,
@@ -95,59 +96,16 @@ class SyncUtils(context: Context) {
                 )
             }
             
-            val uploadedMedia = images.map { image ->
-                
-                if (image.uploadedMediaId != null) return@map UploadMediaResponse(
-                    errorMessage = null,
-                    media = null,
-                    originalImage = image
-                )
-                
-                val imageDetails = getFileForUri(applicationContext, image)
-                
-                if (imageDetails == null) {
-                    Timber.w("File not found!: $image")
-                    return@map UploadMediaResponse(
-                        errorMessage = "Error: Image file not found!: ${image.name}",
-                        media = null,
-                        originalImage = image
-                    )
-                }
-                
-                // Reset published post data
-                val (file, _) = imageDetails
-                
-                // Upload media to WP
-                val (mediaError, media) = uploadMedia(
-                    post.blogId,
-                    file,
-                    image
-                )
-                
-                if (mediaError != null || media == null) {
-                    // Show error message and reset state
-                    Timber.w("No or null media response!: $image")
-                    return@map UploadMediaResponse(
-                        errorMessage = "Error: ${mediaError ?: "Null media upload response!"}",
-                        media = null,
-                        originalImage = image
-                    )
-                }
-                
-                UploadMediaResponse(
-                    errorMessage = null,
-                    media = media,
-                    originalImage = image
-                )
-                
-            }
+            val (uploadSuccess, uploadedMedia) = uploadMedia(post.blogId, images.mapNotNull { image ->
+                val (file, _) = getFileForUri(applicationContext, image) ?: return@mapNotNull null
+                Pair(file, image)
+            })
             
-            val firstFailedUpload = uploadedMedia.firstOrNull { it.errorMessage != null }
-            if (firstFailedUpload != null) {
+            if (!uploadSuccess) {
                 return@withContext PublishPostResponse(
-                    errorMessage = firstFailedUpload.errorMessage,
+                    errorMessage = uploadedMedia[0].errorMessage,
                     publishedPost = null,
-                    updatedImages = uploadedMedia
+                    updatedImages = null
                 )
             }
             
@@ -193,56 +151,53 @@ class SyncUtils(context: Context) {
     
     private suspend fun uploadMedia(
         blogId: Int,
-        file: File,
-        image: PostImage
-    ) = suspendCoroutine<UploadMediaResponse> { cont ->
+        images: List<Pair<File, PostImage>>
+    ) = suspendCoroutine<Pair<Boolean, List<UploadMediaResponse>>> { cont ->
         
-        val imageBody = file.asRequestBody(image.fileDetails!!.mimeType.toMediaType())
+        val requestBodyBuilder = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
         
-        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "media[0]",
-            image.name ?: file.name,
-            imageBody
-        )
+        images.forEachIndexed { index, (file, image) ->
+            
+            val imageBody = file.asRequestBody(image.fileDetails!!.mimeType.toMediaType())
+    
+            requestBodyBuilder.addFormDataPart(
+                "media[${index}]",
+                image.name ?: file.name,
+                imageBody
+            )
+            
+            requestBodyBuilder.addFormDataPart(
+                "attrs[${index}][caption]",
+                image.caption ?: ""
+            )
+            requestBodyBuilder.addFormDataPart(
+                "attrs[${index}][title]",
+                image.name ?: file.nameWithoutExtension
+            )
+            requestBodyBuilder.addFormDataPart(
+                "attrs[${index}][alt]",
+                image.altText ?: image.name ?: file.nameWithoutExtension
+            )
+            requestBodyBuilder.addFormDataPart(
+                "attrs[${index}][description]",
+                image.description ?: ""
+            )
+            
+        }
         
-        val captionAttr = MultipartBody.Part.createFormData(
-            "attrs[0][caption]",
-            image.caption ?: ""
-        )
-        val titleAttr = MultipartBody.Part.createFormData(
-            "attrs[0][title]",
-            image.name ?: file.nameWithoutExtension
-        )
-        val altAttr = MultipartBody.Part.createFormData(
-            "attrs[0][alt]",
-            image.altText ?: image.name ?: file.nameWithoutExtension
-        )
-        val descriptionAttr = MultipartBody.Part.createFormData(
-            "attrs[0][description]",
-            image.description ?: ""
-        )
-        
+    
         ApiClient().getApiService(applicationContext)
-            .uploadMedia(
+            .uploadMediaMulti(
                 blogId = blogId.toString(),
-                media = filePart,
-                title = titleAttr,
-                caption = captionAttr,
-                alt = altAttr,
-                description = descriptionAttr,
+                contents = requestBodyBuilder.build(),
                 fields = WPMedia.FIELDS_STRING
             ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
                 
                 override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
                     // Error creating post
                     Timber.w(t, "Error uploading media!")
-                    cont.resume(
-                        UploadMediaResponse(
-                            errorMessage = "Error uploading media: ${t.localizedMessage}",
-                            originalImage = image,
-                            media = null
-                        )
-                    )
+                    cont.resume(Pair(false, images.map { UploadMediaResponse(t.message, null, it.second) }))
                 }
                 
                 override fun onResponse(
@@ -253,51 +208,41 @@ class SyncUtils(context: Context) {
                     
                     if (uploadMediaResponse == null) {
                         Timber.w("Uploading media: No response received :(")
-                        cont.resume(
-                            UploadMediaResponse(
-                                errorMessage = "Error uploading media: No response received",
-                                media = null,
-                                originalImage = image
-                            )
-                        )
+                        cont.resume(Pair(false, images.map { UploadMediaResponse("No response", null, it.second) }))
                         return
                     }
                     
                     
                     if (!uploadMediaResponse.errors.isNullOrEmpty()) {
-                        cont.resume(
-                            UploadMediaResponse(
-                                errorMessage = "Error uploading media: ${uploadMediaResponse.errors[0]}",
-                                media = null,
-                                originalImage = image
-                            )
-                        )
+                        cont.resume(Pair(false, images.map { UploadMediaResponse(uploadMediaResponse.errors[0], null, it.second) }))
                         return
                     }
                     
                     if (uploadMediaResponse.media.isNullOrEmpty()) {
-                        cont.resume(
-                            UploadMediaResponse(
-                                errorMessage = "Error uploading media: No media details returned.",
-                                media = null,
-                                originalImage = image
-                            )
-                        )
+                        cont.resume(Pair(false, images.map { UploadMediaResponse("No media returned", null, it.second) }))
                         return
                     }
                     
                     Timber.v("Media uploaded! $uploadMediaResponse")
-                    cont.resume(
+                    cont.resume(Pair(true, images.mapIndexed { index, (_, image) ->
                         UploadMediaResponse(
-                            errorMessage = null,
-                            media = uploadMediaResponse.media[0],
+                            errorMessage = "No response",
+                            media = uploadMediaResponse.media.getOrNull(index),
                             originalImage = image
                         )
-                    )
+                    }))
                     
                 }
             })
         
+    }
+    
+    
+    private suspend fun updateMediaMetadata(
+        blogId: Int,
+        images: List<UploadMediaResponse>
+    ) = suspendCoroutine<Pair<Boolean, List<UploadMediaResponse>>> {
+        // TODO: 05/08/2020 Upload media attributes in a new call if it's a jetpack site
     }
     
     
@@ -342,7 +287,7 @@ class SyncUtils(context: Context) {
                 // Top section of gallery post including image ids
                 BLOCK_TEMPLATE_GALLERY_TOP.replace("%%MEDIA_ID_LIST%%", galleryImagesString) +
                 // Images
-                images.joinToString {
+                images.joinToString("\n") {
                     val imageMedia = it.media!!
                     BLOCK_TEMPLATE_GALLERY_IMAGE
                         .replace("%%MEDIA_ID%%", imageMedia.id.toString())

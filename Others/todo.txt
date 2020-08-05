@@ -40,7 +40,14 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0805.0.12.14
+v. 2020.0805.0.12.15
+
+    [ ] SyncUtils
+        [ ] Update progress by returning liveData
+        [ ] Delete image from app storage after successful upload
+
+    [ ] BUG: Quotes in image attributes are escaped on jetpack sites
+        [ ] For jetpack sites, update image attributes in additional call after uploading images
 
     [ ] Sync
         [ ] ViewModel
@@ -49,10 +56,6 @@ v. 2020.0805.0.12.14
         [ ] Worker
             [ ] Upload all `uploadPending` posts from database
             [ ] Delete after successful syncing
-
-    [ ] SyncUtils
-        [ ] Update progress by returning liveData
-        [ ] Delete image from app storage after successful upload
 
     [ ] Gallery
         [ ] Reorder photos (different screen with drag and drop?)
@@ -70,6 +73,15 @@ v. 2020.0805.0.12.14
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0805.0.12.14
+
+    [-] SyncUtils
+        [X] Upload all images together in single call
 
 
 ------------------
