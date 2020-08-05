@@ -1,6 +1,8 @@
 package net.c306.photopress.sync
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.c306.photopress.api.ApiClient
@@ -53,6 +55,15 @@ class SyncUtils(context: Context) {
         return null
     }
     
+    data class PublishLiveData(
+        val progress: PublishProgress,
+        val response: PublishPostResponse? = null
+    )
+    
+    data class PublishProgress(
+        val finished: Boolean,
+        val statusMessage: String
+    )
     
     data class PublishPostResponse(
         val errorMessage: String?,
@@ -79,44 +90,63 @@ class SyncUtils(context: Context) {
     )
     
     
-    suspend fun publishPost(
+    fun publishPostLiveData(
         post: PhotoPressPost,
         images: List<PostImage>,
         addFeaturedImage: Boolean?,
         useBlockEditor: Boolean?,
         isJetpackBlog: Boolean?
-    ): PublishPostResponse =
+    ): LiveData<PublishLiveData?> = liveData<PublishLiveData?> {
+        
+        emit(PublishLiveData(progress = PublishProgress(false, "Started")))
+        
         withContext(Dispatchers.IO) {
-            
-            // TODO: 04/08/2020 Return live data with progress status and publishpost response. Update live data as things move along
             
             if (post.title.isBlank() || images.isEmpty()) {
                 Timber.w("Null inputs to publish: title: '${post.title}', ${images.size} images")
-                return@withContext PublishPostResponse(
-                    errorMessage = "Error: No title or images",
+                val errorMessage = "Error: No title or images"
+                val response = PublishPostResponse(
+                    errorMessage = errorMessage,
                     publishedPost = null,
                     updatedImages = null
                 )
+                val progress = PublishProgress(true, errorMessage)
+                emit(PublishLiveData(progress, response))
+                return@withContext
             }
             
-            val (uploadSuccess, uploadedMedia) = uploadMedia(post.blogId, images.mapNotNull { image ->
-                val (file, _) = getFileForUri(applicationContext, image) ?: return@mapNotNull null
-                Pair(file, image)
-            })
+            emit(PublishLiveData(progress = PublishProgress(false, "Uploading images")))
+            
+            val (uploadSuccess, uploadedMedia) = uploadMedia(
+                post.blogId,
+                images.mapNotNull { image ->
+                    val (file, _) = getFileForUri(
+                        applicationContext,
+                        image
+                    ) ?: return@mapNotNull null
+                    Pair(file, image)
+                })
             
             if (!uploadSuccess) {
-                return@withContext PublishPostResponse(
-                    errorMessage = uploadedMedia[0].errorMessage,
+                val errorMessage = uploadedMedia[0].errorMessage ?: "Media upload failed"
+                val response = PublishPostResponse(
+                    errorMessage = errorMessage,
                     publishedPost = null,
                     updatedImages = null
                 )
+                val progress = PublishProgress(true, errorMessage)
+                emit(PublishLiveData(progress, response))
+                
+                return@withContext
             }
             
             if (isJetpackBlog == true && false) {
                 // Disabled because WP api returns 404 for recently updated image :(
-                Timber.d("Jetpack blog, updating media attributes again")
+                Timber.v("Jetpack blog, updating media attributes again")
                 uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
             }
+    
+            emit(PublishLiveData(progress = PublishProgress(false, "Uploading post")))
             
             // Upload post as draft with embedded image
             val (uploadedPost, uploadError) = uploadPost(
@@ -127,16 +157,23 @@ class SyncUtils(context: Context) {
             )
             
             if (uploadError != null || uploadedPost == null) {
-                return@withContext PublishPostResponse(
-                    errorMessage = "Error: ${uploadError ?: "No response while uploading post."}",
+                val errorMessage = "Error: ${uploadError ?: "No response while uploading post."}"
+                val response = PublishPostResponse(
+                    errorMessage = errorMessage,
                     publishedPost = null,
                     updatedImages = uploadedMedia
                 )
+                val progress = PublishProgress(true, errorMessage)
+                emit(PublishLiveData(progress, response))
+                
+                return@withContext
             }
             
             var publishedPost: WPBlogPost? = null
             
             if (post.status != PhotoPressPost.PhotoPostStatus.DRAFT) {
+                
+                emit(PublishLiveData(progress = PublishProgress(false, "Updating post status")))
                 
                 // Change status to published
                 val publishResult = updateToPublished(
@@ -150,12 +187,15 @@ class SyncUtils(context: Context) {
             Timber.d("Blogpost done! ${publishedPost ?: uploadedPost}")
             
             // Update published post
-            return@withContext PublishPostResponse(
+            val response = PublishPostResponse(
                 errorMessage = null,
                 publishedPost = PublishedPost(publishedPost ?: uploadedPost, publishedPost == null),
                 updatedImages = null
             )
+            val progress = PublishProgress(true, "Post uploaded")
+            emit(PublishLiveData(progress, response))
         }
+    }
     
     
     private suspend fun uploadMedia(

@@ -58,6 +58,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _state = MutableLiveData<State>().apply { value = State.EMPTY }
     val state: LiveData<State> = _state
     
+    internal fun setState(newState: State) {
+        _state.value = newState
+    }
+    
     internal fun updateState() {
         val title = postTitle.value ?: ""
         val image = postImages.value?.getOrNull(0)
@@ -66,10 +70,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         _state.value = when {
             blogId == null || blogId < 0 -> State.NO_BLOG_SELECTED
-            publishedPost != null -> State.PUBLISHED
-            image == null -> State.EMPTY
-            title.isBlank() -> State.HAVE_IMAGE
-            else -> State.READY
+            publishedPost != null        -> State.PUBLISHED
+            image == null                -> State.EMPTY
+            title.isBlank()              -> State.HAVE_IMAGE
+            else                         -> State.READY
         }
     }
     
@@ -143,7 +147,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     fun setImageUris(value: List<Uri>?) {
         _postImages.value =
             if (value.isNullOrEmpty()) mutableListOf()
-            else value.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }.toMutableList()
+            else value.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }
+                .toMutableList()
         
         updateState()
     }
@@ -189,6 +194,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
+    // Post publishing state
+    private val postStatus = MutableLiveData<PhotoPressPost.PhotoPostStatus>()
     
     // Title text
     val postTitle = MutableLiveData<String>()
@@ -235,24 +242,28 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         postTitle.value = null
         postTags.value = defaultTags.value
         postCaption.value = null
+        postStatus.value = null
         
         setImageUris(null)
         updateState()
     }
     
+    
     // Observer for changes to selected blog id
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         val userPrefs = UserPrefs(applicationContext)
         when (key) {
-            UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(userPrefs.getSelectedBlogId())
+            UserPrefs.KEY_SELECTED_BLOG_ID   -> setSelectedBlogId(userPrefs.getSelectedBlogId())
             
-            UserPrefs.KEY_PUBLISH_FORMAT -> useBlockEditor.value = userPrefs.getUseBlockEditor()
+            UserPrefs.KEY_PUBLISH_FORMAT     -> useBlockEditor.value = userPrefs.getUseBlockEditor()
             
-            UserPrefs.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value = userPrefs.getAddFeaturedImage()
+            UserPrefs.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value =
+                userPrefs.getAddFeaturedImage()
             
-            UserPrefs.KEY_DEFAULT_TAGS -> defaultTags.value = userPrefs.getDefaultTags()
+            UserPrefs.KEY_DEFAULT_TAGS       -> defaultTags.value = userPrefs.getDefaultTags()
         }
     }
+    
     
     init {
         updateState()
@@ -300,104 +311,101 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
-    /**
-     * Save post details to database and start worker to upload post
-     */
-    fun publishPostEnqueue(saveAsDraft: Boolean = false, scheduledTime: Long? = null) {
-        
-        val isJetpackBlog = selectedBlog.value?.jetpack
-        val blogId = selectedBlogId.value
-        val title = postTitle.value
-        val images = postImages.value
-        val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
-            .apply { add(applicationContext.getString(R.string.app_post_tag)) }
-            .filter { !it.isBlank() }
-            .distinct()
+    private val doPublish = MutableLiveData<Boolean>()
     
-        if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
-            Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
-            Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG)
-                .show()
-            return
-        }
-        
-        val status = when {
-            saveAsDraft           -> PhotoPressPost.PhotoPostStatus.DRAFT
-            scheduledTime != null -> PhotoPressPost.PhotoPostStatus.SCHEDULE
-            else                  -> PhotoPressPost.PhotoPostStatus.PUBLISH
-        }
-        
-        viewModelScope.launch {
+    internal fun publishPost(status: PhotoPressPost.PhotoPostStatus) {
+        postStatus.value = status
+        doPublish.value = true
+    }
+    
+    internal val publishLiveData: LiveData<SyncUtils.PublishLiveData?> =
+        doPublish.switchMap<Boolean?, SyncUtils.PublishLiveData?> {
+            
+            if (it != true) return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
+            
+            // Else publish
+            val isJetpackBlog = selectedBlog.value?.jetpack
+            val blogId = selectedBlogId.value
+            val title = postTitle.value
+            val images = postImages.value
+            val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
+                .apply { add(applicationContext.getString(R.string.app_post_tag)) }
+                .filter { !it.isBlank() }
+                .distinct()
+            
+            if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
+                Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
+                Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG)
+                    .show()
+                
+                return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
+            }
             
             val post = PhotoPressPost(
                 blogId = blogId,
-                title = title,
                 postCaption = postCaption.value ?: "",
-                tags = tags,
                 // TODO: 03/08/2020 First image if only one image, else image set as featured
                 postThumbnail = images[0].id,
-                status = status,
+                scheduledTime = scheduledDateTime.value,
+                status = postStatus.value ?: PhotoPressPost.PhotoPostStatus.PUBLISH,
+                tags = tags,
+                title = title,
                 uploadPending = true
             )
-    
+            
             // Reset published post data
             _publishedPost.value = null
             _state.value = State.PUBLISHING
             
-            val publishResult = SyncUtils(applicationContext)
-                .publishPost(
+            SyncUtils(applicationContext)
+                .publishPostLiveData(
                     post = post,
                     images = images,
                     addFeaturedImage = addFeaturedImage.value,
                     useBlockEditor = useBlockEditor.value,
                     isJetpackBlog = isJetpackBlog
                 )
-            
-            if (publishResult.errorMessage != null) {
-                _state.value = State.READY
-                Toast.makeText(applicationContext, publishResult.errorMessage, Toast.LENGTH_LONG).show()
-                return@launch
-            }
-    
-            // TODO: 30/07/2020 Don't show toast from view model. Show from view
-            val toastMessageId = when {
-                saveAsDraft || publishResult.publishedPost?.isDraft == true -> R.string.new_post_toast_uploaded_as_draft
-                scheduledTime != null               -> R.string.new_post_toast_post_scheduled
-                else                                -> R.string.new_post_toast_published
-            }
-            
-            Toast.makeText(applicationContext, toastMessageId, Toast.LENGTH_SHORT).show()
-            
-            val publishedPost = publishResult.publishedPost!!
-            
-            // Add and update returned tags in tags list
-            val blogTags = blogTags.value?.toMutableList() ?: mutableListOf()
-            val newPostTags = (publishedPost.post.tags).values
-            
-            if (newPostTags.isNotEmpty()) {
-                
-                // Remove tags that are present in new post's tags
-                blogTags.removeIf { tag -> !newPostTags.none { it.id == tag.id } }
-        
-                // Add all tags from new post
-                blogTags.addAll(newPostTags)
-        
-                // Sort alphabetically, ascending
-                blogTags.sortBy { it.slug }
-        
-                // Save and set updated list
-                AuthPrefs(applicationContext)
-                    .saveTagsList(blogTags)
-                setBlogTags(blogTags)
-        
-            }
-            
-            Timber.d("Blogpost done! $publishedPost")
-            
-            _publishedPost.value = publishedPost
-            setSchedule(false, -1L, false)
-            updateState()
         }
+    
+    internal fun onPublishFinished(publishResult: SyncUtils.PublishPostResponse) {
+        
+        doPublish.value = null
+        
+        if (publishResult.errorMessage != null) {
+            _state.value = State.READY
+            Toast.makeText(applicationContext, publishResult.errorMessage, Toast.LENGTH_LONG).show()
+            return
+        }
+        
+        val publishedPost = publishResult.publishedPost!!
+        
+        // Add and update returned tags in tags list
+        val blogTags = blogTags.value?.toMutableList() ?: mutableListOf()
+        val newPostTags = (publishedPost.post.tags).values
+        
+        if (newPostTags.isNotEmpty()) {
+            
+            // Remove tags that are present in new post's tags
+            blogTags.removeIf { tag -> !newPostTags.none { it.id == tag.id } }
+            
+            // Add all tags from new post
+            blogTags.addAll(newPostTags)
+            
+            // Sort alphabetically, ascending
+            blogTags.sortBy { it.slug }
+            
+            // Save and set updated list
+            AuthPrefs(applicationContext)
+                .saveTagsList(blogTags)
+            setBlogTags(blogTags)
+            
+        }
+        
+        Timber.d("Blogpost done! $publishedPost")
+        
+        _publishedPost.value = publishedPost
+        setSchedule(false, -1L, false)
+        updateState()
     }
     
     

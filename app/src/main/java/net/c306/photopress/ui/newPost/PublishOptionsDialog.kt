@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import net.c306.customcomponents.confirmation.ConfirmationDialog
 import net.c306.photopress.R
+import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.databinding.DialogPublishOptionBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
 import java.util.*
@@ -76,7 +77,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                 confirmationRC ->  {
                     if (it.result) {
                         // Publish with schedule and close dialog
-                        newPostViewModel.publishPostEnqueue(scheduledTime = newPostViewModel.scheduledDateTime.value)
+                        newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.SCHEDULE)
                         dismiss()
                     } else {
                         // Cancel everything
@@ -98,7 +99,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
     inner class Handler {
         
         fun publish(view: View) {
-            newPostViewModel.publishPostEnqueue()
+            newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.PUBLISH)
             dismiss()
         }
         
@@ -117,7 +118,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
         }
         
         fun uploadAsDraft(view: View) {
-            newPostViewModel.publishPostEnqueue(saveAsDraft = true)
+            newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.DRAFT)
             dismiss()
         }
     }

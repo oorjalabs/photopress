@@ -40,10 +40,12 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0805.0.12.16
+v. 2020.0805.0.12.17
+
+    Featured image
+    Post tags
 
     [ ] SyncUtils
-        [ ] Update progress by returning liveData
         [ ] Delete image from app storage after successful upload
 
     [ ] BUG: Quotes in image attributes are escaped on jetpack sites
@@ -72,6 +74,16 @@ v. 2020.0805.0.12.16
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0805.0.12.16
+
+    [-] SyncUtils
+        [X] Update progress by returning liveData
+        [X] Schedule posts
 
 
 ------------------

@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
+import net.c306.photopress.api.WPBlogPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
@@ -133,6 +134,39 @@ class NewPostFragment : BottomNavFragment() {
         // Update state when title text changes
         newPostViewModel.postTitle.observe(viewLifecycleOwner, Observer {
             newPostViewModel.updateState()
+        })
+        
+        
+        newPostViewModel.publishLiveData.observe(viewLifecycleOwner, Observer {
+            
+            if (it == null) return@Observer
+            
+            val (progress, publishResult) = it
+            
+            if (publishResult?.errorMessage != null) {
+                newPostViewModel.setState(NewPostViewModel.State.READY)
+                Toast.makeText(requireContext(), publishResult.errorMessage, Toast.LENGTH_LONG).show()
+                return@Observer
+            }
+            
+            // Show message
+            binding.messagePublishingStatus.text = progress.statusMessage
+            
+            if (!progress.finished) return@Observer
+            
+            if (publishResult?.publishedPost != null) {
+                // Post uploaded, show message
+                val toastMessageId = when {
+                    publishResult.publishedPost.isDraft                                         -> R.string.new_post_toast_uploaded_as_draft
+                    publishResult.publishedPost.post.status == WPBlogPost.PublishStatus.FUTURE -> R.string.new_post_toast_post_scheduled
+                    else                                                                         -> R.string.new_post_toast_published
+                }
+                Toast.makeText(requireContext(), toastMessageId, Toast.LENGTH_SHORT).show()
+                
+                // Update view model, tags, state, etc
+                newPostViewModel.onPublishFinished(publishResult)
+            }
+            
         })
     }
     
