@@ -94,6 +94,11 @@
         <p>PhotoPress relies on <a href="https://developer.wordpress.com/docs/api/">the API</a> provided by <a href="https://automattic.com/">Automattic</a> + <a href="https://wordpress.com">WordPress.com</a>. PhotoPress is, however, a third-party app and is not associated in any way with Automattic or WordPress.com.</p>
     ]]></string>
     
+    <!--  Post settings  -->
+    <string name="post_settings_title">Post settings</string>
+    <string name="post_settings_label_tags">Tags (comma separated)</string>
+    <string name="post_settings_hint_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>
+    
     <!--  Schedule post dialogs  -->
     <string name="schedule_post_title_confirm_schedule_time">Confirm schedule</string>
     <string name="schedule_post_message_confirm_schedule_time">Publish post at %1$s</string>
@@ -120,8 +125,6 @@
     <string name="new_post_label_tap_to_add_photo">Tap to pick a photo</string>
     <string name="new_post_label_post_title">Post Title</string>
     <string name="new_post_hint_post_title">Cycle Love</string>
-    <string name="new_post_label_tags">Tags (comma separated)</string>
-    <string name="new_post_hint_post_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>
     <string name="new_post_placeholder_image_caption">Add image caption</string>
     <string name="new_post_placeholder_gallery_caption">Add gallery caption</string>
     

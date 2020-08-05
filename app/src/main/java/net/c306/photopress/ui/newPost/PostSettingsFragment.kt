@@ -22,7 +22,7 @@ class PostSettingsFragment: AppBarNoBottomNavFragment() {
     private lateinit var binding: FragmentPostSettingsBinding
     
     @IdRes
-    override val myNavId: Int = R.id.imageAttributesFragment
+    override val myNavId: Int = R.id.post_settings_fragment
     
     private val newPostViewModel by activityViewModels<NewPostViewModel>()
 
@@ -42,7 +42,7 @@ class PostSettingsFragment: AppBarNoBottomNavFragment() {
         binding = FragmentPostSettingsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = newPostViewModel
-        binding.fragmentHandler = Handler()
+        binding.handler = Handler()
         return binding.root
     }
     
@@ -55,7 +55,7 @@ class PostSettingsFragment: AppBarNoBottomNavFragment() {
             setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
             
             setOnFocusChangeListener { v, hasFocus ->
-                (v as EditText).setInputFocus(hasFocus, R.string.new_post_hint_post_tags)
+                (v as EditText).setInputFocus(hasFocus, R.string.post_settings_hint_tags)
             }
         }
     
@@ -69,12 +69,12 @@ class PostSettingsFragment: AppBarNoBottomNavFragment() {
     }
     
     
+    @Suppress("UNUSED_PARAMETER")
     inner class Handler {
         /**
          * Save values to real variables and close fragment
          */
-        fun done() {
-            // TODO: 31/07/2020 Save post settings to view model
+        fun done(view: View) {
             dismiss()
         }
     }

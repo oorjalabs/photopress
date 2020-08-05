@@ -40,10 +40,9 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0805.0.12.17
+v. 2020.0805.0.12.18
 
     Featured image
-    Post tags
 
     [ ] SyncUtils
         [ ] Delete image from app storage after successful upload
@@ -69,11 +68,19 @@ v. 2020.0805.0.12.17
         [ ] Remove photo button (if multiple photos, aka gallery mode)
 
     [ ] Post settings screen
-        [ ] Tags
         [ ] Category
-        [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0805.0.12.17
+
+    [-] Post settings screen
+        [X] Tags
+        [/] Status - publish / draft / schedule? (maybe not)
 
 
 ------------------

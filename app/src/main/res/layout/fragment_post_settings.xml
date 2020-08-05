@@ -10,7 +10,7 @@
             type="net.c306.photopress.ui.newPost.NewPostViewModel" />
         
         <variable
-            name="fragmentHandler"
+            name="handler"
             type="net.c306.photopress.ui.newPost.PostSettingsFragment.Handler" />
     </data>
     
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/ic_close"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/image_attributes_title" />
+                app:title="@string/post_settings_title" />
         
         </com.google.android.material.appbar.AppBarLayout>
         
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:hint="@string/new_post_label_tags">
+                android:hint="@string/post_settings_label_tags">
                 
                 <MultiAutoCompleteTextView
                     android:id="@+id/input_post_tags"
@@ -63,75 +63,6 @@
                     android:text="@={viewmodel.postTags}"
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
-
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/holder_title"-->
-<!--                style="@style/UnderlinedTextInputLayout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="@string/image_attributes_label_title">-->
-<!--                -->
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:id="@+id/input_post_title"-->
-<!--                    style="@style/UnderlinedTextInput"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:importantForAutofill="no"-->
-<!--                    android:inputType="textCapSentences"-->
-<!--                    android:lines="1"-->
-<!--                    android:text="@={viewmodel.editingImageTitle}" />-->
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-<!--            -->
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/holder_caption"-->
-<!--                style="@style/UnderlinedTextInputLayout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="@string/image_attributes_label_caption">-->
-<!--                -->
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:id="@+id/input_post_caption"-->
-<!--                    style="@style/UnderlinedTextInput"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:importantForAutofill="no"-->
-<!--                    android:inputType="textCapSentences"-->
-<!--                    android:lines="1"-->
-<!--                    android:text="@={viewmodel.editingImageCaption}" />-->
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-<!--            -->
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/holder_alt_text"-->
-<!--                style="@style/UnderlinedTextInputLayout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="@dimen/activity_vertical_margin"-->
-<!--                android:hint="@string/image_attributes_label_alt_text">-->
-<!--                -->
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:id="@+id/input_post_alt_text"-->
-<!--                    style="@style/UnderlinedTextInput"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:importantForAutofill="no"-->
-<!--                    android:inputType="textCapSentences"-->
-<!--                    android:lines="1"-->
-<!--                    android:text="@={viewmodel.editingImageAltText}" />-->
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-<!--            -->
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/input_post_description"-->
-<!--                style="@style/UnderlinedTextInput"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="@dimen/activity_vertical_margin"-->
-<!--                android:hint="@string/image_attributes_label_description"-->
-<!--                android:importantForAutofill="no"-->
-<!--                android:inputType="textCapSentences|textMultiLine"-->
-<!--                android:lineSpacingMultiplier="1.25"-->
-<!--                android:lines="4"-->
-<!--                android:nextFocusDown="@string/button_text_done"-->
-<!--                android:text="@={viewmodel.editingImageDescription}" />-->
             
             <View
                 android:layout_width="match_parent"
@@ -144,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:onClick="@{() -> fragmentHandler.done()}"
+                android:onClick="@{handler::done}"
                 android:text="@string/button_text_done" />
             
         
