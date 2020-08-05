@@ -134,7 +134,6 @@
     <string name="new_post_cd_fab_publish">Publish</string>
     <string name="new_post_cd_photo_to_post">Photo to post</string>
     <string name="new_post_cd_change_photo">Change photo</string>
-    <string name="new_post_cd_photo_attributes">Tap to set photo caption, description and alt text</string>
     <string name="new_post_cd_add_more_photos">Add another photo (gallery mode)</string>
     
     <string name="new_post_toast_image_selection_cancelled">No image selected</string>
@@ -142,6 +141,16 @@
     <string name="new_post_toast_uploaded_as_draft">Post uploaded as draft</string>
     <string name="new_post_toast_published">Post published successfully</string>
     <string name="new_post_toast_post_scheduled">Post scheduled</string>
+    
+    
+    <!-- Image Item -->
+    <string name="image_item_cd_photo_attributes">Tap to set photo caption, description and alt text</string>
+    <string name="image_item_cd_featured_image">Featured image</string>
+    <string name="image_attributes_cd_selected_image">Selected image</string>
+    <string name="image_attributes_cd_featured">Featured</string>
+    <string name="image_attributes_button_set_as_featured_image">Set featured image</string>
+    <string name="image_attributes_button_unset_as_featured_image">Remove featured image</string>
+    <string name="image_attributes_button_remove_image">Remove image</string>
     
     <!--  Unsorted  -->
     

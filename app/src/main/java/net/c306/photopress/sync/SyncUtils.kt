@@ -11,6 +11,7 @@ import net.c306.photopress.api.WPMedia
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.Utils
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -145,7 +146,7 @@ class SyncUtils(context: Context) {
                 Timber.v("Jetpack blog, updating media attributes again")
                 uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
             }
-    
+            
             emit(PublishLiveData(progress = PublishProgress(false, "Uploading post")))
             
             // Upload post as draft with embedded image
@@ -209,7 +210,7 @@ class SyncUtils(context: Context) {
         images.forEachIndexed { index, (file, image) ->
             
             val imageBody = file.asRequestBody(image.fileDetails!!.mimeType.toMediaType())
-    
+            
             requestBodyBuilder.addFormDataPart(
                 "media[${index}]",
                 image.name ?: file.name,
@@ -235,7 +236,7 @@ class SyncUtils(context: Context) {
             
         }
         
-    
+        
         ApiClient().getApiService(applicationContext)
             .uploadMediaMulti(
                 blogId = blogId.toString(),
@@ -246,7 +247,11 @@ class SyncUtils(context: Context) {
                 override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
                     // Error creating post
                     Timber.w(t, "Error uploading media!")
-                    cont.resume(Pair(false, images.map { UploadMediaResponse(t.message, null, it.second) }))
+                    cont.resume(
+                        Pair(
+                            false,
+                            images.map { UploadMediaResponse(t.message, null, it.second) })
+                    )
                 }
                 
                 override fun onResponse(
@@ -257,18 +262,48 @@ class SyncUtils(context: Context) {
                     
                     if (uploadMediaResponse == null) {
                         Timber.w("Uploading media: No response received :(")
-                        cont.resume(Pair(false, images.map { UploadMediaResponse("No response", null, it.second) }))
+                        cont.resume(
+                            Pair(
+                                false,
+                                images.map {
+                                    UploadMediaResponse(
+                                        "No response",
+                                        null,
+                                        it.second
+                                    )
+                                })
+                        )
                         return
                     }
                     
                     
                     if (!uploadMediaResponse.errors.isNullOrEmpty()) {
-                        cont.resume(Pair(false, images.map { UploadMediaResponse(uploadMediaResponse.errors[0], null, it.second) }))
+                        cont.resume(
+                            Pair(
+                                false,
+                                images.map {
+                                    UploadMediaResponse(
+                                        uploadMediaResponse.errors[0],
+                                        null,
+                                        it.second
+                                    )
+                                })
+                        )
                         return
                     }
                     
                     if (uploadMediaResponse.media.isNullOrEmpty()) {
-                        cont.resume(Pair(false, images.map { UploadMediaResponse("No media returned", null, it.second) }))
+                        cont.resume(
+                            Pair(
+                                false,
+                                images.map {
+                                    UploadMediaResponse(
+                                        "No media returned",
+                                        null,
+                                        it.second
+                                    )
+                                })
+                        )
                         return
                     }
                     
@@ -290,7 +325,7 @@ class SyncUtils(context: Context) {
     private suspend fun updateMediaMetadata(
         blogId: Int,
         image: UploadMediaResponse
-    ) = suspendCoroutine<UploadMediaResponse> {cont ->
+    ) = suspendCoroutine<UploadMediaResponse> { cont ->
         
         ApiClient().getApiService(applicationContext)
             .updateMediaAttributes(
@@ -347,6 +382,8 @@ class SyncUtils(context: Context) {
         
         val galleryImagesString = images.joinToString(",") { it.media!!.id.toString() }
         
+        val columnCount = Utils.calculateColumnCount(images.size)
+        
         val content = when {
             
             usingBlockEditor && images.size == 1 -> {
@@ -369,7 +406,9 @@ class SyncUtils(context: Context) {
             
             usingBlockEditor                     -> {
                 // Top section of gallery post including image ids
-                BLOCK_TEMPLATE_GALLERY_TOP.replace("%%MEDIA_ID_LIST%%", galleryImagesString) +
+                BLOCK_TEMPLATE_GALLERY_TOP
+                    .replace("%%MEDIA_ID_LIST%%", galleryImagesString)
+                    .replace("%%COLUMN_COUNT%%", columnCount.toString()) +
                 // Images
                 images.joinToString("\n") {
                     val imageMedia = it.media!!
@@ -393,6 +432,7 @@ class SyncUtils(context: Context) {
                 CLASSIC_TEMPLATE_GALLERY
                     .replace("%%MEDIA_ID_LIST%%", galleryImagesString)
                     .replace("%%POST_CAPTION%%", post.postCaption)
+                    .replace("%%COLUMN_COUNT%%", columnCount.toString())
             }
         }
         
@@ -497,7 +537,7 @@ class SyncUtils(context: Context) {
     """
         
         private const val CLASSIC_TEMPLATE_GALLERY = """
-            [gallery ids="%%MEDIA_ID_LIST%%" columns="1" size="large"]
+            [gallery ids="%%MEDIA_ID_LIST%%" columns="%%COLUMN_COUNT%%" size="large"]
             %%POST_CAPTION%%
             <p class="has-text-color has-small-font-size has-dark-gray-color">
                 Published using <a href="https://play.google.com/store/apps/details?id=net.c306.photopress">PhotoPress for Android</a>
@@ -506,7 +546,7 @@ class SyncUtils(context: Context) {
         
         private const val BLOCK_TEMPLATE_GALLERY_TOP = """
         <!-- wp:gallery {"ids":[%%MEDIA_ID_LIST%%]} -->
-            <figure class="wp-block-gallery columns-2 is-cropped">
+            <figure class="wp-block-gallery columns-%%COLUMN_COUNT%% is-cropped">
             <ul class="blocks-gallery-grid">
     """
         private const val BLOCK_TEMPLATE_GALLERY_BOTTOM = """

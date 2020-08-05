@@ -8,19 +8,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 object BindingAdapters {
+    
     /**
      * Given an imageUri, loads it into the ImageView using Glide
      */
-    @BindingAdapter("imageUri", "placeholder", requireAll = false)
+    @BindingAdapter("imageUri", "imageUriCover", "placeholder", requireAll = false)
     @JvmStatic
-    fun loadImage(view: ImageView, imageUri: Uri?, placeHolderDrawable: Drawable?) {
-        Glide.with(view.context)
+    fun loadImage(
+        view: ImageView,
+        imageUri: Uri?,
+        imageUriCover: Uri?,
+        placeHolderDrawable: Drawable?
+    ) {
+        var glideBuilder = Glide.with(view.context)
             //.asGif()
-            .load(imageUri)
+            .load(imageUri ?: imageUriCover)
             .placeholder(placeHolderDrawable)
-            // TODO: Based on user settings, this can be set to crop or center
-            .optionalFitCenter()
-            .into(view)
+        
+        if (imageUri != null) {
+            glideBuilder = glideBuilder.optionalFitCenter()
+        } else if (imageUriCover != null) {
+            glideBuilder = glideBuilder.optionalCenterCrop()
+        }
+        glideBuilder.into(view)
     }
     
     

@@ -189,6 +189,22 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         updateState()
     }
     
+    /**
+     * Remove image from [_postImages] list
+     */
+    internal fun removeImage(image: PostImage) {
+        val list = _postImages.value ?: mutableListOf()
+        
+        list.removeIf { it.id == image.id }
+        
+        if (image.id == postFeaturedImageId.value) {
+            toggleFeaturedImage(null)
+        }
+        
+        _postImages.value = list
+        updateState()
+    }
+    
     val imageCount = Transformations.switchMap(postImages) { list ->
         liveData { emit(list.filter { it.fileDetails != null }.size) }
     }
@@ -205,6 +221,16 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     // Post caption (same as image caption in case of single image post)
     val postCaption = MutableLiveData<String>()
+    
+    // Post caption (same as image caption in case of single image post)
+    private val _postFeaturedImageId = MutableLiveData<Int>()
+    val postFeaturedImageId: LiveData<Int> = _postFeaturedImageId
+    
+    fun toggleFeaturedImage(imageId: Int?) {
+        _postFeaturedImageId.value =
+            if (imageId == null || imageId == _postFeaturedImageId.value) null
+            else imageId
+    }
     
     // Image whose attributes are being edited
     val editingImage = MutableLiveData<PostImage?>()
@@ -243,6 +269,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         postTags.value = defaultTags.value
         postCaption.value = null
         postStatus.value = null
+        toggleFeaturedImage(null)
         
         setImageUris(null)
         updateState()
@@ -344,8 +371,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             val post = PhotoPressPost(
                 blogId = blogId,
                 postCaption = postCaption.value ?: "",
-                // TODO: 03/08/2020 First image if only one image, else image set as featured
-                postThumbnail = images[0].id,
+                // Featured image, or first image if no featured image is set
+                postThumbnail = postFeaturedImageId.value ?: images[0].id,
                 scheduledTime = scheduledDateTime.value,
                 status = postStatus.value ?: PhotoPressPost.PhotoPostStatus.PUBLISH,
                 tags = tags,

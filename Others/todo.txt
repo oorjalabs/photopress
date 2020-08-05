@@ -40,14 +40,19 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0805.0.12.18
+v. 2020.0806.0.12.19
 
-    Featured image
+    [ ] Photo details screen
+        [ ] Tap photo thumbail to open in full size
+
+    [ ] Gallery
+        [ ] Reorder photos (different screen with drag and drop?)
+
+    [ ] Post settings screen
+        [ ] Category
 
     [ ] SyncUtils
         [ ] Delete image from app storage after successful upload
-
-    [ ] BUG: Quotes in image attributes are escaped on jetpack sites
 
     [ ] Sync
         [ ] ViewModel
@@ -57,20 +62,24 @@ v. 2020.0805.0.12.18
             [ ] Upload all `uploadPending` posts from database
             [ ] Delete after successful syncing
 
-    [ ] Gallery
-        [ ] Reorder photos (different screen with drag and drop?)
-        [ ] Remove photos button on each photo
-        [ ] Indicate featured image with pin
-
-    [ ] Photo details screen
-        [ ] Show photo thumbnail
-        [ ] Mark image as featured image
-        [ ] Remove photo button (if multiple photos, aka gallery mode)
-
-    [ ] Post settings screen
-        [ ] Category
+    [ ] BUG: Quotes in image attributes are escaped on jetpack sites
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0805.0.12.18
+
+    [-] Photo details screen
+        [X] Show photo thumbnail
+        [X] Mark image as featured image
+        [X] Remove photo button
+
+    [-] Gallery
+        [X] Indicate featured image with pin
+        [X] Column count -> 1 (single photo), 2 (2 or 4 photos), 3 (else)
 
 
 ------------------

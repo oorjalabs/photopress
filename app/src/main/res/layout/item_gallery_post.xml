@@ -17,6 +17,10 @@
             name="handler"
             type="net.c306.photopress.ui.newPost.NewPostFragment.Handler" />
         
+        <variable
+            name="isFeaturedImage"
+            type="Boolean" />
+        
         <import type="android.view.View" />
     </data>
     
@@ -31,13 +35,23 @@
             android:layout_margin="@dimen/gallery_grid_item_margin"
             android:adjustViewBounds="true"
             android:background="@drawable/bg_rounded_solid"
-            android:contentDescription="@string/new_post_cd_photo_attributes"
+            android:contentDescription="@string/image_item_cd_photo_attributes"
             android:foreground="?selectableItemBackground"
             android:onClick="@{() -> handler.openImageAttributes(image)}"
-            android:tooltipText="@string/new_post_cd_photo_attributes"
+            android:tooltipText="@string/image_item_cd_photo_attributes"
             android:visibility="@{image.uri == null ? View.GONE : View.VISIBLE}"
             app:imageUri="@{image.uri}"
             tools:src="@tools:sample/backgrounds/scenic" />
+        
+        <ImageView
+            android:id="@+id/pinned_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_item_spacing_quarter"
+            android:visibility="@{isFeaturedImage ? View.VISIBLE : View.GONE}"
+            android:contentDescription="@string/image_item_cd_featured_image"
+            android:src="@drawable/ic_featured_icon_in_circle"
+            android:tooltipText="@string/image_item_cd_featured_image" />
         
         <TextView
             android:layout_width="match_parent"

@@ -15,12 +15,17 @@
 
     <color name="bg_updated_indicator">#388b76</color> <!-- 800 of primary -->
 
-    <color name="text_primary_on_surface">@color/primaryLightColor</color>
+    <color name="text_primary_on_surface">@color/primaryColor</color>
     <color name="text_secondary_on_surface">@color/secondaryLightColor</color>
 
     <color name="text_default">#DEFFFFFF</color><!-- 86% black -->
     <color name="text_disabled">#61FFFFFF</color><!-- 37.5% black -->
-
+    
+    <color name="ic_featured_on">@color/secondaryColor</color>
+    <color name="ic_featured_off">@color/grey_700</color>
+    
+    <color name="icon_button_scrim">#64121212</color>
+    
     <!--source: https://meyerweb.com/eric/tools/color-blend/#000000:95E1D3:10:hex-->
     <color name="bg_list_item_activated">#1B2926</color>
     <color name="bg_list_item_disabled">@color/grey_900</color>

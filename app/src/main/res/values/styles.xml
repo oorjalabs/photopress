@@ -151,7 +151,7 @@
         <item name="rippleColor">@color/sl_ripple_text_button_secondary</item>
         <item name="android:textColor">@color/sl_tc_button_secondary</item>
     </style>
-
+    
     <style name="OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="rippleColor">@color/sl_ripple_text_button</item>
         <item name="android:textColor">@color/sl_tc_button_primary</item>
@@ -180,6 +180,10 @@
     <style name="IconButton.NoBorder">
         <item name="strokeColor">@android:color/transparent</item>
         <item name="strokeWidth">0dp</item>
+    </style>
+    
+    <style name="IconButton.NoBorder.WithScrim">
+        <item name="android:backgroundTint">@color/icon_button_scrim</item>
     </style>
     
     <style name="GroupButton.IconOnly" parent="Button">

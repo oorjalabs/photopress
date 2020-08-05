@@ -39,14 +39,18 @@
     <color name="text_disabled">#61000000</color><!-- 37.5% black -->
 
     <color name="bg_fab_disabled">@color/grey_400</color>
-
+    
+    <color name="ic_featured_on">@color/secondaryLightColor</color>
+    <color name="ic_featured_off">@color/grey_300</color>
+    
+    <color name="icon_button_scrim">#64ffffff</color>
+    
     <color name="stroke_close_button">@color/grey_200</color>
     <color name="bg_close_button">#61EEEEEE</color>
 
     <color name="bg_button_primary">@color/primaryColor</color>
     <color name="bg_button_secondary">@color/secondaryColor</color>
-    <color name="bg_button_disabled">#1f000000</color>
-
+    
     <!--source: https://meyerweb.com/eric/tools/color-blend/#FFFFFF:00b8a9:10:hex-->
     <color name="bg_list_item_activated">#D1F2EF</color>
     <color name="bg_list_item_disabled">@color/grey_300</color>

@@ -110,10 +110,9 @@
                         
                         <Button
                             android:id="@+id/button_change_image"
-                            style="@style/IconButton.NoBorder"
+                            style="@style/IconButton.NoBorder.WithScrim"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:backgroundTint="#64ffffff"
                             android:contentDescription="@string/new_post_cd_change_photo"
                             android:onClick="@{() -> handler.openPhotoPicker(false)}"
                             android:tooltipText="@string/new_post_cd_change_photo"
@@ -124,10 +123,9 @@
                         
                         <Button
                             android:id="@+id/button_add_more_photos"
-                            style="@style/IconButton.NoBorder"
+                            style="@style/IconButton.NoBorder.WithScrim"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:backgroundTint="#64ffffff"
                             android:contentDescription="@string/new_post_cd_add_more_photos"
                             android:onClick="@{() -> handler.openPhotoPicker(true)}"
                             android:tooltipText="@string/new_post_cd_add_more_photos"

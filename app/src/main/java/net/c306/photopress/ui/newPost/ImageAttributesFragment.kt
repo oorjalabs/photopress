@@ -70,6 +70,13 @@ class ImageAttributesFragment: AppBarNoBottomNavFragment() {
             }
             dismiss()
         }
+        
+        fun removeImage(view: View) {
+            newPostViewModel.editingImage.value?.also {
+                newPostViewModel.removeImage(it)
+            }
+            dismiss()
+        }
     }
     
 }

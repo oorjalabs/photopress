@@ -22,8 +22,8 @@ import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
 import net.c306.photopress.ui.newPost.gallery.GalleryAdapter
+import net.c306.photopress.utils.Utils
 import net.c306.photopress.utils.setInputFocus
-import kotlin.math.min
 
 class NewPostFragment : BottomNavFragment() {
     
@@ -90,8 +90,8 @@ class NewPostFragment : BottomNavFragment() {
             // All images already have file details
             
             // Update grid layout manager's span count to image count limited by max
-            (binding.addedGallery.layoutManager as? StaggeredGridLayoutManager)
-                ?.spanCount = min(postImagesList.size, MAX_ROW_IMAGES)
+            (binding.addedGallery.layoutManager as? StaggeredGridLayoutManager)?.spanCount =
+                Utils.calculateColumnCount(postImagesList.size)
             
             // Update gallery adapter
             mGalleryAdapter.setList(postImagesList)
@@ -101,7 +101,8 @@ class NewPostFragment : BottomNavFragment() {
                 val imageCaption = postImagesList[0].caption
                 val postCaption = newPostViewModel.postCaption.value
                 
-                if (imageCaption != postCaption) newPostViewModel.postCaption.value = postImagesList[0].caption
+                if (imageCaption != postCaption) newPostViewModel.postCaption.value =
+                    postImagesList[0].caption
             }
         })
         
@@ -111,7 +112,7 @@ class NewPostFragment : BottomNavFragment() {
             if (it.isNullOrBlank() || newPostViewModel.imageCount.value != 1) return@Observer
             
             val image = newPostViewModel.postImages.value?.getOrNull(0) ?: return@Observer
-    
+            
             val imageCaption = image.caption
             val postCaption = it
             
@@ -145,7 +146,8 @@ class NewPostFragment : BottomNavFragment() {
             
             if (publishResult?.errorMessage != null) {
                 newPostViewModel.setState(NewPostViewModel.State.READY)
-                Toast.makeText(requireContext(), publishResult.errorMessage, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), publishResult.errorMessage, Toast.LENGTH_LONG)
+                    .show()
                 return@Observer
             }
             
@@ -157,9 +159,9 @@ class NewPostFragment : BottomNavFragment() {
             if (publishResult?.publishedPost != null) {
                 // Post uploaded, show message
                 val toastMessageId = when {
-                    publishResult.publishedPost.isDraft                                         -> R.string.new_post_toast_uploaded_as_draft
+                    publishResult.publishedPost.isDraft                                        -> R.string.new_post_toast_uploaded_as_draft
                     publishResult.publishedPost.post.status == WPBlogPost.PublishStatus.FUTURE -> R.string.new_post_toast_post_scheduled
-                    else                                                                         -> R.string.new_post_toast_published
+                    else                                                                       -> R.string.new_post_toast_published
                 }
                 Toast.makeText(requireContext(), toastMessageId, Toast.LENGTH_SHORT).show()
                 
@@ -168,6 +170,13 @@ class NewPostFragment : BottomNavFragment() {
             }
             
         })
+        
+        
+        // Set featured image to be marked in recyclerview
+        newPostViewModel.postFeaturedImageId.observe(viewLifecycleOwner, Observer {
+            mGalleryAdapter.setFeaturedImage(it)
+        })
+        
     }
     
     
@@ -179,7 +188,11 @@ class NewPostFragment : BottomNavFragment() {
         if (requestCode != RC_PHOTO_PICKER && requestCode != RC_PHOTO_PICKER_ADD_PHOTOS) return
         
         if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(requireContext(), R.string.new_post_toast_image_selection_cancelled, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                R.string.new_post_toast_image_selection_cancelled,
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
         
@@ -224,22 +237,22 @@ class NewPostFragment : BottomNavFragment() {
                 if (addPhotos) RC_PHOTO_PICKER_ADD_PHOTOS else RC_PHOTO_PICKER
             )
         }
-    
+        
         /**
          * Open image attributes for the first image in postImages. If there are no images, do nothing and return
          */
         fun openImageAttributes() {
             openImageAttributes(newPostViewModel.postImages.value?.getOrNull(0) ?: return)
         }
-    
+        
         /**
          * Open image attributes for editing
          */
         fun openImageAttributes(image: PostImage) {
             findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
         }
-    
-    
+        
+        
         fun openPostSettings(view: View) {
             findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
         }
@@ -254,8 +267,6 @@ class NewPostFragment : BottomNavFragment() {
     companion object {
         const val RC_PHOTO_PICKER = 9723
         const val RC_PHOTO_PICKER_ADD_PHOTOS = 3942
-        
-        const val MAX_ROW_IMAGES = 3
     }
     
 }
