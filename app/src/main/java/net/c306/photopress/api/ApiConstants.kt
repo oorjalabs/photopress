@@ -25,6 +25,7 @@ object ApiConstants {
     const val CREATE_POST = "sites/{blog_id}/posts/new"
     const val UPDATE_POST = "sites/{blog_id}/posts/{post_id}"
     const val UPLOAD_MEDIA = "sites/{blog_id}/media/new"
+    const val UPDATE_MEDIA_ATTRIBUTES = "/sites/{blog_id}/media/{media_id}"
     const val GET_TAGS_FOR_SITE = "sites/{blog_id}/tags"
     
 
@@ -40,6 +41,7 @@ object ApiConstants {
     const val ARG_TOKEN = "token"
     const val ARG_USER_ID = "user_id"
     const val ARG_BLOG_ID = "blog_id"
+    const val ARG_MEDIA_ID = "media_id"
     const val ARG_POST_ID = "post_id"
     const val ARG_BLOG_URL = "blog_url"
     const val ARG_TOKEN_TYPE = "token_type"

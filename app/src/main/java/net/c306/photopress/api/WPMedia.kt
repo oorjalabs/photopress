@@ -132,6 +132,13 @@ data class WPMedia(
         val errors: List<String>?
     )
     
+    @Keep
+    data class UpdateMediaAttributesRequest(
+        val title: String? = null, // The file name.
+        val caption: String? = null, // File caption.
+        val description: String? = null, // Description of the file.
+        val alt: String? = null // Alternative text for image files.
+    )
     
     companion object {
         const val FIELDS_STRING = "ID,date,URL,file,extension,mime_type,title,caption,description,alt,thumbnails,height,width,exif"

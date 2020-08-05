@@ -40,14 +40,13 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0805.0.12.15
+v. 2020.0805.0.12.16
 
     [ ] SyncUtils
         [ ] Update progress by returning liveData
         [ ] Delete image from app storage after successful upload
 
     [ ] BUG: Quotes in image attributes are escaped on jetpack sites
-        [ ] For jetpack sites, update image attributes in additional call after uploading images
 
     [ ] Sync
         [ ] ViewModel
@@ -73,6 +72,15 @@ v. 2020.0805.0.12.15
         [ ] Status - publish / draft / schedule? (maybe not)
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0805.0.12.15
+
+    [-] BUG: Quotes in image attributes are escaped on jetpack sites
+        [X] For jetpack sites, update image attributes in additional call after uploading images
 
 
 ------------------

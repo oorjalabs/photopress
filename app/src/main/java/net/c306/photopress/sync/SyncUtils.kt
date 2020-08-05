@@ -83,10 +83,13 @@ class SyncUtils(context: Context) {
         post: PhotoPressPost,
         images: List<PostImage>,
         addFeaturedImage: Boolean?,
-        useBlockEditor: Boolean?
+        useBlockEditor: Boolean?,
+        isJetpackBlog: Boolean?
     ): PublishPostResponse =
         withContext(Dispatchers.IO) {
+            
             // TODO: 04/08/2020 Return live data with progress status and publishpost response. Update live data as things move along
+            
             if (post.title.isBlank() || images.isEmpty()) {
                 Timber.w("Null inputs to publish: title: '${post.title}', ${images.size} images")
                 return@withContext PublishPostResponse(
@@ -107,6 +110,12 @@ class SyncUtils(context: Context) {
                     publishedPost = null,
                     updatedImages = null
                 )
+            }
+            
+            if (isJetpackBlog == true && false) {
+                // Disabled because WP api returns 404 for recently updated image :(
+                Timber.d("Jetpack blog, updating media attributes again")
+                uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
             }
             
             // Upload post as draft with embedded image
@@ -240,13 +249,48 @@ class SyncUtils(context: Context) {
     
     private suspend fun updateMediaMetadata(
         blogId: Int,
-        images: List<UploadMediaResponse>
-    ) = suspendCoroutine<Pair<Boolean, List<UploadMediaResponse>>> {
-        // TODO: 05/08/2020 Upload media attributes in a new call if it's a jetpack site
+        image: UploadMediaResponse
+    ) = suspendCoroutine<UploadMediaResponse> {cont ->
+        
+        ApiClient().getApiService(applicationContext)
+            .updateMediaAttributes(
+                blogId = blogId.toString(),
+                mediaId = image.media!!.id.toString(),
+                fields = WPMedia.FIELDS_STRING,
+                body = WPMedia.UpdateMediaAttributesRequest(
+                    title = image.originalImage.name,
+                    caption = image.originalImage.caption,
+                    description = image.originalImage.description,
+                    alt = image.originalImage.altText
+                )
+            )
+            .enqueue(object : Callback<WPMedia> {
+                
+                override fun onFailure(call: Call<WPMedia>, t: Throwable) {
+                    // Error creating post
+                    Timber.w(t, "Error uploading media!")
+                    cont.resume(image.copy(errorMessage = t.message))
+                }
+                
+                override fun onResponse(
+                    call: Call<WPMedia>,
+                    response: Response<WPMedia>
+                ) {
+                    val updateMediaResponse = response.body()
+                    
+                    if (updateMediaResponse == null) {
+                        Timber.w("Updating media: No response received :(")
+                        cont.resume(image.copy(errorMessage = "No response"))
+                        return
+                    }
+                    
+                    Timber.v("Media updated! $updateMediaResponse")
+                    cont.resume(image.copy(media = updateMediaResponse))
+                }
+            })
     }
     
     
-    @Suppress("ConstantConditionIf")
     private suspend fun uploadPost(
         post: PhotoPressPost,
         postImages: List<UploadMediaResponse>,
@@ -322,7 +366,7 @@ class SyncUtils(context: Context) {
                 fields = WPBlogPost.FIELDS_STRING,
                 body = WPBlogPost.CreatePostRequest(
                     title = post.title,
-                    content = content,
+                    content = content.trimIndent(),
                     tags = post.tags,
                     status = WPBlogPost.PublishStatus.DRAFT,
                     featuredImage = if (addingFeaturedImage) featuredImage.media!!.id.toString() else null

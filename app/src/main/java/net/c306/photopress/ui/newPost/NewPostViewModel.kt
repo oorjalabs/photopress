@@ -305,6 +305,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      */
     fun publishPostEnqueue(saveAsDraft: Boolean = false, scheduledTime: Long? = null) {
         
+        val isJetpackBlog = selectedBlog.value?.jetpack
         val blogId = selectedBlogId.value
         val title = postTitle.value
         val images = postImages.value
@@ -348,7 +349,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     post = post,
                     images = images,
                     addFeaturedImage = addFeaturedImage.value,
-                    useBlockEditor = useBlockEditor.value
+                    useBlockEditor = useBlockEditor.value,
+                    isJetpackBlog = isJetpackBlog
                 )
             
             if (publishResult.errorMessage != null) {

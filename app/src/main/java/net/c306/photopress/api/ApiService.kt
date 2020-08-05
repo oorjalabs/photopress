@@ -84,6 +84,14 @@ interface ApiService {
     ): Call<WPMedia.UploadMediaResponse>
     
     
+    @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
+    fun updateMediaAttributes(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Path(ApiConstants.ARG_MEDIA_ID) mediaId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Body body: WPMedia.UpdateMediaAttributesRequest
+    ): Call<WPMedia>
+    
     @Keep
     data class ValidateTokenResponse(
         @SerializedName(ApiConstants.ARG_CLIENT_ID)
