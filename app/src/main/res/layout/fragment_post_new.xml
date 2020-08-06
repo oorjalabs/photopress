@@ -266,7 +266,6 @@
             android:shadowDy="0"
             android:shadowRadius="2"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@color/text_secondary_on_surface"
             android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/scrim_publishing"
             app:layout_constraintStart_toStartOf="@id/scrim_publishing"

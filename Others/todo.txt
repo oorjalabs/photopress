@@ -17,38 +17,16 @@ v. 2020.X.X.X
 
 v. 2020.0801.0.13.1
 
-    --TBD-- Layout: move publish button out of the way
-
-    --TBD-- Delete photo from app storage after successful publishing
-
     --TBD-- Wireframe
         [ ] List
-
-    --TBD-- Support for categories
-        [ ] Setting for default categories
 
     --TBD-- Update notes
 
     --TBD-- Subscriptions
 
-    --TBD-- Show upload progress
-        [ ] Show message with state of progress - uploading image, uploading content, publishing
-
     --TBD-- Refresh sites, tags and categories at least once a day
 
-
-------------------
-
-
-v. 2020.0806.0.12.21
-
-    [ ] Post settings screen
-        [ ] Category
-
-    [ ] SyncUtils
-        [ ] Delete image from app storage after successful upload
-
-    [ ] Sync
+    [ ] Sync via database & worker
         [ ] ViewModel
             [ ] Save uploaded images in database, if sync stopped midway
             [ ] Save post and images in database before syncing, delete from db after syncing
@@ -58,7 +36,27 @@ v. 2020.0806.0.12.21
 
     [ ] BUG: Quotes in image attributes are escaped on jetpack sites
 
+
+------------------
+
+
+v. 2020.0806.0.12.22
+
+    [ ] Post settings screen
+        [ ] Category
+
     [ ] Landscape view updates
+
+    --TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.0806.0.12.21
+
+    [X] SyncUtils
+        [X] Delete image from app storage after successful upload
 
 
 ------------------

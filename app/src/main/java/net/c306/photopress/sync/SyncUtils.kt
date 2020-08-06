@@ -28,34 +28,6 @@ class SyncUtils(context: Context) {
     
     private val applicationContext = context.applicationContext
     
-    /**
-     * Takes a content URI and writes the contents to a file in app's storage.
-     * Returns the app's copy of file and its mime type
-     * @return Pair with file and its mime-type, or null if the uri couldn't be read
-     */
-    private fun getFileForUri(context: Context, postImage: PostImage): Pair<File, String>? {
-        
-        if (postImage.fileDetails == null) return null
-        
-        // Open a specific media item using ParcelFileDescriptor.
-        val resolver = context.applicationContext.contentResolver
-        
-        // Open selected file as input stream
-        resolver.openInputStream(postImage.uri)?.use { stream ->
-            // Write it to app's storage as file
-            val imageFile = File(
-                context.applicationContext.filesDir,
-                postImage.fileDetails.fileName
-            )
-            imageFile.outputStream().use {
-                stream.copyTo(it)
-            }
-            return Pair(imageFile, postImage.fileDetails.mimeType)
-        }
-        
-        return null
-    }
-    
     data class PublishLiveData(
         val progress: PublishProgress,
         val response: PublishPostResponse? = null
@@ -118,15 +90,16 @@ class SyncUtils(context: Context) {
             
             emit(PublishLiveData(progress = PublishProgress(false, "Uploading images")))
             
-            val (uploadSuccess, uploadedMedia) = uploadMedia(
-                post.blogId,
-                images.mapNotNull { image ->
-                    val (file, _) = getFileForUri(
-                        applicationContext,
-                        image
-                    ) ?: return@mapNotNull null
+            val mediaToUpload = images.mapNotNull { image ->
+                getFileForUri(applicationContext, image)?.let { (file, _) ->
                     Pair(file, image)
-                })
+                }
+            }
+            
+            val (uploadSuccess, uploadedMedia) = uploadMedia(post.blogId, mediaToUpload)
+            
+            // Delete images from app storage
+            deleteFiles(mediaToUpload.map { it.first })
             
             if (!uploadSuccess) {
                 val errorMessage = uploadedMedia[0].errorMessage ?: "Media upload failed"
@@ -518,6 +491,51 @@ class SyncUtils(context: Context) {
                     cont.resume(UploadPostResponse(uploadedPost = publishResponse))
                 }
             })
+    }
+    
+    
+    /**
+     * Takes a content URI and writes the contents to a file in app's storage.
+     * Returns the app's copy of file and its mime type
+     * @return Pair with file and its mime-type, or null if the uri couldn't be read
+     */
+    private suspend fun getFileForUri(context: Context, postImage: PostImage): Pair<File, String>? =
+        withContext(Dispatchers.IO) {
+            
+            if (postImage.fileDetails == null) return@withContext null
+            
+            // Open selected file as input stream
+            return@withContext context.applicationContext.contentResolver
+                .openInputStream(postImage.uri)?.let { stream ->
+                    
+                    // Write it to app's storage as file
+                    val imageFile = File(
+                        context.applicationContext.filesDir,
+                        postImage.fileDetails.fileName
+                    )
+                    
+                    imageFile.outputStream().use {
+                        stream.copyTo(it)
+                    }
+                    
+                    Pair(imageFile, postImage.fileDetails.mimeType)
+                }
+        }
+    
+    
+    /**
+     * Deletes all provided images from app's storage space
+     */
+    private suspend fun deleteFiles(images: List<File>) = withContext(Dispatchers.IO) {
+        
+        if (images.isEmpty()) return@withContext
+        
+        try {
+            images
+                .filter { it.exists() && it.isFile }
+                .forEach { it.delete() }
+        } catch (e: SecurityException) {
+        }
     }
     
     

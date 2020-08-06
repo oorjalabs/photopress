@@ -105,7 +105,7 @@
                 app:icon="@drawable/ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-    
+            
             <Button
                 android:id="@+id/button_reorder_photos"
                 style="@style/IconButton.NoBorder.WithScrim"
@@ -118,7 +118,7 @@
                 app:icon="@drawable/ic_reorder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-            
+        
         </androidx.constraintlayout.widget.ConstraintLayout>
         
         <ScrollView
@@ -185,8 +185,8 @@
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences|textMultiLine"
                         android:text="@={viewmodel.postCaption}"
-                        tools:text="This is a long caption to test what happens to the layout when the caption and title are both long, very long..."
-                        tools:ignore="LabelFor" />
+                        tools:ignore="LabelFor"
+                        tools:text="This is a long caption to test what happens to the layout when the caption and title are both long, very long..." />
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <View
@@ -259,7 +259,6 @@
             android:shadowDy="0"
             android:shadowRadius="2"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@color/text_secondary_on_surface"
             android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/scrim_publishing"
             app:layout_constraintStart_toStartOf="@id/scrim_publishing"
