@@ -46,6 +46,16 @@ interface ApiService {
     ): Call<WPTag.TagsResponse>
     
     
+    @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
+    fun getCategoriesForSite(
+            @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+            @Query(WPCategory.ARG_ORDER_BY) orderBy: String = WPCategory.VALUE_ORDER_BY,
+            @Query(WPCategory.ARG_ORDER) order: String = WPCategory.VALUE_ORDER,
+            @Query(WPCategory.ARG_NUMBER) number: Number = WPCategory.VALUE_NUMBER,
+            @Query(WPCategory.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING
+    ): Call<WPCategory.GetCategoriesResponse>
+    
+    
     @POST(ApiConstants.CREATE_POST)
     fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,

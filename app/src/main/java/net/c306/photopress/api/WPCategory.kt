@@ -12,11 +12,12 @@ data class WPCategory(
     @SerializedName("post_count")
     val postCount: Int,
     /** id of parent category */
-    val parent: Int
-                     ) {
+    val parent: Int,
+    val slug: String
+) {
     companion object {
         
-        const val FIELDS_STRING = "ID,name,post_count,parent"
+        const val FIELDS_STRING = "ID,name,post_count,parent,slug"
         
         fun fromJson(jsonString: String): WPCategory {
             return Json.getInstance().fromJson(jsonString, WPCategory::class.java)
@@ -36,11 +37,11 @@ data class WPCategory(
     
     @Keep
     data class GetCategoriesResponse(
-        /** The number of tags returned. */
-        val  found: Int,
-        /** Array of tag objects. */
-        val tags: List<WPCategory>
-                                    )
+        /** The number of categories returned. */
+        val found: Int,
+        /** Array of [WPCategory] objects. */
+        val categories: List<WPCategory>
+    )
     
     fun toJson(): String {
         return Json.getInstance().toJson(this)

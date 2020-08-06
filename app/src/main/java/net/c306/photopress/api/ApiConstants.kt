@@ -27,6 +27,7 @@ object ApiConstants {
     const val UPLOAD_MEDIA = "sites/{blog_id}/media/new"
     const val UPDATE_MEDIA_ATTRIBUTES = "/sites/{blog_id}/media/{media_id}"
     const val GET_TAGS_FOR_SITE = "sites/{blog_id}/tags"
+    const val GET_CATEGORIES_FOR_SITE = "sites/{blog_id}/categories"
     
 
 

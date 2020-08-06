@@ -11,10 +11,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
-import net.c306.photopress.api.ApiClient
-import net.c306.photopress.api.Blog
-import net.c306.photopress.api.WPBlogPost
-import net.c306.photopress.api.WPTag
+import net.c306.photopress.api.*
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.sync.SyncUtils
@@ -88,6 +85,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
     internal val defaultTags = MutableLiveData<String>()
+    internal val defaultCategories = MutableLiveData<String>()
     
     
     // Selected Blog
@@ -109,10 +107,13 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         updateState()
         
         val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
+        val selectedBlogCategories = AuthPrefs(applicationContext).getCategoriesList()
         
         setBlogTags(selectedBlogTags ?: emptyList())
+        setBlogCategories(selectedBlogCategories ?: emptyList())
         
         if (selectedBlogTags == null) updateTagsList()
+        if (selectedBlogCategories == null) updateCategoriesList()
     }
     
     
@@ -130,6 +131,24 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 setBlogTags(it)
                 AuthPrefs(applicationContext)
                     .saveTagsList(it)
+            }
+        }
+    }
+    
+    // Selected Blog's Categories
+    private val _blogCategories = MutableLiveData<List<WPCategory>>()
+    val blogCategories: LiveData<List<WPCategory>> = _blogCategories
+    
+    private fun setBlogCategories(list: List<WPCategory>) {
+        _blogCategories.value = list
+    }
+    
+    private fun updateCategoriesList() {
+        viewModelScope.launch {
+            refreshCategories().categories?.let {
+                setBlogCategories(it)
+                AuthPrefs(applicationContext)
+                    .saveCategoriesList(it)
             }
         }
     }
@@ -219,6 +238,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Post tags
     val postTags = MutableLiveData<String>()
     
+    // Post categories
+    val postCategories = MutableLiveData<String>()
+    
     // Post caption (same as image caption in case of single image post)
     val postCaption = MutableLiveData<String>()
     
@@ -267,6 +289,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         _publishedPost.value = null
         postTitle.value = null
         postTags.value = defaultTags.value
+        postCategories.value = defaultCategories.value
         postCaption.value = null
         postStatus.value = null
         toggleFeaturedImage(null)
@@ -288,6 +311,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 userPrefs.getAddFeaturedImage()
             
             UserPrefs.KEY_DEFAULT_TAGS       -> defaultTags.value = userPrefs.getDefaultTags()
+            
+            UserPrefs.KEY_DEFAULT_CATEGORIES       -> defaultCategories.value = userPrefs.getDefaultCategories()
         }
     }
     
@@ -299,6 +324,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         useBlockEditor.value = userPrefs.getUseBlockEditor()
         addFeaturedImage.value = userPrefs.getAddFeaturedImage()
         defaultTags.value = userPrefs.getDefaultTags()
+        defaultCategories.value = userPrefs.getDefaultCategories()
         setSelectedBlogId(userPrefs.getSelectedBlogId())
         userPrefs.observe(observer)
     }
@@ -357,7 +383,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             val images = postImages.value
             val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
                 .apply { add(applicationContext.getString(R.string.app_post_tag)) }
-                .filter { !it.isBlank() }
+                .filter { tag -> !tag.isBlank() }
+                .distinct()
+            val categories = (postCategories.value?.split(",") ?: listOf())
+                .filter { category -> !category.isBlank() }
                 .distinct()
             
             if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
@@ -376,6 +405,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 scheduledTime = scheduledDateTime.value,
                 status = postStatus.value ?: PhotoPressPost.PhotoPostStatus.PUBLISH,
                 tags = tags,
+                categories = categories,
                 title = title,
                 uploadPending = true
             )
@@ -428,6 +458,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
         }
         
+        // Update categories list
+        updateCategoriesList()
+        
         Timber.d("Blogpost done! $publishedPost")
         
         _publishedPost.value = publishedPost
@@ -472,6 +505,46 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     
                     Timber.v("Fetched ${fetchTagsResponse.found} tags")
                     cont.resume(RefreshTagsResult(tags = fetchTagsResponse.tags))
+                }
+            })
+    }
+    
+    private data class RefreshCategoriesResult(
+        val errorMessage: String? = null,
+        val categories: List<WPCategory>? = null
+    )
+    
+    private suspend fun refreshCategories() = suspendCoroutine<RefreshCategoriesResult> { cont ->
+        val blogId = selectedBlogId.value?.toString()
+        
+        if (blogId.isNullOrBlank()) {
+            cont.resume(RefreshCategoriesResult(errorMessage = "No blog selected"))
+            return@suspendCoroutine
+        }
+        
+        ApiClient().getApiService(applicationContext)
+            .getCategoriesForSite(blogId)
+            .enqueue(object : Callback<WPCategory.GetCategoriesResponse> {
+                override fun onFailure(call: Call<WPCategory.GetCategoriesResponse>, t: Throwable) {
+                    // Error creating post
+                    Timber.w(t, "Error fetching categories!")
+                    cont.resume(RefreshCategoriesResult(errorMessage = "Error fetching categories: ${t.localizedMessage}"))
+                }
+                
+                override fun onResponse(
+                    call: Call<WPCategory.GetCategoriesResponse>,
+                    response: Response<WPCategory.GetCategoriesResponse>
+                ) {
+                    val fetchCategoriesResponse = response.body()
+                    
+                    if (fetchCategoriesResponse == null) {
+                        Timber.w("Error updating to published: No blog response received :(")
+                        cont.resume(RefreshCategoriesResult(errorMessage = "Error publishing: No response received"))
+                        return
+                    }
+                    
+                    Timber.v("Fetched ${fetchCategoriesResponse.found} categories")
+                    cont.resume(RefreshCategoriesResult(categories = fetchCategoriesResponse.categories))
                 }
             })
     }

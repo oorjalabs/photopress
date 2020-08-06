@@ -58,7 +58,6 @@
             app:title="@string/pref_title_default_tags" />
         
         <net.c306.customcomponents.preference.SearchableMultiSelectListPreference
-            app:enabled="false"
             app:iconSpaceReserved="false"
             app:key="key_default_categories"
             app:title="@string/pref_title_default_categories" />

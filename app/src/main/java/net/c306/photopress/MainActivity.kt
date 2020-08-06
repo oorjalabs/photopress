@@ -80,6 +80,17 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             }
         })
         
+        // If post categories are empty (app start or new post), set default categories as categories.
+        // Don't use `newPost` instead because it causes image and input loss on configuration
+        // change.
+        newPostViewModel.defaultCategories.observe(this, Observer {
+            if (it.isNullOrBlank()) return@Observer
+            
+            if (newPostViewModel.postCategories.value.isNullOrBlank()) {
+                newPostViewModel.postCategories.value = it
+            }
+        })
+        
         
         // Set up Update notes viewModel for component view
         val updateNotesViewModel = ViewModelProvider(this)

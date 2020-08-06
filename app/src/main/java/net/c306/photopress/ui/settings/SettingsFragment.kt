@@ -43,12 +43,6 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
             findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
         }
         
-        // TODO: 30/07/2020 Implement post categories
-        findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_CATEGORIES)?.run {
-            isEnabled = false
-            disabledSummary = "Not available yet"
-        }
-        
         // Set user's blog list
         findPreference<UpgradedListPreference>(UserPrefs.KEY_SELECTED_BLOG_ID)?.run {
             val authPrefs = AuthPrefs(context)
@@ -65,6 +59,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
             setOnPreferenceChangeListener { _, _ ->
                 // Clear saved tags list when blog changes
                 authPrefs.saveTagsList(null)
+                authPrefs.saveCategoriesList(null)
                 true
             }
         }
@@ -121,16 +116,29 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
             }
         })
         
-        
+        // Set up default tags preference
         newPostViewModel.blogTags.observe(viewLifecycleOwner, Observer { tags ->
             findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_TAGS)?.run {
                 if (tags.isNullOrEmpty()) {
                     isEnabled = false
                 } else {
                     isEnabled = true
-                    val tagNames = tags.map { it.name }
-                    entries = tagNames
-                        .map { SearchableMultiSelectListPreference.Entry(it) }
+                    entries = tags
+                        .map { SearchableMultiSelectListPreference.Entry(it.name) }
+                        .toTypedArray()
+                }
+            }
+        })
+    
+        // Set up default categories preference
+        newPostViewModel.blogCategories.observe(viewLifecycleOwner, Observer { categories ->
+            findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_CATEGORIES)?.run {
+                if (categories.isNullOrEmpty()) {
+                    isEnabled = false
+                } else {
+                    isEnabled = true
+                    entries = categories
+                        .map { SearchableMultiSelectListPreference.Entry(it.name) }
                         .toTypedArray()
                 }
             }
