@@ -75,6 +75,7 @@
     <string name="string_cancel">Cancel</string>
     <string name="string_publish">Publish</string>
     <string name="string_schedule">Schedule</string>
+    <string name="string_close">Close</string>
     <string name="string_under_development">Still working on it</string>
     
     
@@ -158,6 +159,11 @@
     <string name="image_attributes_button_unset_as_featured_image">Remove featured image</string>
     <string name="image_attributes_button_remove_image">Remove image</string>
     
-    <!--  Unsorted  -->
+    <!--  Full image view  -->
+    <string name="full_image_view_cd_image">Current image</string>
     
+    <!--  Unsorted  -->
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

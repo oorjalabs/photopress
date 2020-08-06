@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentImageAttributesBinding
@@ -76,6 +77,12 @@ class ImageAttributesFragment: AppBarNoBottomNavFragment() {
                 newPostViewModel.removeImage(it)
             }
             dismiss()
+        }
+        
+        fun openFullImage(view: View) {
+            newPostViewModel.editingImage.value?.also {
+                findNavController().navigate(ImageAttributesFragmentDirections.actionOpenFullPhoto(it))
+            }
         }
     }
     

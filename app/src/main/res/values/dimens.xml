@@ -6,4 +6,5 @@
     
     <dimen name="gallery_image_dimen_default">72dp</dimen>
     <dimen name="gallery_grid_item_margin">2dp</dimen>
+    <dimen name="padding_round_icon_button">12dp</dimen>
 </resources>

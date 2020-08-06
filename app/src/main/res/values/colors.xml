@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    
     <!--  https://colorhunt.co/palette/9506  -->
     <color name="p1">#00b8a9</color>
     <color name="p2">#f8f3d4</color>
     <color name="p3">#f6416c</color>
     <color name="p4">#ffde7d</color>
-
+    
     <!--  https://colorhunt.co/palette/7642  -->
     <color name="p1_night">#f38181</color>
     <color name="p2_night">#fce38a</color>
     <color name="p3_night">#eaffd0</color>
     <color name="p4_night">#95e1d3</color>
-
+    
     <!-- Android theme colours -->
-
+    
     <color name="primaryColor">@color/p1</color>
     <color name="primaryDarkColor">#007b66</color>
     <color name="primaryLightColor">#a8e0da</color>
-
+    
     <color name="secondaryColor">@color/p3</color>
     <color name="secondaryDarkColor">#cc174e</color>
     <color name="secondaryLightColor">#fd90a8</color>
@@ -26,28 +26,32 @@
     <color name="background">@android:color/white</color>
     
     <color name="bg_status_bar">@color/primaryLightColor</color>
-
+    
     <color name="tint_updated_indicator">#D50000</color>
     <color name="bg_updated_indicator">#dcf3f1</color> <!-- 50 of primary -->
-
+    
     <color name="bg_color_splash">@color/primaryDarkColor</color>
-
+    
     <color name="text_primary_on_surface">@color/primaryDarkColor</color>
     <color name="text_secondary_on_surface">@color/secondaryDarkColor</color>
-
+    
     <color name="text_default">#DD000000</color><!-- 86% black -->
     <color name="text_disabled">#42000000</color><!-- 37.5% black -->
-
+    
+    <color name="bg_full_image">@color/grey_950</color>
+    
     <color name="bg_fab_disabled">@color/grey_400</color>
     
     <color name="ic_featured_on">@color/secondaryLightColor</color>
     <color name="ic_featured_off">@color/grey_300</color>
     
-    <color name="icon_button_scrim">#64ffffff</color>
+    <color name="icon_button_scrim_light">#61EEEEEE</color>
+    <color name="icon_button_scrim_dark">#64121212</color>
+    <color name="icon_button_scrim">@color/icon_button_scrim_light</color>
     
     <color name="stroke_close_button">@color/grey_200</color>
-    <color name="bg_close_button">#61EEEEEE</color>
-
+    <color name="tint_close_button_full_image">#B2FFFFFF</color>
+    
     <color name="bg_button_primary">@color/primaryColor</color>
     <color name="bg_button_secondary">@color/secondaryColor</color>
     
@@ -57,8 +61,8 @@
     <color name="bg_list_item_focused">@color/grey_100</color>
     <color name="bg_list_item_normal">@color/background</color>
     <color name="bg_list_item_normal_searchable_pref">@android:color/transparent</color>
-
-
+    
+    
     <!-- Greys  -->
     <color name="grey_50">#FAFAFA</color>
     <color name="grey_100">#F5F5F5</color>
@@ -73,6 +77,7 @@
     <color name="grey_900">#212121</color>
     <color name="grey_950">#121212</color>
     <color name="border_image_view">#42000000</color>
+    <color name="black_overlay">#66000000</color>
 
 
 </resources>

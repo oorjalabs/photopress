@@ -119,6 +119,9 @@
             android:name="imageId"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_openFullPhoto"
+            app:destination="@id/fullImageFragment" />
     </fragment>
     
     <fragment
@@ -169,5 +172,19 @@
     <fragment
         android:id="@+id/reorderImagesFragment"
         android:name="net.c306.photopress.ui.gallery.ReorderImagesFragment"
-        android:label="ReorderImagesFragment" />
+        android:label="ReorderImagesFragment" >
+        <action
+            android:id="@+id/action_openFullPhoto"
+            app:destination="@id/fullImageFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/fullImageFragment"
+        tools:layout="@layout/fragment_full_image"
+        android:name="net.c306.photopress.ui.gallery.FullImageFragment"
+        android:label="ImageViewFragment" >
+        <argument
+            android:name="image"
+            app:argType="net.c306.photopress.database.PostImage" />
+    </fragment>
 </navigation>

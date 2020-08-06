@@ -1,8 +1,10 @@
 package net.c306.photopress.database
 
 import android.net.Uri
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
+import kotlinx.android.parcel.Parcelize
 import kotlin.random.Random
 
 /**
@@ -10,6 +12,7 @@ import kotlin.random.Random
  * Some properties are `var` so they can be updated using two-way data binding.
  */
 @Keep
+@Parcelize
 @Entity(
     tableName = "local_media",
     foreignKeys = [
@@ -58,11 +61,13 @@ data class PostImage(
     @ColumnInfo(name = "post_id")
     val postId: Int? = null
     
-) {
+) : Parcelable {
+    
+    @Parcelize
     data class FileDetails(
         val fileName: String,
         val mimeType: String
-    )
+    ) : Parcelable
     
     companion object {
         fun generateId(): Int = Random.nextInt(0, Int.MAX_VALUE)

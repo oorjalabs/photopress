@@ -40,11 +40,7 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0806.0.12.20
-
-    [ ] Tap photo thumbail to open in full size
-        [ ] Photo details screen
-        [ ] Gallery
+v. 2020.0806.0.12.21
 
     [ ] Post settings screen
         [ ] Category
@@ -63,6 +59,16 @@ v. 2020.0806.0.12.20
     [ ] BUG: Quotes in image attributes are escaped on jetpack sites
 
     [ ] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0806.0.12.20
+
+    [X] Tap photo thumbail to open in full size
+        [X] Photo details screen
+        [X] Gallery
 
 
 ------------------

@@ -26,16 +26,17 @@
         
         <ImageView
             android:id="@+id/button_close_welcome"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/min_touch_size"
+            android:layout_height="@dimen/min_touch_size"
             android:layout_gravity="top|end"
             android:layout_margin="@dimen/activity_vertical_margin"
-            android:background="@drawable/rounded_button_with_ripple"
+            android:background="@drawable/bg_round_icon_button_no_scrim"
             android:contentDescription="@string/cd_close_welcome_screen"
             android:onClick="@{() -> handler.goToApp()}"
-            android:padding="12dp"
+            android:padding="@dimen/padding_round_icon_button"
             android:src="@drawable/ic_close"
             android:tint="?colorControlNormal"
+            android:tooltipText="@string/cd_close_welcome_screen"
             android:visibility="gone"
             tools:visibility="visible" />
         

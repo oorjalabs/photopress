@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import net.c306.photopress.R
@@ -109,10 +110,10 @@ class ReorderImagesFragment: AppBarNoBottomNavFragment(), ReorderImagesSwipeHelp
         }
         
         /**
-         * Start drag maybe?
+         * Open image in full view
          */
         override fun onImagePressed(image: PostImage) {
-            // TODO: 06/08/2020 do nothing or start drag?
+            findNavController().navigate(ReorderImagesFragmentDirections.actionOpenFullPhoto(image))
         }
     }
     
