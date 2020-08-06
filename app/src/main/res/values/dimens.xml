@@ -2,6 +2,8 @@
     
     <item name="alpha_scrim_publishing" format="float" type="dimen">0.375</item>
     
+    <item name="line_spacing_extra_quarter" format="float" type="dimen">1.25</item>
+    
     <dimen name="gallery_image_dimen_default">72dp</dimen>
     <dimen name="gallery_grid_item_margin">2dp</dimen>
 </resources>

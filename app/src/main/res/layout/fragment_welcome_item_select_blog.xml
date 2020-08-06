@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:autoLink="web"
-            android:lineSpacingMultiplier="1.25"
+            android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
             android:text="@string/message_welcome_no_blogs_found"
             android:visibility="@{selectBlogViewModel.blogsAvailable == false ? View.VISIBLE : View.GONE}"
             android:textAlignment="center"

@@ -15,7 +15,7 @@
         
         <variable
             name="galleryAdapter"
-            type="net.c306.photopress.ui.newPost.gallery.GalleryAdapter" />
+            type="net.c306.photopress.ui.gallery.GalleryAdapter" />
         
         <variable
             name="handler"
@@ -133,6 +133,19 @@
                             app:icon="@drawable/ic_add"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent" />
+                        
+                        <Button
+                            android:id="@+id/button_reorder_photos"
+                            style="@style/IconButton.NoBorder.WithScrim"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/new_post_cd_reorder_photos"
+                            android:onClick="@{handler::openReorderingScreen}"
+                            android:tooltipText="@string/new_post_cd_reorder_photos"
+                            android:visibility="@{viewmodel.imageCount > 1 ? View.VISIBLE : View.GONE}"
+                            app:icon="@drawable/ic_reorder"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
                     
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 
@@ -248,11 +261,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:shadowColor="@color/text_default"
+            android:shadowColor="@color/text_disabled"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="2"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="@color/text_secondary_on_surface"
             android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/scrim_publishing"

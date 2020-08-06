@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_show_publishOptions"
             app:destination="@id/publishOptionsDialog" />
+        <action
+            android:id="@+id/action_reorderImages"
+            app:destination="@id/reorderImagesFragment" />
     </fragment>
     
     <fragment
@@ -162,4 +165,9 @@
         android:id="@+id/timeChooserDialogFragment"
         android:name="net.c306.photopress.ui.newPost.TimeChooserDialogFragment"
         android:label="TimeChooserDialogFragment" />
+    
+    <fragment
+        android:id="@+id/reorderImagesFragment"
+        android:name="net.c306.photopress.ui.gallery.ReorderImagesFragment"
+        android:label="ReorderImagesFragment" />
 </navigation>

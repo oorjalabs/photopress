@@ -21,7 +21,7 @@ import net.c306.photopress.api.WPBlogPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
-import net.c306.photopress.ui.newPost.gallery.GalleryAdapter
+import net.c306.photopress.ui.gallery.GalleryAdapter
 import net.c306.photopress.utils.Utils
 import net.c306.photopress.utils.setInputFocus
 
@@ -33,7 +33,7 @@ class NewPostFragment : BottomNavFragment() {
     
     private val mHandler = Handler()
     
-    private val mGalleryAdapter by lazy { GalleryAdapter(mHandler) }
+    private val mGalleryAdapter by lazy { GalleryAdapter(GalleryAdapter.Caller.NEW_POST_GALLERY, mHandler) }
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -219,7 +219,7 @@ class NewPostFragment : BottomNavFragment() {
      * Public methods that can be called from data binding
      */
     @Suppress("UNUSED_PARAMETER")
-    inner class Handler {
+    inner class Handler : GalleryAdapter.GalleryInteraction {
         
         /**
          * Open file picker to select file location for syncing
@@ -239,19 +239,11 @@ class NewPostFragment : BottomNavFragment() {
         }
         
         /**
-         * Open image attributes for the first image in postImages. If there are no images, do nothing and return
+         * Open image attributes fragment
          */
-        fun openImageAttributes() {
-            openImageAttributes(newPostViewModel.postImages.value?.getOrNull(0) ?: return)
-        }
-        
-        /**
-         * Open image attributes for editing
-         */
-        fun openImageAttributes(image: PostImage) {
+        override fun onImagePressed(image: PostImage) {
             findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
         }
-        
         
         fun openPostSettings(view: View) {
             findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
@@ -261,6 +253,10 @@ class NewPostFragment : BottomNavFragment() {
             findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
         }
         
+        
+        fun openReorderingScreen(view: View) {
+            findNavController().navigate(NewPostFragmentDirections.actionReorderImages())
+        }
     }
     
     

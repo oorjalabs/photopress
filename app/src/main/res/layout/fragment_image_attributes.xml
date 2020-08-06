@@ -188,7 +188,7 @@
                     android:hint="@string/image_attributes_label_description"
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences|textMultiLine"
-                    android:lineSpacingMultiplier="1.25"
+                    android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
                     android:lines="4"
                     android:nextFocusDown="@string/button_text_done"
                     android:text="@={viewmodel.editingImage.description}" />
