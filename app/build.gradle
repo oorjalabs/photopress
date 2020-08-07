@@ -9,7 +9,7 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString = "0.12.25"
+def versionString = "0.12.26"
 def versionNumber = 25
 
 static def getDate() {

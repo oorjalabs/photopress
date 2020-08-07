@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.WPBlogPost
+import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPMedia
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
@@ -539,6 +540,40 @@ class SyncUtils(context: Context) {
         }
     }
     
+    
+    suspend fun addCategory(blogId: Int, categoryName: String): Boolean = suspendCoroutine { cont ->
+        
+        ApiClient().getApiService(applicationContext)
+            .addCategory(
+                blogId = blogId.toString(),
+                request = WPCategory.AddCategoryRequest(categoryName).toFieldMap()
+            )
+            .enqueue(object : Callback<WPCategory> {
+                
+                override fun onFailure(call: Call<WPCategory>, t: Throwable) {
+                    // Error creating post
+                    Timber.w(t, "Error adding category!")
+                    cont.resume(false)
+                }
+                
+                override fun onResponse(
+                    call: Call<WPCategory>,
+                    response: Response<WPCategory>
+                ) {
+                    val addCategoryResponse = response.body()
+                    
+                    if (addCategoryResponse == null) {
+                        Timber.w("Adding category: No response received :(")
+                        cont.resume(false)
+                        return
+                    }
+                    
+                    Timber.v("Category added! $addCategoryResponse")
+                    cont.resume(true)
+                }
+            })
+        
+    }
     
     companion object {
         

@@ -40,14 +40,22 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0807.0.12.26
-
-    [ ] Add categories
-        [ ] When categories are added locally, also sync them with server even if they aren't used
+v. 2020.0808.0.12.27
 
     [ ] Landscape view updates
 
     --TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.0807.0.12.26
+
+    [X] Add categories
+        [X] When categories are added locally, also sync them with server even if they aren't used
+
+    [X] Icon colour updated to p1_night. Theme colour is still p1
 
 
 ------------------

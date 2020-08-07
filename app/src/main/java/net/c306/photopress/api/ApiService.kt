@@ -56,6 +56,15 @@ interface ApiService {
     ): Call<WPCategory.GetCategoriesResponse>
     
     
+    @POST(ApiConstants.CREATE_CATEGORY)
+    @FormUrlEncoded
+    fun addCategory(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
+        @FieldMap request: Map<String, String>
+    ): Call<WPCategory>
+    
+    
     @POST(ApiConstants.CREATE_POST)
     fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,

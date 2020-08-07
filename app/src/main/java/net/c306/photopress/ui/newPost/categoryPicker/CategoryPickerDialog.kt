@@ -20,7 +20,6 @@ import net.c306.photopress.R
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.databinding.DialogCategoryPickerBinding
 import net.c306.photopress.ui.newPost.NewPostViewModel
-import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Utils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -63,8 +62,8 @@ class CategoryPickerDialog : DialogFragment() {
         
         val newCategory = mSuggestedNewCategory!!
         
-        // Save category to storage
-        val updatedCategoriesList = AuthPrefs(it.context).addToCategoriesList(
+        // Add category, get updated category list
+        val updatedCategoriesList = newPostViewModel.addBlogCategory(
             WPCategory(
                 id = Utils.generateId(),
                 name = newCategory,
@@ -77,8 +76,6 @@ class CategoryPickerDialog : DialogFragment() {
         
         // Update adapter with updated category list from storage
         mCategoryListAdapter.updateList(updatedCategoriesList.map { category -> category.name })
-        // Update view model's category list
-        newPostViewModel.setBlogCategories(updatedCategoriesList)
         
         // Get index of new category in the updated list
         val index = mCategoryListAdapter.getPosition(newCategory)

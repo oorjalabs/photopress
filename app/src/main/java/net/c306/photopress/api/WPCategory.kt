@@ -35,6 +35,19 @@ data class WPCategory(
         
     }
     
+    @Keep
+    data class AddCategoryRequest(
+        val name: String,
+        val description: String? = null,
+        val parent: Int? = null
+    ) {
+        fun toFieldMap(): Map<String, String> =
+            mutableMapOf(ApiConstants.ARG_NAME to name).apply {
+                description?.also { put(ApiConstants.ARG_DESCRIPTION, it) }
+                parent?.toString()?.also { put(ApiConstants.ARG_PARENT, it) }
+            }
+    }
+    
     
     @Keep
     data class GetCategoriesResponse(

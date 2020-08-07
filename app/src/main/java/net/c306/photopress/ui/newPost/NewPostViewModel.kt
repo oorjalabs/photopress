@@ -139,11 +139,41 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _blogCategories = MutableLiveData<List<WPCategory>>()
     val blogCategories: LiveData<List<WPCategory>> = _blogCategories
     
-    internal fun setBlogCategories(list: List<WPCategory>) {
+    private fun setBlogCategories(list: List<WPCategory>) {
         _blogCategories.value = list
     }
     
-    // TODO: 07/08/2020 Add category function which also adds on server and refreshes categories from server
+    /**
+     * Save category to liveData, storage, and upload to server.
+     * Returns updated category list
+     */
+    internal fun addBlogCategory(category: WPCategory): List<WPCategory> {
+        
+        // Update live data
+        val list = _blogCategories.value?.toMutableList() ?: mutableListOf()
+        list.add(category)
+        _blogCategories.value = list
+        
+        // Update storage
+        AuthPrefs(applicationContext).saveCategoriesList(list)
+        
+        // Update on server and sync list
+        viewModelScope.launch {
+            // Add category on server
+            val success = SyncUtils(applicationContext).addCategory(
+                selectedBlogId.value ?: return@launch,
+                category.name
+            )
+            
+            if (success) {
+                // Refresh categories list from server
+                updateCategoriesList()
+            }
+        }
+        
+        return list
+    }
+    
     
     private fun updateCategoriesList() {
         viewModelScope.launch {
@@ -324,7 +354,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             
             UserPrefs.KEY_DEFAULT_TAGS       -> defaultTags.value = userPrefs.getDefaultTags()
             
-            UserPrefs.KEY_DEFAULT_CATEGORIES       -> defaultCategories.value = userPrefs.getDefaultCategories()
+            UserPrefs.KEY_DEFAULT_CATEGORIES -> defaultCategories.value =
+                userPrefs.getDefaultCategories()
         }
     }
     

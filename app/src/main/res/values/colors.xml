@@ -30,7 +30,8 @@
     <color name="tint_updated_indicator">#D50000</color>
     <color name="bg_updated_indicator">#dcf3f1</color> <!-- 50 of primary -->
     
-    <color name="bg_color_splash">@color/primaryDarkColor</color>
+    <color name="bg_color_splash">@color/p1_night</color>
+    <color name="tint_launcher_icon">@color/p1_night</color>
     
     <color name="text_primary_on_surface">@color/primaryDarkColor</color>
     <color name="text_secondary_on_surface">@color/secondaryDarkColor</color>
