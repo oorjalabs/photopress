@@ -40,16 +40,25 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0807.0.12.25
+v. 2020.0807.0.12.26
 
     [ ] Add categories
-        [ ] Post settings screen
-            [ ] Select categories
-            [ ] Add new categories
+        [ ] When categories are added locally, also sync them with server even if they aren't used
 
     [ ] Landscape view updates
 
     --TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.0807.0.12.25
+
+    [X] Add categories
+        [X] Post settings screen
+            [X] Select categories
+            [X] Add new categories
 
 
 ------------------

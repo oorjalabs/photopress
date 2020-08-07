@@ -54,7 +54,7 @@ class UserPrefs (context: Context): BasePrefs() {
         return prefs.getStringSet(KEY_DEFAULT_TAGS, null)?.joinToString(", ") ?: ""
     }
     
-    fun getDefaultCategories(): String {
-        return prefs.getStringSet(KEY_DEFAULT_CATEGORIES, null)?.joinToString(", ") ?: ""
+    fun getDefaultCategories(): List<String> {
+        return prefs.getStringSet(KEY_DEFAULT_CATEGORIES, null)?.toList() ?: emptyList()
     }
 }

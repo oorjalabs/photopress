@@ -85,7 +85,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
     internal val defaultTags = MutableLiveData<String>()
-    internal val defaultCategories = MutableLiveData<String>()
+    internal val defaultCategories = MutableLiveData<List<String>>()
     
     
     // Selected Blog
@@ -139,9 +139,11 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     private val _blogCategories = MutableLiveData<List<WPCategory>>()
     val blogCategories: LiveData<List<WPCategory>> = _blogCategories
     
-    private fun setBlogCategories(list: List<WPCategory>) {
+    internal fun setBlogCategories(list: List<WPCategory>) {
         _blogCategories.value = list
     }
+    
+    // TODO: 07/08/2020 Add category function which also adds on server and refreshes categories from server
     
     private fun updateCategoriesList() {
         viewModelScope.launch {
@@ -224,7 +226,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         updateState()
     }
     
-    val imageCount = Transformations.switchMap(postImages) { list ->
+    val imageCount = postImages.switchMap { list ->
         liveData { emit(list.filter { it.fileDetails != null }.size) }
     }
     
@@ -239,7 +241,17 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     val postTags = MutableLiveData<String>()
     
     // Post categories
-    val postCategories = MutableLiveData<String>()
+    private val _postCategories = MutableLiveData<List<String>>()
+    var postCategories: List<String>
+        get() = _postCategories.value ?: listOf()
+        set(value) {
+            if (_postCategories.value != value)
+                _postCategories.value = value
+        }
+    
+    val postCategoriesDisplayString = _postCategories.switchMap {
+        liveData { emit(it.joinToString(", ")) }
+    }
     
     // Post caption (same as image caption in case of single image post)
     val postCaption = MutableLiveData<String>()
@@ -289,7 +301,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         _publishedPost.value = null
         postTitle.value = null
         postTags.value = defaultTags.value
-        postCategories.value = defaultCategories.value
+        _postCategories.value = defaultCategories.value
         postCaption.value = null
         postStatus.value = null
         toggleFeaturedImage(null)
@@ -385,7 +397,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 .apply { add(applicationContext.getString(R.string.app_post_tag)) }
                 .filter { tag -> !tag.isBlank() }
                 .distinct()
-            val categories = (postCategories.value?.split(",") ?: listOf())
+            val categories = postCategories
                 .filter { category -> !category.isBlank() }
                 .distinct()
             

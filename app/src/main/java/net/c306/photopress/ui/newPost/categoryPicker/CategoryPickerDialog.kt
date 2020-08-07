@@ -27,99 +27,33 @@ import kotlin.collections.ArrayList
 
 class CategoryPickerDialog : DialogFragment() {
     
-    companion object {
-        private const val SELECTED_ITEM_BACKGROUND_COLOUR_ID = R.color.bg_list_item_activated
-        private const val NORMAL_ITEM_BACKGROUND_COLOUR_ID = R.color.transparent
-    }
-    
-    private var mSuggestedNewCategory: String? = null
-    
     private val newPostViewModel: NewPostViewModel by activityViewModels()
-    
-    private lateinit var mCategoryListAdapter: CategoriesAdapter
-//    private val mCategoryListAdapter: CategoriesAdapter by lazy {
-//        context?.let { context ->
-//            CategoriesAdapter(
-//                context,
-//                android.R.layout.simple_list_item_1,
-//                mAllCategoriesList,
-//                mPostCategoriesList
-//            )
-//        } ?: throw Exception("No Context found!")
-//    }
-    
     private val mSearchTextWatcher by lazy { EditTextWatcher() }
     
-    private inner class EditTextWatcher : TextWatcher {
-        
-        internal var previousText = ""
-            private set
-        
-        private val onFilter = Filter.FilterListener {
-            binding.categoryListEmptyView.apply {
-                
-                visibility = if (it > 0) View.GONE else View.VISIBLE
-                
-                mSuggestedNewCategory = null
-                
-                if (it == 0) {
-                    // If there isn't a +@# to start, add a + before previousText, show only first word for suggested project name
-                    text = when {
-                        
-                        previousText.isNotBlank()  -> {
-                            mSuggestedNewCategory = previousText.trim()
-                            getString(R.string.dialog_category_list_empty_view, mSuggestedNewCategory)
-                        }
-                        
-                        else                       ->
-                            getString(R.string.dialog_category_list_empty_view_no_projects)
-                    }
-                }
-                
-            }
-        }
-        
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        
-        override fun afterTextChanged(s: Editable?) {
-            val inputText = s?.trim().toString()
-            
-            if (inputText == previousText) return
-            
-            previousText = inputText
-            
-            mCategoryListAdapter.filter.filter(previousText, onFilter)
-        }
-        
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        
-    }
-    
-    private var mAllCategoriesList: MutableList<String> = mutableListOf()
-    private var mPostCategoriesList: MutableList<String> = mutableListOf()
+    private var mSuggestedNewCategory: String? = null
+    private lateinit var mCategoryListAdapter: CategoriesAdapter
     private lateinit var binding: DialogCategoryPickerBinding
     
+    private var mPostCategories: MutableList<String>
+        get() = newPostViewModel.postCategories.toMutableList()
+        set(value) {
+            newPostViewModel.postCategories = value
+        }
+    
     private val mOnCategoryClickListener: AdapterView.OnItemClickListener =
-        AdapterView.OnItemClickListener { adapterView, view, i, _ ->
+        AdapterView.OnItemClickListener { adapterView, _, i, _ ->
             
             val category = adapterView.adapter.getItem(i) as String
+            val postCategories = mPostCategories
             
             // Add/remove project from list
-            if (category in mPostCategoriesList) {
-                mPostCategoriesList.remove(category)
-                view.isActivated = false
-                view.background = view.context.resources.getDrawable(
-                    NORMAL_ITEM_BACKGROUND_COLOUR_ID,
-                    view.context.theme
-                )
+            if (category in postCategories) {
+                postCategories.remove(category)
             } else {
-                mPostCategoriesList.add(category)
-                view.isActivated = true
-                view.background = view.context.resources.getDrawable(
-                    SELECTED_ITEM_BACKGROUND_COLOUR_ID,
-                    view.context.theme
-                )
+                postCategories.add(category)
             }
+            mPostCategories = postCategories
+            mCategoryListAdapter.updatePostCategoriesList(postCategories)
         }
     
     // Create a new category from current filter text, then add that to list, and mark it selected
@@ -130,42 +64,32 @@ class CategoryPickerDialog : DialogFragment() {
         val newCategory = mSuggestedNewCategory!!
         
         // Save category to storage
-        val updatedList = AuthPrefs(it.context).addToCategoriesList(
+        val updatedCategoriesList = AuthPrefs(it.context).addToCategoriesList(
             WPCategory(
                 id = Utils.generateId(),
                 name = newCategory,
-                slug = newCategory.toLowerCase(Locale.getDefault()),
+                slug = newCategory.toLowerCase(Locale.getDefault()).replace(" ", "_"),
                 parent = -1,
                 postCount = 0,
                 isLocal = true
             )
         )
         
-        mCategoryListAdapter.apply {
-            
-            // Update adapter with updated category list from storage
-            updateList(updatedList.map { it.name })
-            
-            // Get index of new category in the updated list
-            val index = getPosition(newCategory)
-            
-            // Add new category to selected categories, and mark as selected
-            if (index > -1) {
-                mPostCategoriesList.add(newCategory)
-                // TODO: Show as selected
-//                getView(index, null, listView as ViewGroup).apply {
-//                    isActivated = true
-//                    background = context.resources.getDrawable(
-//                        SELECTED_ITEM_BACKGROUND_COLOUR_ID,
-//                        context.theme
-//                    )
-//                }
-            }
-        }
+        // Update adapter with updated category list from storage
+        mCategoryListAdapter.updateList(updatedCategoriesList.map { category -> category.name })
+        // Update view model's category list
+        newPostViewModel.setBlogCategories(updatedCategoriesList)
         
-        // TODO: Update npvm view model's category list
-//        categoryListViewModel.list.value =
-//            ProjectUtils.getProjectsList(requireContext())
+        // Get index of new category in the updated list
+        val index = mCategoryListAdapter.getPosition(newCategory)
+        
+        // Add new category to selected categories, and mark as selected
+        if (index > -1) {
+            val postCategories = mPostCategories
+            postCategories.add(newCategory)
+            mPostCategories = postCategories
+            mCategoryListAdapter.updatePostCategoriesList(postCategories)
+        }
         
         // Clear search text (this should also hide empty view)
         binding.categorySearch.setText("")
@@ -175,40 +99,43 @@ class CategoryPickerDialog : DialogFragment() {
         
     }
     
+    
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         
-        return activity?.let {
-    
-            mCategoryListAdapter = CategoriesAdapter(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                newPostViewModel.blogCategories.value?.map { it.name }?.toMutableList() ?: mutableListOf(),
-                newPostViewModel.postCategories.value?.split(",")?.toMutableList() ?: mutableListOf()
-            )
-            
-            binding = DialogCategoryPickerBinding.inflate(
-                it.layoutInflater,
-                null,
-                false
-            ).apply {
-                listOnClickListener = mOnCategoryClickListener
-                listAdapter = mCategoryListAdapter
-                onSearchTextChanged = mSearchTextWatcher
-                onEmptyViewClicked = mOnEmptyViewClick
-            }
-            
-            // Set buttons and title
-            AlertDialog.Builder(requireContext())
-                .setView(binding.root)
-                .setTitle(getString(R.string.category_picker_title))
-                .setPositiveButton(getString(R.string.button_text_done)) { _, _ ->
-                    // TODO: 07/08/2020 Update post categories in view model
-                }
-                .setNegativeButton(getString(R.string.button_text_cancel), null)
-                .create()
-            
-        } ?: throw IllegalStateException("Activity cannot be null")
+        val context = requireContext()
+        val allBlogCategories =
+            newPostViewModel.blogCategories.value?.map { category -> category.name }
+                ?.toMutableList() ?: mutableListOf()
+        
+        mCategoryListAdapter = CategoriesAdapter(
+            context,
+            android.R.layout.simple_list_item_1,
+            allBlogCategories,
+            mPostCategories
+        )
+        
+        val layoutInflater =
+            activity?.layoutInflater ?: throw IllegalStateException("Activity cannot be null")
+        
+        binding = DialogCategoryPickerBinding.inflate(
+            layoutInflater,
+            null,
+            false
+        ).apply {
+            listOnClickListener = mOnCategoryClickListener
+            listAdapter = mCategoryListAdapter
+            onSearchTextChanged = mSearchTextWatcher
+            onEmptyViewClicked = mOnEmptyViewClick
+        }
+        
+        // Set buttons and title
+        return AlertDialog.Builder(context)
+            .setView(binding.root)
+            .setTitle(getString(R.string.category_picker_title))
+            .setPositiveButton(getString(R.string.button_text_done), null)
+            .setNegativeButton(getString(R.string.button_text_cancel), null)
+            .create()
     }
     
     
@@ -312,6 +239,59 @@ class CategoryPickerDialog : DialogFragment() {
             }
         }
         
+    }
+    
+    private inner class EditTextWatcher : TextWatcher {
+        
+        internal var previousText = ""
+            private set
+        
+        private val onFilter = Filter.FilterListener {
+            binding.categoryListEmptyView.apply {
+                
+                visibility = if (it > 0) View.GONE else View.VISIBLE
+                
+                mSuggestedNewCategory = null
+                
+                if (it == 0) {
+                    // If there isn't a +@# to start, add a + before previousText, show only first word for suggested project name
+                    text = when {
+                        
+                        previousText.isNotBlank() -> {
+                            mSuggestedNewCategory = previousText.trim()
+                            getString(
+                                R.string.dialog_category_list_empty_view,
+                                mSuggestedNewCategory
+                            )
+                        }
+                        
+                        else                      ->
+                            getString(R.string.dialog_category_list_empty_view_no_projects)
+                    }
+                }
+                
+            }
+        }
+        
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        
+        override fun afterTextChanged(s: Editable?) {
+            val inputText = s?.trim().toString()
+            
+            if (inputText == previousText) return
+            
+            previousText = inputText
+            
+            mCategoryListAdapter.filter.filter(previousText, onFilter)
+        }
+        
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        
+    }
+    
+    companion object {
+        private const val SELECTED_ITEM_BACKGROUND_COLOUR_ID = R.color.bg_list_item_activated
+        private const val NORMAL_ITEM_BACKGROUND_COLOUR_ID = R.color.transparent
     }
     
 }

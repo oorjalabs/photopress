@@ -113,7 +113,7 @@
                     android:gravity="start|center_vertical"
                     android:paddingHorizontal="@dimen/list_item_spacing_half"
                     android:paddingVertical="@dimen/list_item_spacing_quarter"
-                    android:text="@{viewmodel.postCategories ?? @string/string_none}"
+                    android:text="@{viewmodel.postCategoriesDisplayString ?? @string/string_none}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     tools:text="Photos, Status" />
             
