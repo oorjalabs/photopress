@@ -76,6 +76,7 @@
     <string name="string_publish">Publish</string>
     <string name="string_schedule">Schedule</string>
     <string name="string_close">Close</string>
+    <string name="string_none">None</string>
     <string name="string_under_development">Still working on it</string>
     
     
@@ -100,6 +101,7 @@
     <string name="post_settings_title">Post settings</string>
     <string name="post_settings_label_tags">Tags (comma separated)</string>
     <string name="post_settings_hint_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>
+    <string name="post_settings_label_categories">Categories</string>
     
     <!--  Reorder images fragment  -->
     <string name="reorder_images_title">Reorder images</string>

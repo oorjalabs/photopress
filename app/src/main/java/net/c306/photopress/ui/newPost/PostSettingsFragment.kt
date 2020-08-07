@@ -16,6 +16,7 @@ import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostSettingsBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
 import net.c306.photopress.utils.setInputFocus
+import timber.log.Timber
 
 class PostSettingsFragment: AppBarNoBottomNavFragment() {
     
@@ -76,6 +77,11 @@ class PostSettingsFragment: AppBarNoBottomNavFragment() {
          */
         fun done(view: View) {
             dismiss()
+        }
+        
+        fun openCategoriesPicker(view: View) {
+            // TODO: 07/08/2020 Pick categories
+            Timber.d("Open category picker")
         }
     }
     

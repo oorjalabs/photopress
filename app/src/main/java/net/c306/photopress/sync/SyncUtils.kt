@@ -421,6 +421,7 @@ class SyncUtils(context: Context) {
                     title = post.title,
                     content = content.trimIndent(),
                     tags = post.tags,
+                    categories = post.categories,
                     status = WPBlogPost.PublishStatus.DRAFT,
                     featuredImage = if (addingFeaturedImage) featuredImage.media!!.id.toString() else null
                 )

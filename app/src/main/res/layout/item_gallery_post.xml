@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gallery_grid_item_margin"
             android:adjustViewBounds="true"
-            android:background="@drawable/bg_rounded_solid"
+            android:background="@drawable/bg_border_solid"
             android:contentDescription="@{imageContentDescription}"
             android:foreground="?selectableItemBackground"
             android:onClick="@{() -> handler.onImagePressed(image)}"

@@ -90,6 +90,7 @@ data class WPBlogPost(
             val status: PublishStatus? = PublishStatus.PUBLISH,
             /** List of tags (name or id) **/
             val tags: List<String>? = null,
+            val categories: List<String>? = null,
             val format: PostFormat? = PostFormat.STANDARD,
             @SerializedName("featured_image")
             val featuredImage: String? = null,
