@@ -37,6 +37,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="categoryPickerDialog">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1296" />
+                            <option name="y" value="1099" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="confirmationDialog">
                     <value>
                       <LayoutPositions>
@@ -61,6 +73,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="fullImageFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1027" />
+                            <option name="y" value="14" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="imageAttributesFragment">
                     <value>
                       <LayoutPositions>
@@ -72,24 +96,12 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_imageAttributesFragment_to_imageViewFragment">
+                            <entry key="action_openFullPhoto">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
                           </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="imageViewFragment">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="1270" />
-                            <option name="y" value="549" />
-                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -243,7 +255,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_reorderImagesFragment_to_imageViewFragment">
+                            <entry key="action_openFullPhoto">
                               <value>
                                 <LayoutPositions />
                               </value>

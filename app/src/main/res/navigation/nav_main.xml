@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/welcomeFragment">
-<!--    app:startDestination="@+id/navigation_post_new">-->
+    <!--    app:startDestination="@+id/navigation_post_new">-->
     
     <fragment
         android:id="@+id/navigation_post_list"
@@ -97,7 +97,8 @@
     <dialog
         android:id="@+id/blogChooserDialogFragment"
         android:name="net.c306.photopress.ui.welcome.BlogChooserDialogFragment"
-        android:label="BlogChooserDialogFragment">
+        android:label="BlogChooserDialogFragment"
+        tools:layout="@layout/dialog_blog_chooser">
         <argument
             android:name="currentBlogId"
             android:defaultValue="-1"
@@ -113,12 +114,12 @@
     <fragment
         android:id="@+id/imageAttributesFragment"
         android:name="net.c306.photopress.ui.newPost.ImageAttributesFragment"
-        tools:layout="@layout/fragment_image_attributes"
-        android:label="ImageAttributesFragment" >
+        android:label="ImageAttributesFragment"
+        tools:layout="@layout/fragment_image_attributes">
         <argument
             android:name="imageId"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
         <action
             android:id="@+id/action_openFullPhoto"
             app:destination="@id/fullImageFragment" />
@@ -127,8 +128,12 @@
     <fragment
         android:id="@+id/post_settings_fragment"
         android:name="net.c306.photopress.ui.newPost.PostSettingsFragment"
-        tools:layout="@layout/fragment_post_settings"
-        android:label="PostSettingsFragment" />
+        android:label="PostSettingsFragment"
+        tools:layout="@layout/fragment_post_settings">
+        <action
+            android:id="@+id/action_openCategoryPicker"
+            app:destination="@id/categoryPickerDialog" />
+    </fragment>
     
     <fragment
         android:id="@+id/creditsFragment"
@@ -172,7 +177,8 @@
     <fragment
         android:id="@+id/reorderImagesFragment"
         android:name="net.c306.photopress.ui.gallery.ReorderImagesFragment"
-        android:label="ReorderImagesFragment" >
+        android:label="ReorderImagesFragment"
+        tools:layout="@layout/fragment_reorder_images">
         <action
             android:id="@+id/action_openFullPhoto"
             app:destination="@id/fullImageFragment" />
@@ -180,11 +186,16 @@
     
     <fragment
         android:id="@+id/fullImageFragment"
-        tools:layout="@layout/fragment_full_image"
         android:name="net.c306.photopress.ui.gallery.FullImageFragment"
-        android:label="ImageViewFragment" >
+        android:label="ImageViewFragment"
+        tools:layout="@layout/fragment_full_image">
         <argument
             android:name="image"
             app:argType="net.c306.photopress.database.PostImage" />
     </fragment>
+    <dialog
+        android:id="@+id/categoryPickerDialog"
+        android:name="net.c306.photopress.ui.newPost.categoryPicker.CategoryPickerDialog"
+        android:label="CategoryPickerDialog"
+        tools:layout="@layout/dialog_category_picker" />
 </navigation>

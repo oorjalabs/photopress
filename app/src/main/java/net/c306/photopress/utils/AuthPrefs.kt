@@ -130,4 +130,27 @@ class AuthPrefs (context: Context) : BasePrefs() {
             .sortedBy { it.slug } // alphabetically, case independent (slugs are always lower case)
     }
     
+    fun addToCategoriesList(category: WPCategory): List<WPCategory> {
+        val savedSet = prefs.getStringSet(ARG_CATEGORIES_LIST, null)
+                       ?: setOf()
+        
+        val list = savedSet
+            .map { WPCategory.fromJson(it) }
+            .toMutableList()
+        
+        list.add(category)
+        list.sortBy { it.slug }  // alphabetically, case independent (slugs are always lower case)
+        
+        val set = list
+            .distinctBy { it.id }
+            .map { it.toJson() }
+            .toSet()
+        
+        prefs.edit {
+            putStringSet(ARG_CATEGORIES_LIST, set)
+        }
+        
+        return list
+    }
+    
 }

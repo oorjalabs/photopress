@@ -13,7 +13,8 @@ data class WPCategory(
     val postCount: Int,
     /** id of parent category */
     val parent: Int,
-    val slug: String
+    val slug: String,
+    val isLocal: Boolean = false
 ) {
     companion object {
         

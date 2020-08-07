@@ -40,7 +40,7 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0807.0.12.24
+v. 2020.0807.0.12.25
 
     [ ] Add categories
         [ ] Post settings screen
@@ -50,6 +50,17 @@ v. 2020.0807.0.12.24
     [ ] Landscape view updates
 
     --TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.0807.0.12.24
+
+    [-] Add categories
+        [-] Post settings screen
+            [-] Select categories
+            [-] Add new categories
 
 
 ------------------
@@ -61,23 +72,6 @@ v. 2020.0807.0.12.23
         [-] Post settings screen
             [X] Show chosen categories
         [X] SyncUtils - publish with category
-
-
-------------------
-
-
-v. 2020.0807.0.12.23
-
-    [ ] Add categories
-        [ ] Post settings screen
-            [X] Show chosen categories
-            [ ] Select categories
-            [ ] Add new categories
-        [ ] SyncUtils - publish with category
-
-    [ ] Landscape view updates
-
-    --TBD-- Update notes
 
 
 ------------------

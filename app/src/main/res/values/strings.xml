@@ -167,5 +167,9 @@
     <!--  Unsorted  -->
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="string_search">Search</string>
+    <string name="dialog_category_list_empty_view">Create new category \'%1$s\'</string>
+    <string name="category_picker_title">Select categories</string>
+    <string name="dialog_category_list_empty_view_no_projects">No categories. Create one by typing a category name…</string>
 
 </resources>

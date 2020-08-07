@@ -5,7 +5,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
 import kotlinx.android.parcel.Parcelize
-import kotlin.random.Random
+import net.c306.photopress.utils.Utils
 
 /**
  * Class stored to save image details.
@@ -32,7 +32,7 @@ import kotlin.random.Random
 data class PostImage(
     
     @PrimaryKey
-    val id: Int = generateId(),
+    val id: Int = Utils.generateId(),
     
     @ColumnInfo(name = "order")
     val order: Int,
@@ -68,8 +68,4 @@ data class PostImage(
         val fileName: String,
         val mimeType: String
     ) : Parcelable
-    
-    companion object {
-        fun generateId(): Int = Random.nextInt(0, Int.MAX_VALUE)
-    }
 }

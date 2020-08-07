@@ -78,6 +78,7 @@
     <color name="grey_950">#121212</color>
     <color name="border_image_view">#42000000</color>
     <color name="black_overlay">#66000000</color>
+    <color name="transparent">#00FFFFFF</color>
 
 
 </resources>

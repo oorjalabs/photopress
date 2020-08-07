@@ -1,8 +1,9 @@
-package net.c306.photopress.ui.newPost
+package net.c306.photopress.ui.custom
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.widget.ImageView
+import android.text.TextWatcher
+import android.widget.*
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -38,6 +39,27 @@ object BindingAdapters {
     @JvmStatic
     fun setRecyclerViewAdapter(view: RecyclerView, adapter: RecyclerView.Adapter<*>?) {
         adapter?.also { view.adapter = it }
+    }
+    
+    
+    @BindingAdapter("app:listViewAdapter")
+    @JvmStatic
+    fun setListViewAdapter(view: ListView, adapter: BaseAdapter?) {
+        adapter?.also { view.adapter = it }
+    }
+    
+    
+    @BindingAdapter("app:onItemClick")
+    @JvmStatic
+    fun setOnItemClickListener(view: ListView, listener: AdapterView.OnItemClickListener) {
+        view.onItemClickListener = listener
+    }
+    
+    
+    @BindingAdapter("app:onTextChanged")
+    @JvmStatic
+    fun setOnTextChangedListener(view: EditText, textWatcher: TextWatcher) {
+        view.addTextChangedListener(textWatcher)
     }
     
 }
