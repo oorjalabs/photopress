@@ -40,15 +40,21 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0810.0.12.28
-
-    [ ] Gallery
-        [ ] If no image caption, remove figcaption from html
-        [ ] If no gallery caption, remove gallery caption from html
+v. 2020.0810.0.12.29
 
     [ ] Landscape view updates
 
     --TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.0810.0.12.28
+
+    [X] Gallery
+        [X] Add figcaption only if there is an image caption
+        [X] Add gallery caption only if there is a gallery caption
 
 
 ------------------

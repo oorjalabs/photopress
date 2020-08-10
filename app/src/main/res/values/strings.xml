@@ -180,6 +180,7 @@
     <string name="sync_status_started_upload">Started</string>
     <string name="sync_status_uploading_images">Uploading images</string>
     <string name="sync_status_uploading_images_individual">Uploading image %1$d of %2$d</string>
+    <string name="sync_status_updating_media_details">Updating image details</string>
     <string name="sync_status_uploading_post">Uploading post</string>
     <string name="sync_status_updating_post_status">Updating post status</string>
     <string name="sync_status_post_uploaded">Post uploaded</string>

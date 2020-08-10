@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
@@ -152,6 +153,11 @@ class SyncUtils(context: Context) {
             
             if (isJetpackBlog == true && false) {
                 // Disabled because WP api returns 404 for recently updated image :(
+                emit(PublishLiveData(PublishProgress(
+                    finished = false,
+                    statusMessage = applicationContext.getString(R.string.sync_status_updating_media_details)
+                )))
+                delay(3500)
                 Timber.v("Jetpack blog, updating media attributes again")
                 uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
             }
@@ -534,7 +540,12 @@ class SyncUtils(context: Context) {
         val content = when {
             
             usingBlockEditor && images.size == 1 -> {
-                (BLOCK_TEMPLATE_SINGLE_IMAGE + BLOCK_TEMPLATE_FOOTER)
+                val captionBlock =
+                    if (images[0].originalImage.caption.isNullOrBlank()) ""
+                    else BLOCK_TEMPLATE_SINGLE_IMAGE_CAPTION
+                        .replace("%%MEDIA_CAPTION%%", images[0].media!!.caption ?: post.title)
+                
+                BLOCK_TEMPLATE_SINGLE_IMAGE
                     .replace("%%MEDIA_ID%%", images[0].media!!.id.toString())
                     .replace("%%MEDIA_ALT%%", images[0].media!!.alt ?: "")
                     .replace(
@@ -542,8 +553,8 @@ class SyncUtils(context: Context) {
                         images[0].media!!.thumbnails?.large ?: images[0].media!!.url
                     )
                     .replace("%%MEDIA_URL%%", images[0].media!!.url)
-                    .replace("%%MEDIA_CAPTION%%", images[0].media!!.caption ?: post.title)
-                
+                    .replace("%%IMAGE_CAPTION%%", captionBlock) +
+                BLOCK_TEMPLATE_PHOTOPRESS_FOOTER
             }
             
             images.size == 1                     -> {
@@ -552,13 +563,20 @@ class SyncUtils(context: Context) {
             }
             
             usingBlockEditor                     -> {
+                
                 // Top section of gallery post including image ids
-                BLOCK_TEMPLATE_GALLERY_TOP
+                val topBlock = BLOCK_TEMPLATE_GALLERY_TOP
                     .replace("%%MEDIA_ID_LIST%%", galleryImagesString)
-                    .replace("%%COLUMN_COUNT%%", columnCount.toString()) +
+                    .replace("%%COLUMN_COUNT%%", columnCount.toString())
+                
                 // Images
-                images.joinToString("\n") {
+                val imagesBlock = images.joinToString("\n") {
                     val imageMedia = it.media!!
+                    val captionBlock =
+                        if (it.originalImage.caption.isNullOrBlank()) ""
+                        else BLOCK_TEMPLATE_GALLERY_IMAGE_CAPTION
+                            .replace("%%MEDIA_CAPTION%%", images[0].media!!.caption ?: post.title)
+                    
                     BLOCK_TEMPLATE_GALLERY_IMAGE
                         .replace("%%MEDIA_ID%%", imageMedia.id.toString())
                         .replace("%%MEDIA_ALT%%", imageMedia.alt ?: "")
@@ -567,12 +585,19 @@ class SyncUtils(context: Context) {
                             imageMedia.thumbnails?.large ?: imageMedia.url
                         )
                         .replace("%%MEDIA_URL%%", imageMedia.url)
-                        .replace("%%MEDIA_CAPTION%%", imageMedia.caption ?: post.title)
-                } +
+                        .replace("%%IMAGE_CAPTION%%", captionBlock)
+                }
+                
+                val galleryCaptionBlock =
+                    if (post.postCaption.isNotBlank()) BLOCK_TEMPLATE_GALLERY_CAPTION
+                        .replace("%%POST_CAPTION%%", post.postCaption)
+                    else ""
+                
                 // Bottom section of gallery post, including post caption
-                BLOCK_TEMPLATE_GALLERY_BOTTOM.replace("%%POST_CAPTION%%", post.postCaption) +
-                // Photopress footer
-                BLOCK_TEMPLATE_FOOTER
+                val bottomBlock = BLOCK_TEMPLATE_GALLERY_BOTTOM
+                    .replace("%%GALLERY_CAPTION%%", galleryCaptionBlock)
+                
+                topBlock + imagesBlock + bottomBlock + BLOCK_TEMPLATE_PHOTOPRESS_FOOTER
             }
             
             else                                 -> {
@@ -755,6 +780,10 @@ class SyncUtils(context: Context) {
     
     companion object {
         
+        /**
+         * Single image classic template
+         */
+        
         private const val CLASSIC_TEMPLATE_SINGLE_IMAGE = """
             [gallery ids="%%MEDIA_ID%%" columns="1" size="large"]
             <p class="has-text-color has-small-font-size has-dark-gray-color">
@@ -762,13 +791,24 @@ class SyncUtils(context: Context) {
             </p>
         """
         
+        
+        /**
+         * Single image block template
+         */
+        
         private const val BLOCK_TEMPLATE_SINGLE_IMAGE = """
         <!-- wp:image {"id":%%MEDIA_ID%%,"align":"center","linkDestination":"media"} -->
         <div class="wp-block-image"><figure class="aligncenter"><a href="%%MEDIA_URL%%"><img src="%%MEDIA_LARGE%%" alt="%%MEDIA_ALT%%" class="wp-image-%%MEDIA_ID%%"/></a>%%IMAGE_CAPTION%%</figure></div>
         <!-- /wp:image -->
     """
+        
         private const val BLOCK_TEMPLATE_SINGLE_IMAGE_CAPTION = "<figcaption>%%MEDIA_CAPTION%%</figcaption>"
-    
+        
+        
+        /**
+         * Gallery classic template
+         */
+        
         private const val CLASSIC_TEMPLATE_GALLERY = """
             [gallery ids="%%MEDIA_ID_LIST%%" columns="%%COLUMN_COUNT%%" size="large"]
             %%POST_CAPTION%%
@@ -777,24 +817,31 @@ class SyncUtils(context: Context) {
             </p>
         """
         
+        /**
+         * Gallery block template
+         */
+        
         private const val BLOCK_TEMPLATE_GALLERY_TOP = """
         <!-- wp:gallery {"ids":[%%MEDIA_ID_LIST%%]} -->
             <figure class="wp-block-gallery columns-%%COLUMN_COUNT%% is-cropped">
             <ul class="blocks-gallery-grid">
     """
+        
+        private const val BLOCK_TEMPLATE_GALLERY_IMAGE =
+            """<li class="blocks-gallery-item"><figure><img src="%%MEDIA_URL%%" alt="%%MEDIA_ALT%%" data-id="%%MEDIA_ID%%" class="wp-image-%%MEDIA_ID%%" />%%IMAGE_CAPTION%%</figure></li>"""
+        
+        private const val BLOCK_TEMPLATE_GALLERY_IMAGE_CAPTION = "<figcaption class=\"blocks-gallery-item__caption\">%%MEDIA_CAPTION%%</figcaption>"
+        
+        private const val BLOCK_TEMPLATE_GALLERY_CAPTION = "<figcaption class=\"blocks-gallery-caption\">%%POST_CAPTION%%</figcaption>"
+        
         private const val BLOCK_TEMPLATE_GALLERY_BOTTOM = """
             </ul>
             %%GALLERY_CAPTION%%
         </figure>
 <!-- /wp:gallery -->
     """
-        private const val BLOCK_TEMPLATE_GALLERY_IMAGE =
-            """<li class="blocks-gallery-item"><figure><img src="%%MEDIA_URL%%" alt="%%MEDIA_ALT%%" data-id="%%MEDIA_ID%%" class="wp-image-%%MEDIA_ID%%" />%%IMAGE_CAPTION%%</figure></li>"""
         
-        private const val BLOCK_TEMPLATE_GALLERY_IMAGE_CAPTION = "<figcaption class=\"blocks-gallery-item__caption\">%%MEDIA_CAPTION%%</figcaption>"
-        private const val BLOCK_TEMPLATE_GALLERY_CAPTION = "<figcaption class=\"blocks-gallery-caption\">%%POST_CAPTION%%</figcaption>"
-        
-        private const val BLOCK_TEMPLATE_FOOTER = """
+        private const val BLOCK_TEMPLATE_PHOTOPRESS_FOOTER = """
         <!-- wp:more -->
         <!--more-->
         <!-- /wp:more -->
