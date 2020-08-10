@@ -19,12 +19,12 @@
         
         <TextView
             style="@style/BottomSheetTitle"
-            android:text="@string/title_ready_to_publish" />
+            android:text="@string/pre_publish_title_ready_to_publish" />
         
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_publish_now"
             style="@style/BottomSheetActionButtons"
-            android:text="@string/button_publish_now"
+            android:text="@string/pre_publish_button_publish_now"
             android:onClick="@{handler::publish}"
             app:icon="@drawable/ic_photo" />
         
@@ -32,14 +32,14 @@
             android:id="@+id/button_schedule_for_later"
             style="@style/BottomSheetActionButtons"
             android:onClick="@{handler::publishScheduled}"
-            android:text="@string/button_schedule_for_later"
+            android:text="@string/pre_publish_button_schedule_for_later"
             app:icon="@drawable/ic_schedule" />
         
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_save_as_draft"
             style="@style/BottomSheetActionButtons"
             android:onClick="@{handler::uploadAsDraft}"
-            android:text="@string/button_upload_as_draft"
+            android:text="@string/pre_publish_button_upload_as_draft"
             app:icon="@drawable/ic_upload_draft" />
     
     </LinearLayout>

@@ -2,6 +2,7 @@ package net.c306.photopress.api
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import net.c306.photopress.database.UploadedMedia
 import java.util.*
 
 @Keep
@@ -68,6 +69,25 @@ data class WPMedia(
     
 ) {
     
+    fun toUploadedMedia(): UploadedMedia {
+        return UploadedMedia(
+            id = id,
+            url = url,
+            guid = guid,
+            file = file,
+            extension = extension,
+            mimeType = mimeType,
+            title = title,
+            caption = caption,
+            description = description,
+            alt = alt,
+            thumbnails = thumbnails,
+            height = height,
+            width = width,
+            exif = exif
+        )
+    }
+    
     @Keep
     data class Thumbnail(
         val thumbnail: String,
@@ -112,6 +132,13 @@ data class WPMedia(
         val errors: List<String>?
     )
     
+    @Keep
+    data class UpdateMediaAttributesRequest(
+        val title: String? = null, // The file name.
+        val caption: String? = null, // File caption.
+        val description: String? = null, // Description of the file.
+        val alt: String? = null // Alternative text for image files.
+    )
     
     companion object {
         const val FIELDS_STRING = "ID,date,URL,file,extension,mime_type,title,caption,description,alt,thumbnails,height,width,exif"

@@ -1,18 +1,10 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="item_margin_half">8dp</dimen>
-    
-    <item name="icon_alpha_default" format="float" type="dimen">0.56</item>
-    <item name="icon_alpha_coloured" format="float" type="dimen">1.0</item>
-    <item name="icon_alpha_disabled" format="float" type="dimen">0.24</item>
     
     <item name="alpha_scrim_publishing" format="float" type="dimen">0.375</item>
     
-    <dimen name="bottom_sheet_corner_radius">8dp</dimen>
-    <dimen name="bottom_sheet_padding">2dp</dimen>
+    <item name="line_spacing_extra_quarter" format="float" type="dimen">1.25</item>
     
-    <dimen name="min_touch_size">48dp</dimen>
-
+    <dimen name="gallery_image_dimen_default">72dp</dimen>
+    <dimen name="gallery_grid_item_margin">2dp</dimen>
+    <dimen name="padding_round_icon_button">12dp</dimen>
 </resources>

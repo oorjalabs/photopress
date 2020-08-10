@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     
     <data>
         
@@ -10,7 +11,9 @@
         
         <variable
             name="fragmentHandler"
-            type="net.c306.photopress.ui.newPost.ImageAttributesFragment" />
+            type="net.c306.photopress.ui.newPost.ImageAttributesFragment.Handler" />
+        
+        <import type="android.view.View" />
     </data>
     
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,101 +32,184 @@
                 android:layout_height="wrap_content"
                 app:navigationIcon="@drawable/ic_close"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="@string/title_image_attributes" />
+                app:title="@string/image_attributes_title">
+                
+                <Button
+                    android:id="@+id/button_done"
+                    style="@style/TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="@dimen/list_item_spacing_half"
+                    android:contentDescription="@string/string_done"
+                    android:onClick="@{fragmentHandler::done}"
+                    android:text="@string/string_done"
+                    android:tooltipText="@string/string_done" />
+            
+            </androidx.appcompat.widget.Toolbar>
         
         </com.google.android.material.appbar.AppBarLayout>
         
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin"
+            android:fillViewport="true"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
             
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/holder_title"
-                style="@style/UnderlinedTextInputLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_label_image_title">
+                android:orientation="vertical"
+                android:padding="@dimen/activity_vertical_margin">
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    
+                    <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/image_attributes_cd_selected_image"
+                        android:onClick="@{fragmentHandler::openFullImage}"
+                        android:tooltipText="@string/image_attributes_cd_selected_image"
+                        app:imageUriCover="@{viewmodel.editingImage.uri}"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0"
+                        app:layout_constraintWidth_percent="0.5"
+                        tools:src="@tools:sample/backgrounds/scenic" />
+                    
+                    <ImageView
+                        android:id="@+id/featured_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/list_item_spacing_quarter"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/image_attributes_cd_featured"
+                        android:src="@drawable/ic_featured_icon_in_circle"
+                        android:tooltipText="@string/image_attributes_cd_featured"
+                        android:visibility="@{viewmodel.postFeaturedImageId == viewmodel.editingImage.id ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintStart_toStartOf="@id/image"
+                        app:layout_constraintTop_toTopOf="@id/image" />
+                    
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_featured_image"
+                        style="@style/TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/list_item_spacing_half"
+                        android:ellipsize="end"
+                        android:gravity="start|center_vertical"
+                        android:lines="1"
+                        android:onClick="@{() -> viewmodel.toggleFeaturedImage(viewmodel.editingImage.id)}"
+                        android:text="@{viewmodel.postFeaturedImageId == viewmodel.editingImage.id ? @string/image_attributes_button_unset_as_featured_image : @string/image_attributes_button_set_as_featured_image}"
+                        app:icon="@drawable/ic_featured"
+                        app:iconGravity="end"
+                        app:iconTint="?colorControlNormal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="@string/image_attributes_button_set_as_featured_image" />
+                    
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_remove_image"
+                        style="@style/TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="start|center_vertical"
+                        android:lines="1"
+                        android:onClick="@{fragmentHandler::removeImage}"
+                        android:text="@string/image_attributes_button_remove_image"
+                        app:icon="@drawable/ic_delete"
+                        app:iconGravity="end"
+                        app:iconTint="?colorControlNormal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/button_featured_image"
+                        app:layout_constraintTop_toBottomOf="@id/button_featured_image" />
+                
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/holder_title"
+                    style="@style/UnderlinedTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/image_attributes_label_title">
+                    
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_post_title"
+                        style="@style/UnderlinedTextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:lines="1"
+                        android:text="@={viewmodel.editingImage.name}" />
+                </com.google.android.material.textfield.TextInputLayout>
+                
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/holder_caption"
+                    style="@style/UnderlinedTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/image_attributes_label_caption">
+                    
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_post_caption"
+                        style="@style/UnderlinedTextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:lines="1"
+                        android:text="@={viewmodel.editingImage.caption}" />
+                </com.google.android.material.textfield.TextInputLayout>
+                
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/holder_alt_text"
+                    style="@style/UnderlinedTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:hint="@string/image_attributes_label_alt_text">
+                    
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_post_alt_text"
+                        style="@style/UnderlinedTextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:lines="1"
+                        android:text="@={viewmodel.editingImage.altText}" />
+                </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_post_title"
+                    android:id="@+id/input_post_description"
                     style="@style/UnderlinedTextInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:hint="@string/image_attributes_label_description"
                     android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
-                    android:lines="1"
-                    android:text="@={viewmodel.editingImageTitle}" />
-            </com.google.android.material.textfield.TextInputLayout>
-            
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/holder_caption"
-                style="@style/UnderlinedTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/text_label_image_caption">
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
+                    android:lines="4"
+                    android:nextFocusDown="@string/button_text_done"
+                    android:text="@={viewmodel.editingImage.description}" />
                 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_post_caption"
-                    style="@style/UnderlinedTextInput"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
-                    android:lines="1"
-                    android:text="@={viewmodel.editingImageCaption}" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
             
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/holder_alt_text"
-                style="@style/UnderlinedTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:hint="@string/text_label_image_alt_text">
-                
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_post_alt_text"
-                    style="@style/UnderlinedTextInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
-                    android:lines="1"
-                    android:text="@={viewmodel.editingImageAltText}" />
-            </com.google.android.material.textfield.TextInputLayout>
-            
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_post_description"
-                style="@style/UnderlinedTextInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:hint="@string/text_label_image_description"
-                android:importantForAutofill="no"
-                android:inputType="textCapSentences|textMultiLine"
-                android:lineSpacingMultiplier="1.25"
-                android:lines="4"
-                android:nextFocusDown="@string/button_text_done"
-                android:text="@={viewmodel.editingImageDescription}" />
-            
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-            
-            <Button
-                android:id="@+id/button_cancel_image_attributes"
-                style="@style/Button.Secondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:onClick="@{() -> fragmentHandler.done()}"
-                android:text="@string/button_text_done" />
+            </LinearLayout>
         
-        
-        </LinearLayout>
+        </ScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

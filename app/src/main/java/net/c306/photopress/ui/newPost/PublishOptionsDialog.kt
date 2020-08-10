@@ -5,14 +5,16 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import net.c306.customcomponents.confirmation.ConfirmationDialog
 import net.c306.photopress.R
+import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.databinding.DialogPublishOptionBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
-import net.c306.photopress.ui.custom.ConfirmationDialog
 import java.util.*
 
 class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
@@ -54,27 +56,28 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                 DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
             )
             
-            val confirmation = PublishOptionsDialogDirections.actionGlobalConfirmationDialog(
-                callerTag = myTag,
-                dialogTitle = getString(R.string.title_confirm_schedule_time),
-                dialogMessage = getString(R.string.message_confirm_schedule_time, dateString),
-                requestCode = confirmationRC,
-                positiveButtonTitle = getString(R.string.string_schedule),
-                negativeButtonTitle = getString(R.string.string_cancel)
+            findNavController().navigate(
+                R.id.confirmationDialog,
+                bundleOf(ConfirmationDialog.KEY_CONFIRMATION_DETAILS to ConfirmationDialog.Details(
+                    callerTag = myTag,
+                    dialogTitle = getString(R.string.schedule_post_title_confirm_schedule_time),
+                    dialogMessage = getString(R.string.schedule_post_message_confirm_schedule_time, dateString),
+                    requestCode = confirmationRC,
+                    positiveButtonTitle = getString(R.string.string_schedule)
+                ))
             )
-            findNavController().navigate(confirmation)
         })
         
         confirmationViewModel.result.observe(viewLifecycleOwner, Observer {
             if (it == null || it.callerTag != myTag) return@Observer
             
-            confirmationViewModel.setResult(null)
+            confirmationViewModel.reset()
             
             when (it.requestCode) {
                 confirmationRC ->  {
                     if (it.result) {
                         // Publish with schedule and close dialog
-                        newPostViewModel.publishPost(scheduledTime = newPostViewModel.scheduledDateTime.value)
+                        newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.SCHEDULE)
                         dismiss()
                     } else {
                         // Cancel everything
@@ -96,7 +99,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
     inner class Handler {
         
         fun publish(view: View) {
-            newPostViewModel.publishPost()
+            newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.PUBLISH)
             dismiss()
         }
         
@@ -105,7 +108,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
          */
         fun publishScheduled(view: View) {
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.title_select_publish_date))
+                .setTitleText(getString(R.string.schedule_post_title_select_publish_date))
                 .setSelection(Date().time)
                 .build()
             datePicker.addOnPositiveButtonClickListener {
@@ -115,7 +118,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
         }
         
         fun uploadAsDraft(view: View) {
-            newPostViewModel.publishPost(saveAsDraft = true)
+            newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.DRAFT)
             dismiss()
         }
     }

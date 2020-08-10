@@ -1,8 +1,8 @@
 package net.c306.photopress.api
 
 import androidx.annotation.Keep
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import net.c306.photopress.utils.Json
 
 @Keep
 data class WPCategory(
@@ -12,14 +12,16 @@ data class WPCategory(
     @SerializedName("post_count")
     val postCount: Int,
     /** id of parent category */
-    val parent: Int
-                     ) {
+    val parent: Int,
+    val slug: String,
+    val isLocal: Boolean = false
+) {
     companion object {
         
-        const val FIELDS_STRING = "ID,name,post_count,parent"
+        const val FIELDS_STRING = "ID,name,post_count,parent,slug"
         
         fun fromJson(jsonString: String): WPCategory {
-            return Gson().fromJson(jsonString, WPCategory::class.java)
+            return Json.getInstance().fromJson(jsonString, WPCategory::class.java)
         }
         
         const val ARG_ORDER_BY = "order_by"
@@ -33,17 +35,30 @@ data class WPCategory(
         
     }
     
+    @Keep
+    data class AddCategoryRequest(
+        val name: String,
+        val description: String? = null,
+        val parent: Int? = null
+    ) {
+        fun toFieldMap(): Map<String, String> =
+            mutableMapOf(ApiConstants.ARG_NAME to name).apply {
+                description?.also { put(ApiConstants.ARG_DESCRIPTION, it) }
+                parent?.toString()?.also { put(ApiConstants.ARG_PARENT, it) }
+            }
+    }
+    
     
     @Keep
     data class GetCategoriesResponse(
-        /** The number of tags returned. */
-        val  found: Int,
-        /** Array of tag objects. */
-        val tags: List<WPCategory>
-                                    )
+        /** The number of categories returned. */
+        val found: Int,
+        /** Array of [WPCategory] objects. */
+        val categories: List<WPCategory>
+    )
     
     fun toJson(): String {
-        return Gson().toJson(this)
+        return Json.getInstance().toJson(this)
     }
     
 }

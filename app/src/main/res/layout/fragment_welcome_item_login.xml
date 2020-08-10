@@ -6,8 +6,8 @@
     <data>
         
         <variable
-            name="activityViewModel"
-            type="net.c306.photopress.ActivityViewModel" />
+            name="avm"
+            type="net.c306.photopress.AppViewModel" />
         
         <variable
             name="handler"
@@ -54,10 +54,10 @@
             android:id="@+id/subtitle_welcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin_half"
+            android:layout_marginTop="@dimen/list_item_spacing_half"
             android:ellipsize="end"
             android:lines="1"
-            android:text="@{activityViewModel.userDisplayName == null ? @string/subtitle_login_to_wordpress : @string/connected_as(activityViewModel.userDisplayName)}"
+            android:text="@{avm.userDisplayName == null ? @string/subtitle_login_to_wordpress : @string/connected_as(avm.userDisplayName)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
             android:id="@+id/animation_view_done"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:visibility="@{activityViewModel.isLoggedIn ? View.VISIBLE : View.GONE}"
+            android:visibility="@{avm.isLoggedIn ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/button_go_to_select_blog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,12 +82,12 @@
             style="@style/OutlinedButton.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin_half"
+            android:layout_marginTop="@dimen/list_item_spacing_half"
             android:drawableEnd="@drawable/ic_next"
             android:drawableTint="?colorControlNormal"
             android:onClick="@{() -> handler.goToSelectBlog()}"
             android:text="@string/label_next_pick_a_blog"
-            android:visibility="@{activityViewModel.isLoggedIn ? View.VISIBLE : View.GONE}"
+            android:visibility="@{avm.isLoggedIn ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> handler.openLoginFragment()}"
             android:text="@string/button_connect_with_wordpress"
-            android:visibility="@{activityViewModel.isLoggedIn ? View.GONE : View.VISIBLE}"
+            android:visibility="@{avm.isLoggedIn ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             
             app:layout_constraintEnd_toEndOf="parent"
@@ -114,12 +114,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:lineSpacingMultiplier="1.25"
+            android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
             android:text="@string/message_login_to_wordpress"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="?android:textColorSecondary"
-            android:visibility="@{activityViewModel.isLoggedIn ? View.GONE : View.VISIBLE}"
+            android:visibility="@{avm.isLoggedIn ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

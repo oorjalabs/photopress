@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="bottom" android:bottom="0dp">
+        <shape>
+            <size android:height="1dp" />
+            <!-- Apply tint to change it to required colour -->
+            <solid android:color="#ffffff" />
+        </shape>
+    </item>
+</layer-list>

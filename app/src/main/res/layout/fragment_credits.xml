@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/AppTheme.PopupOverlay"
                 app:navigationIcon="@drawable/ic_back_arrow"
-                app:title="@string/title_credits_fragment" />
+                app:title="@string/credits_title" />
         </com.google.android.material.appbar.AppBarLayout>
         
         <TextView
@@ -34,11 +34,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_vertical_margin"
-            android:lineSpacingMultiplier="1.25"
+            android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
             android:text="@{presenter.creditText}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:text="@string/full_text_credits" />
+            tools:text="@string/credits_full_text" />
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

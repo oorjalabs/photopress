@@ -10,8 +10,8 @@
             type="net.c306.photopress.ui.welcome.SelectBlogViewModel" />
         
         <variable
-            name="activityViewModel"
-            type="net.c306.photopress.ActivityViewModel" />
+            name="avm"
+            type="net.c306.photopress.AppViewModel" />
         
         <variable
             name="handler"
@@ -60,7 +60,7 @@
             android:id="@+id/subtitle_welcome_select_blog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin_half"
+            android:layout_marginTop="@dimen/list_item_spacing_half"
             android:ellipsize="end"
             android:lines="1"
             android:text="@{selectBlogViewModel.selectBlogWelcomeSubtitle}"
@@ -74,7 +74,7 @@
             android:id="@+id/group_setup_complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{activityViewModel.blogSelected ? View.VISIBLE : View.GONE}"
+            android:visibility="@{avm.blogSelected ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="animation_view_done,button_start"
             tools:layout_editor_absoluteX="16dp"
             tools:visibility="visible" />
@@ -83,7 +83,7 @@
             android:id="@+id/animation_view_done"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:visibility="@{activityViewModel.blogSelected ? View.VISIBLE : View.GONE}"
+            android:visibility="@{avm.blogSelected ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/button_start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +112,7 @@
             android:enabled="@{!selectBlogViewModel.blogList.empty}"
             android:onClick="@{handler::openBlogChooser}"
             android:text="@string/button_select_blog"
-            android:visibility="@{activityViewModel.blogSelected ? View.GONE : View.VISIBLE}"
+            android:visibility="@{avm.blogSelected ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:autoLink="web"
-            android:lineSpacingMultiplier="1.25"
+            android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
             android:text="@string/message_welcome_no_blogs_found"
             android:visibility="@{selectBlogViewModel.blogsAvailable == false ? View.VISIBLE : View.GONE}"
             android:textAlignment="center"

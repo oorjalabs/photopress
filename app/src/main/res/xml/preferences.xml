@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     
     <Preference
-        app:isPreferenceVisible="true"
-        app:key="whats_new"
+        app:isPreferenceVisible="false"
+        app:key="key_whats_new"
         app:layout="@layout/pref_update_notes"
         app:title="@string/pref_title_update_notes"
         tools:summary="v. 1.0.0" />
@@ -32,16 +32,14 @@
         app:iconSpaceReserved="false"
         app:title="@string/pref_cat_title_posting">
         
-        <ListPreference
+        <net.c306.customcomponents.preference.UpgradedListPreference
             app:iconSpaceReserved="false"
             app:key="key_selected_blog_id"
             app:summary="%s"
             app:title="@string/pref_title_select_blog" />
         
-        <ListPreference
+        <net.c306.customcomponents.preference.UpgradedListPreference
             app:defaultValue="block"
-            app:entries="@array/pref_entries_post_format"
-            app:entryValues="@array/pref_values_post_format"
             app:iconSpaceReserved="false"
             app:key="key_publish_format"
             app:summary="%s"
@@ -54,13 +52,12 @@
             app:summary="@string/pref_summary_add_featured_image"
             app:title="@string/pref_title_add_featured_image" />
         
-        <net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
+        <net.c306.customcomponents.preference.SearchableMultiSelectListPreference
             app:iconSpaceReserved="false"
             app:key="key_default_tags"
             app:title="@string/pref_title_default_tags" />
         
-        <net.c306.photopress.ui.custom.SearchableMultiSelectListPreference
-            app:enabled="false"
+        <net.c306.customcomponents.preference.SearchableMultiSelectListPreference
             app:iconSpaceReserved="false"
             app:key="key_default_categories"
             app:title="@string/pref_title_default_categories" />
@@ -72,10 +69,15 @@
         app:title="@string/pref_cat_title_about">
         
         <Preference
+            app:iconSpaceReserved="false"
+            app:key="key_update_notes_bottom"
+            app:title="@string/pref_title_update_notes" />
+        
+        <Preference
             app:fragment="net.c306.photopress.ui.CreditsFragment"
             app:iconSpaceReserved="false"
             app:key="key_open_credits"
-            app:title="@string/title_credits_fragment" />
+            app:title="@string/credits_title" />
     
     </PreferenceCategory>
 

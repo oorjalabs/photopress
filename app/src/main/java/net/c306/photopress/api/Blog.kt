@@ -1,8 +1,8 @@
 package net.c306.photopress.api
 
 import androidx.annotation.Keep
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import net.c306.photopress.utils.Json
 
 @Keep
 data class Blog(
@@ -20,7 +20,7 @@ data class Blog(
 ) {
     
     fun toJson(): String {
-        return Gson().toJson(this)
+        return Json.getInstance().toJson(this)
     }
     
     @Keep
@@ -66,7 +66,7 @@ data class Blog(
         const val OPTIONS_STRING = "featured_images_enabled,default_category"
         
         fun fromJson(jsonString: String): Blog {
-            return Gson().fromJson(jsonString, Blog::class.java)
+            return Json.getInstance().fromJson(jsonString, Blog::class.java)
         }
     }
 }

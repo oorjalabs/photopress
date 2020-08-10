@@ -1,28 +1,29 @@
 package net.c306.photopress.ui.newPost
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import androidx.annotation.StringRes
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import net.c306.photopress.ActivityViewModel
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
+import net.c306.photopress.api.WPBlogPost
+import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
-
+import net.c306.photopress.ui.gallery.GalleryAdapter
+import net.c306.photopress.utils.Utils
+import net.c306.photopress.utils.setInputFocus
 
 class NewPostFragment : BottomNavFragment() {
     
@@ -30,13 +31,9 @@ class NewPostFragment : BottomNavFragment() {
     
     private lateinit var binding: FragmentPostNewBinding
     
-    private val mTagsAdapter by lazy {
-        TagsAutocompleteAdapter(
-            context = requireContext(),
-            list = newPostViewModel.blogTags.value?.map { it.name }?.toMutableList()
-                ?: mutableListOf()
-        )
-    }
+    private val mHandler = Handler()
+    
+    private val mGalleryAdapter by lazy { GalleryAdapter(GalleryAdapter.Caller.NEW_POST_GALLERY, mHandler) }
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,8 +43,9 @@ class NewPostFragment : BottomNavFragment() {
         binding = FragmentPostNewBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewmodel = newPostViewModel
-            handler = BindingHandler()
-            avm = ViewModelProvider(requireActivity()).get(ActivityViewModel::class.java)
+            handler = mHandler
+            galleryAdapter = mGalleryAdapter
+            avm = ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
         }
         return binding.root
     }
@@ -56,26 +54,8 @@ class NewPostFragment : BottomNavFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        binding.inputPostTags.apply {
-            
-            setAdapter(mTagsAdapter)
-            setTokenizer(CommaTokenizer())
-            
-            setOnFocusChangeListener { v, hasFocus ->
-                setInputFocus(
-                    v as EditText,
-                    hasFocus,
-                    R.string.hint_post_tags
-                )
-            }
-        }
-        
         binding.inputPostTitle.setOnFocusChangeListener { v, hasFocus ->
-            setInputFocus(
-                v as EditText,
-                hasFocus,
-                R.string.hint_post_title
-            )
+            (v as EditText).setInputFocus(hasFocus, R.string.new_post_hint_post_title)
         }
         
         
@@ -87,16 +67,56 @@ class NewPostFragment : BottomNavFragment() {
         })
         
         
-        // When image is selected, set image name as title if no title is present
-        newPostViewModel.fileDetails.observe(viewLifecycleOwner, Observer {
-            if (it == null || it.fileName.isBlank()) return@Observer
+        newPostViewModel.postImages.observe(viewLifecycleOwner, Observer { postImagesList ->
+            if (postImagesList.isNullOrEmpty()) return@Observer
             
-            if (newPostViewModel.postTitle.value.isNullOrBlank()) {
-                newPostViewModel.postTitle.value = it.fileName
+            if (postImagesList.any { it.fileDetails == null }) {
+                // Update list with file details
+                val updatedWithFileDetails = postImagesList.map {
+                    if (it.fileDetails != null) return@map it
+                    
+                    val fileDetails = newPostViewModel.getFileName(it.uri)
+                    it.copy(
+                        fileDetails = fileDetails,
+                        name = fileDetails.fileName
+                    )
+                }
+                
+                newPostViewModel.setPostImages(updatedWithFileDetails)
+                
+                return@Observer
             }
-            if (newPostViewModel.imageTitle.value.isNullOrBlank()) {
-                newPostViewModel.imageTitle.value = it.fileName
+            
+            // All images already have file details
+            
+            // Update grid layout manager's span count to image count limited by max
+            (binding.addedGallery.layoutManager as? StaggeredGridLayoutManager)?.spanCount =
+                Utils.calculateColumnCount(postImagesList.size)
+            
+            // Update gallery adapter
+            mGalleryAdapter.setList(postImagesList)
+            
+            // Set image caption as post caption if there is only one image
+            if (postImagesList.size == 1 && !postImagesList[0].caption.isNullOrBlank()) {
+                val imageCaption = postImagesList[0].caption
+                val postCaption = newPostViewModel.postCaption.value
+                
+                if (imageCaption != postCaption) newPostViewModel.postCaption.value =
+                    postImagesList[0].caption
             }
+        })
+        
+        
+        // Update image caption from post caption if there is only one image
+        newPostViewModel.postCaption.observe(viewLifecycleOwner, Observer {
+            if (it.isNullOrBlank() || newPostViewModel.imageCount.value != 1) return@Observer
+            
+            val image = newPostViewModel.postImages.value?.getOrNull(0) ?: return@Observer
+            
+            val imageCaption = image.caption
+            val postCaption = it
+            
+            if (imageCaption != postCaption) newPostViewModel.updatePostImage(image.copy(caption = it))
         })
         
         
@@ -112,167 +132,137 @@ class NewPostFragment : BottomNavFragment() {
         })
         
         
-        // Update tags in tags suggester
-        newPostViewModel.blogTags.observe(viewLifecycleOwner, Observer { list ->
-            mTagsAdapter.setList(list?.map { it.name } ?: emptyList())
-        })
-        
-        
         // Update state when title text changes
         newPostViewModel.postTitle.observe(viewLifecycleOwner, Observer {
             newPostViewModel.updateState()
         })
         
-    }
-    
-    
-    /**
-     * Set alternate hint for TextInputEditText on focus, and force show keyboard
-     */
-    private fun setInputFocus(v: EditText, hasFocus: Boolean, @StringRes stringId: Int) {
-        if (hasFocus) {
-            // Set hint for edit text only on focus. In non focus mode, the hint for edit text layout is shown
-            v.hint = getString(stringId)
+        
+        newPostViewModel.publishLiveData.observe(viewLifecycleOwner, Observer {
             
-            // Due to capturing first focus tab here, the keyboard isn't shown. So, force it to show
-            (v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)
-                ?.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
-        } else {
-            v.hint = null
-        }
+            if (it == null) return@Observer
+            
+            val (progress, publishResult) = it
+            
+            if (publishResult?.errorMessage != null) {
+                newPostViewModel.setState(NewPostViewModel.State.READY)
+                Toast.makeText(requireContext(), "Error: " +  publishResult.errorMessage, Toast.LENGTH_LONG)
+                    .show()
+                return@Observer
+            }
+            
+            // Show message
+            binding.messagePublishingStatus.text = progress.statusMessage
+            
+            if (!progress.finished) return@Observer
+            
+            if (publishResult?.publishedPost != null) {
+                // Post uploaded, show message
+                val toastMessageId = when {
+                    publishResult.publishedPost.isDraft                                        -> R.string.new_post_toast_uploaded_as_draft
+                    publishResult.publishedPost.post.status == WPBlogPost.PublishStatus.FUTURE -> R.string.new_post_toast_post_scheduled
+                    else                                                                       -> R.string.new_post_toast_published
+                }
+                Toast.makeText(requireContext(), toastMessageId, Toast.LENGTH_SHORT).show()
+                
+                // Update view model, tags, state, etc
+                newPostViewModel.onPublishFinished(publishResult)
+            }
+            
+        })
+        
+        
+        // Set featured image to be marked in recyclerview
+        newPostViewModel.postFeaturedImageId.observe(viewLifecycleOwner, Observer {
+            mGalleryAdapter.setFeaturedImage(it)
+        })
+        
     }
     
     
     /**
-     * Photo picker returns here
+     * Photo picker returns here for pick or add photos
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         
-        if (requestCode != RC_PHOTO_PICKER) return
+        if (requestCode != RC_PHOTO_PICKER && requestCode != RC_PHOTO_PICKER_ADD_PHOTOS) return
         
         if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(requireContext(), "Image selection cancelled", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                R.string.new_post_toast_image_selection_cancelled,
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
         
-        val imageUri = data?.data
-        
-        if (imageUri != null) {
-            newPostViewModel.setImageUri(imageUri)
+        // Clip data contains selected items
+        data?.clipData?.also {
+            val uriList = mutableListOf<Uri>()
+            
+            for (i in 0 until it.itemCount) {
+                uriList.add(it.getItemAt(i).uri)
+            }
+            
+            if (requestCode == RC_PHOTO_PICKER_ADD_PHOTOS) {
+                // Add selected Uris to list
+                newPostViewModel.addImageUris(uriList)
+            } else {
+                // Set selected Uris as new list
+                newPostViewModel.setImageUris(uriList)
+            }
         }
-        
     }
     
-    
-    companion object {
-        const val RC_PHOTO_PICKER = 9723
-    }
     
     /**
      * Public methods that can be called from data binding
      */
     @Suppress("UNUSED_PARAMETER")
-    inner class BindingHandler {
+    inner class Handler : GalleryAdapter.GalleryInteraction {
+        
         /**
          * Open file picker to select file location for syncing
          */
-        fun openPhotoPicker() {
+        fun openPhotoPicker(addPhotos: Boolean = false) {
             val galleryIntent = Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            ).apply {
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            }
+            
+            startActivityForResult(
+                galleryIntent,
+                if (addPhotos) RC_PHOTO_PICKER_ADD_PHOTOS else RC_PHOTO_PICKER
             )
-        
-            startActivityForResult(galleryIntent, RC_PHOTO_PICKER)
         }
         
+        /**
+         * Open image attributes fragment
+         */
+        override fun onImagePressed(image: PostImage) {
+            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
+        }
         
-        fun openImageAttributes() {
-            newPostViewModel.editingImageTitle.value = newPostViewModel.imageTitle.value
-            newPostViewModel.editingImageAltText.value = newPostViewModel.imageAltText.value
-            newPostViewModel.editingImageCaption.value = newPostViewModel.imageCaption.value
-            newPostViewModel.editingImageDescription.value = newPostViewModel.imageDescription.value
-            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes())
+        fun openPostSettings(view: View) {
+            findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
         }
         
         fun onPublishPressed(view: View) {
             findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
         }
         
-    }
-    
-    
-    class TagsAutocompleteAdapter(context: Context, list: MutableList<String>) :
-        ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list) {
         
-        private val mInflater = LayoutInflater.from(context)
-        private val layoutResource = android.R.layout.simple_list_item_1
-        
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            return (convertView ?: mInflater.inflate(layoutResource, null)).apply {
-                
-                val wpTag = getItem(position)
-                
-                findViewById<TextView>(android.R.id.text1)?.apply {
-                    text = wpTag
-                }
-            }
-        }
-        
-        fun setList(value: List<String>) {
-            clear()
-            addAll(value)
-            notifyDataSetChanged()
+        fun openReorderingScreen(view: View) {
+            findNavController().navigate(NewPostFragmentDirections.actionReorderImages())
         }
     }
     
     
-    /**
-     * Taken from MultiAutoCompleteTextView.CommaTokenizer and adapted to remove trailing comma and
-     * space from the accepted suggestion. This places only selected text, then user can press comm
-     * to see more suggestions.
-     */
-    class CommaTokenizer : MultiAutoCompleteTextView.Tokenizer {
-        
-        override fun findTokenStart(text: CharSequence, cursor: Int): Int {
-            var i = cursor
-            while (i > 0 && text[i - 1] != ',') {
-                i--
-            }
-            while (i < cursor && text[i] == ' ') {
-                i++
-            }
-            return i
-        }
-        
-        override fun findTokenEnd(text: CharSequence, cursor: Int): Int {
-            val i = text.indexOf(',', cursor)
-            val len = text.length
-            
-            if (i in 0..len)
-                return i
-            
-            return len
-        }
-        
-        override fun terminateToken(text: CharSequence): CharSequence {
-            var i = text.length
-            while (i > 0 && text[i - 1] == ' ') {
-                i--
-            }
-            return if (i > 0 && text[i - 1] == ',') {
-                text
-            } else {
-                if (text is Spanned) {
-                    val sp = SpannableString("$text")
-                    TextUtils.copySpansFrom(
-                        text, 0, text.length,
-                        Any::class.java, sp, 0
-                    )
-                    sp
-                } else {
-                    "$text"
-                }
-            }
-        }
+    companion object {
+        const val RC_PHOTO_PICKER = 9723
+        const val RC_PHOTO_PICKER_ADD_PHOTOS = 3942
     }
+    
 }

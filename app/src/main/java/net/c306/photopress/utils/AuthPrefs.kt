@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import net.c306.photopress.api.Blog
 import net.c306.photopress.api.UserDetails
+import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPTag
 
 /**
@@ -20,6 +21,7 @@ class AuthPrefs (context: Context) : BasePrefs() {
         const val ARG_USER_DETAILS = "arg_user_details_qkndi3"
         private const val ARG_BLOGS_LIST = "arg_blogs_list_ihd9323e"
         private const val ARG_TAGS_LIST = "arg_tags_list_sldfh329h"
+        private const val ARG_CATEGORIES_LIST = "arg_categories_list_akhdi22g0"
         
         // This name is used in backup_descriptor to deny backups.
         // Change there too if you change here.
@@ -99,6 +101,32 @@ class AuthPrefs (context: Context) : BasePrefs() {
         
         return savedSet
             .map { WPTag.fromJson(it) }
+            .sortedBy { it.slug } // alphabetically, case independent (slugs are always lower case)
+    }
+    
+    fun saveCategoriesList(list: List<WPCategory>?) {
+        prefs.edit {
+            
+            if (list == null) {
+                remove(ARG_CATEGORIES_LIST)
+            } else {
+                putStringSet(
+                    ARG_CATEGORIES_LIST,
+                    list
+                        .distinctBy { it.id }
+                        .map { it.toJson() }
+                        .toSet()
+                )
+            }
+        }
+    }
+    
+    fun getCategoriesList(): List<WPCategory>? {
+        val savedSet = prefs.getStringSet(ARG_CATEGORIES_LIST, null)
+            ?: return null
+        
+        return savedSet
+            .map { WPCategory.fromJson(it) }
             .sortedBy { it.slug } // alphabetically, case independent (slugs are always lower case)
     }
     

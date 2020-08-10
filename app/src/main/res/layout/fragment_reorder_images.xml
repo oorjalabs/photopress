@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="viewmodel"
+            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
+        
+        <variable
+            name="handler"
+            type="net.c306.photopress.ui.gallery.ReorderImagesFragment.Handler" />
+    
+        <variable
+            name="galleryAdapter"
+            type="net.c306.photopress.ui.gallery.GalleryAdapter" />
+        
+        <import type="android.view.View" />
+        
+    </data>
+    
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+            
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_close"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/reorder_images_title">
+                
+                <Button
+                    android:id="@+id/button_done"
+                    style="@style/TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="@dimen/list_item_spacing_half"
+                    android:contentDescription="@string/string_done"
+                    android:onClick="@{handler::done}"
+                    android:text="@string/string_done"
+                    android:tooltipText="@string/string_done" />
+            
+            </androidx.appcompat.widget.Toolbar>
+        
+        </com.google.android.material.appbar.AppBarLayout>
+        
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/images"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="@dimen/list_item_spacing_quarter"
+                android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
+                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                app:recyclerViewAdapter="@{galleryAdapter}"
+                tools:itemCount="15"
+                tools:listitem="@layout/item_gallery_post"
+                tools:spanCount="3" />
+            
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

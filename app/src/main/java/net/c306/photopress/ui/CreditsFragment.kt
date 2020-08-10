@@ -47,7 +47,7 @@ class CreditsFragment : AppBarFragment() {
     inner class Presenter {
         val creditText: Spanned by lazy {
             Html.fromHtml(
-                getString(R.string.full_text_credits),
+                getString(R.string.credits_full_text),
                 Html.FROM_HTML_MODE_LEGACY
             )
         }

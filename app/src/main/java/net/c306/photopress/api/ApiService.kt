@@ -46,6 +46,25 @@ interface ApiService {
     ): Call<WPTag.TagsResponse>
     
     
+    @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
+    fun getCategoriesForSite(
+            @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+            @Query(WPCategory.ARG_ORDER_BY) orderBy: String = WPCategory.VALUE_ORDER_BY,
+            @Query(WPCategory.ARG_ORDER) order: String = WPCategory.VALUE_ORDER,
+            @Query(WPCategory.ARG_NUMBER) number: Number = WPCategory.VALUE_NUMBER,
+            @Query(WPCategory.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING
+    ): Call<WPCategory.GetCategoriesResponse>
+    
+    
+    @POST(ApiConstants.CREATE_CATEGORY)
+    @FormUrlEncoded
+    fun addCategory(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
+        @FieldMap request: Map<String, String>
+    ): Call<WPCategory>
+    
+    
     @POST(ApiConstants.CREATE_POST)
     fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -64,17 +83,28 @@ interface ApiService {
     
     
     @POST(ApiConstants.UPLOAD_MEDIA)
-    @Multipart
-    fun uploadMedia(
+    fun uploadSingleMedia(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Part media: MultipartBody.Part,
-        @Part caption: MultipartBody.Part,
-        @Part title: MultipartBody.Part,
-        @Part alt: MultipartBody.Part,
-        @Part description: MultipartBody.Part
+        @Body contents: MultipartBody
     ): Call<WPMedia.UploadMediaResponse>
     
+    
+    @POST(ApiConstants.UPLOAD_MEDIA)
+    fun uploadMediaMulti(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Body contents: MultipartBody
+    ): Call<WPMedia.UploadMediaResponse>
+    
+    
+    @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
+    fun updateMediaAttributes(
+        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
+        @Path(ApiConstants.ARG_MEDIA_ID) mediaId: String,
+        @Query(ApiConstants.ARG_FIELDS) fields: String?,
+        @Body body: WPMedia.UpdateMediaAttributesRequest
+    ): Call<WPMedia>
     
     @Keep
     data class ValidateTokenResponse(

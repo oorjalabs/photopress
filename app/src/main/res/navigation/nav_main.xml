@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/welcomeFragment">
+    <!--    app:startDestination="@+id/navigation_post_new">-->
     
     <fragment
         android:id="@+id/navigation_post_list"
@@ -23,18 +24,26 @@
             android:id="@+id/action_editImageAttributes"
             app:destination="@id/imageAttributesFragment" />
         <action
+            android:id="@+id/action_editPostSettings"
+            app:destination="@id/post_settings_fragment" />
+        <action
             android:id="@+id/action_show_publishOptions"
             app:destination="@id/publishOptionsDialog" />
+        <action
+            android:id="@+id/action_reorderImages"
+            app:destination="@id/reorderImagesFragment" />
     </fragment>
     
     <fragment
         android:id="@+id/navigation_settings"
         android:name="net.c306.photopress.ui.settings.SettingsFragment"
-        android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings">
+        android:label="@string/title_settings">
         <action
             android:id="@+id/action_open_creditsFragment"
             app:destination="@id/creditsFragment" />
+        <action
+            android:id="@+id/action_show_update_notes"
+            app:destination="@id/update_notes_fragment" />
     </fragment>
     
     <fragment
@@ -67,6 +76,7 @@
         android:id="@+id/action_global_welcomeFragment"
         app:destination="@id/welcomeFragment"
         app:launchSingleTop="true" />
+    
     <fragment
         android:id="@+id/loginFragment"
         android:name="net.c306.photopress.ui.welcome.login.LoginFragment"
@@ -82,76 +92,72 @@
             android:id="@+id/action_show_two_factor_warning"
             app:destination="@id/useCodeBasedTwoFactorWarningDialog" />
     </fragment>
+    
     <dialog
         android:id="@+id/blogChooserDialogFragment"
         android:name="net.c306.photopress.ui.welcome.BlogChooserDialogFragment"
-        android:label="BlogChooserDialogFragment">
+        android:label="BlogChooserDialogFragment"
+        tools:layout="@layout/dialog_blog_chooser">
         <argument
             android:name="currentBlogId"
             android:defaultValue="-1"
             app:argType="integer" />
     </dialog>
+    
     <dialog
         android:id="@+id/afterPublishedDialog"
         android:name="net.c306.photopress.ui.newPost.AfterPublishedDialog"
-        android:label="@string/message_post_published"
+        android:label="@string/post_publish_title_post_published"
         tools:layout="@layout/dialog_after_publish" />
+    
     <fragment
         android:id="@+id/imageAttributesFragment"
         android:name="net.c306.photopress.ui.newPost.ImageAttributesFragment"
-        android:label="ImageAttributesFragment" />
+        android:label="ImageAttributesFragment"
+        tools:layout="@layout/fragment_image_attributes">
+        <argument
+            android:name="imageId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_openFullPhoto"
+            app:destination="@id/fullImageFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/post_settings_fragment"
+        android:name="net.c306.photopress.ui.newPost.PostSettingsFragment"
+        android:label="PostSettingsFragment"
+        tools:layout="@layout/fragment_post_settings">
+        <action
+            android:id="@+id/action_openCategoryPicker"
+            app:destination="@id/categoryPickerDialog" />
+    </fragment>
+    
     <fragment
         android:id="@+id/creditsFragment"
         android:name="net.c306.photopress.ui.CreditsFragment"
         android:label="fragment_credits"
         tools:layout="@layout/fragment_credits" />
+    
+    <fragment
+        android:id="@+id/update_notes_fragment"
+        android:name="net.c306.customcomponents.updatenotes.UpdateNotesFragment"
+        android:label="@string/title_update_notes"
+        tools:layout="@layout/fragment_update_notes_customcomponents" />
+    
     <dialog
         android:id="@+id/useCodeBasedTwoFactorWarningDialog"
         android:name="net.c306.photopress.ui.welcome.login.UseCodeBasedTwoFactorWarningDialog"
         android:label="dialog_use_code_based_two_factor"
         tools:layout="@layout/dialog_use_code_based_two_factor" />
+    
     <dialog
         android:id="@+id/confirmationDialog"
-        android:name="net.c306.photopress.ui.custom.ConfirmationDialog"
-        android:label="ConfirmationDialog">
-        <argument
-            android:name="caller_tag"
-            app:argType="string" />
-        <argument
-            android:name="request_code"
-            app:argType="integer" />
-        <argument
-            android:name="dialog_title"
-            app:argType="string" />
-        <argument
-            android:name="dialog_message"
-            app:argType="string" />
-        <argument
-            android:name="positive_button_title"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="negative_button_title"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="iconResourceId"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
-            android:name="return_bundle"
-            android:defaultValue="@null"
-            app:argType="android.os.Bundle"
-            app:nullable="true" />
-        <argument
-            android:name="list"
-            android:defaultValue="@null"
-            app:argType="string[]"
-            app:nullable="true" />
-    </dialog>
-    <action
-        android:id="@+id/action_global_confirmationDialog"
-        app:destination="@id/confirmationDialog" />
+        android:name="net.c306.customcomponents.confirmation.ConfirmationDialog"
+        android:label="ConfirmationDialog"
+        tools:layout="@layout/dialog_action_confirmation_customcomponents" />
+    
     <dialog
         android:id="@+id/publishOptionsDialog"
         android:name="net.c306.photopress.ui.newPost.PublishOptionsDialog"
@@ -161,8 +167,34 @@
             android:id="@+id/action_getPublishTime"
             app:destination="@id/timeChooserDialogFragment" />
     </dialog>
+    
     <dialog
         android:id="@+id/timeChooserDialogFragment"
         android:name="net.c306.photopress.ui.newPost.TimeChooserDialogFragment"
         android:label="TimeChooserDialogFragment" />
+    
+    <fragment
+        android:id="@+id/reorderImagesFragment"
+        android:name="net.c306.photopress.ui.gallery.ReorderImagesFragment"
+        android:label="ReorderImagesFragment"
+        tools:layout="@layout/fragment_reorder_images">
+        <action
+            android:id="@+id/action_openFullPhoto"
+            app:destination="@id/fullImageFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/fullImageFragment"
+        android:name="net.c306.photopress.ui.gallery.FullImageFragment"
+        android:label="ImageViewFragment"
+        tools:layout="@layout/fragment_full_image">
+        <argument
+            android:name="image"
+            app:argType="net.c306.photopress.database.PostImage" />
+    </fragment>
+    <dialog
+        android:id="@+id/categoryPickerDialog"
+        android:name="net.c306.photopress.ui.newPost.categoryPicker.CategoryPickerDialog"
+        android:label="CategoryPickerDialog"
+        tools:layout="@layout/dialog_category_picker" />
 </navigation>

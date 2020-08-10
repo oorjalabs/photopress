@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="image"
+            type="net.c306.photopress.database.PostImage" />
+        
+        <variable
+            name="handler"
+            type="net.c306.photopress.ui.gallery.FullImageFragment.FragmentHandler" />
+    
+    </data>
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_full_image"
+        tools:context=".ui.gallery.FullImageFragment">
+        
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/full_image_view_cd_image"
+            android:onClick="@{handler::toggle}"
+            android:tooltipText="@string/full_image_view_cd_image"
+            app:imageUri="@{image.uri}"
+            tools:src="@tools:sample/avatars" />
+        
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="@dimen/min_touch_size"
+            android:layout_height="@dimen/min_touch_size"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:background="@drawable/bg_round_scrim"
+            android:contentDescription="@string/string_close"
+            android:onClick="@{handler::close}"
+            android:padding="@dimen/padding_round_icon_button"
+            android:src="@drawable/ic_close"
+            android:tint="@color/tint_close_button_full_image"
+            android:tooltipText="@string/string_close" />
+        
+        <TextView
+            android:id="@+id/caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="?actionBarSize"
+            android:background="@color/icon_button_scrim_light"
+            android:gravity="center"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="@{image.caption ?? image.name}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="@android:color/white"
+            tools:text="Bruno is here" />
+    
+    </FrameLayout>
+</layout>

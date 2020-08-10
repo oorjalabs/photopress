@@ -1,4 +1,6 @@
-
+WP Console
+/sites/133419388/posts/226?status=any&context=edit
+/me/sites
 
 ------------------
 
@@ -13,28 +15,348 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0511.0.12.1
+v. 2020.0801.0.13.1
 
     --TBD-- Wireframe
         [ ] List
-
-    --TBD-- Support for categories
-        [ ] Setting for default categories
-
-    --TBD-- Upload multiple photos - gallery
-
-    --TBD-- Layout: move publish button out of the way
-
-    --TBD-- Delete photo from app storage after successful publishing
 
     --TBD-- Update notes
 
     --TBD-- Subscriptions
 
-    --TBD-- Show upload progress
-        [ ] Show message with state of progress - uploading image, uploading content, publishing
-
     --TBD-- Refresh sites, tags and categories at least once a day
+
+    --TBD-- Add share intent to receive multiple images to create a gallery post
+
+    --TBD-- Image editing
+        [ ] Crop image
+        [ ] Rotate image
+
+    [ ] Sync via database & worker
+        [ ] ViewModel
+            [ ] Save uploaded images in database, if sync stopped midway
+            [ ] Save post and images in database before syncing, delete from db after syncing
+        [ ] Worker
+            [ ] Upload all `uploadPending` posts from database
+            [ ] Delete after successful syncing
+
+    [ ] BUG: Quotes in image attributes are escaped on jetpack sites
+
+
+------------------
+
+
+v. 2020.0810.0.12.29
+
+    [X] Landscape view updates
+        [X] New post fragment
+        [X] Image attributes fragment
+
+    [DONE] Update notes
+
+
+------------------
+
+
+v. 2020.0810.0.12.28
+
+    [X] Gallery
+        [X] Add figcaption only if there is an image caption
+        [X] Add gallery caption only if there is a gallery caption
+
+
+------------------
+
+
+v. 2020.0810.0.12.27
+
+    [-] Gallery
+        [X] Upload images one by one for jetpack blogs
+            [X] Update status message for each image
+        [X] Move status message strings to xml
+
+
+------------------
+
+
+v. 2020.0807.0.12.26
+
+    [X] Add categories
+        [X] When categories are added locally, also sync them with server even if they aren't used
+
+    [X] Icon colour updated to p1_night. Theme colour is still p1
+
+
+------------------
+
+
+v. 2020.0807.0.12.25
+
+    [X] Add categories
+        [X] Post settings screen
+            [X] Select categories
+            [X] Add new categories
+
+
+------------------
+
+
+v. 2020.0807.0.12.24
+
+    [-] Add categories
+        [-] Post settings screen
+            [-] Select categories
+            [-] Add new categories
+
+
+------------------
+
+
+v. 2020.0807.0.12.23
+
+    [-] Add categories
+        [-] Post settings screen
+            [X] Show chosen categories
+        [X] SyncUtils - publish with category
+
+
+------------------
+
+
+v. 2020.0806.0.12.22
+
+    [-] Add categories
+        [X] Fetch and save categories
+        [X] Settings - default category
+
+
+------------------
+
+
+v. 2020.0806.0.12.21
+
+    [X] SyncUtils
+        [X] Delete image from app storage after successful upload
+
+
+------------------
+
+
+v. 2020.0806.0.12.20
+
+    [X] Tap photo thumbail to open in full size
+        [X] Photo details screen
+        [X] Gallery
+
+
+------------------
+
+
+v. 2020.0806.0.12.19
+
+    [-] Gallery
+        [X] Reorder photos (different screen with drag and drop?)
+
+
+------------------
+
+
+v. 2020.0805.0.12.18
+
+    [-] Photo details screen
+        [X] Show photo thumbnail
+        [X] Mark image as featured image
+        [X] Remove photo button
+
+    [-] Gallery
+        [X] Indicate featured image with pin
+        [X] Column count -> 1 (single photo), 2 (2 or 4 photos), 3 (else)
+
+
+------------------
+
+
+v. 2020.0805.0.12.17
+
+    [-] Post settings screen
+        [X] Tags
+        [/] Status - publish / draft / schedule? (maybe not)
+
+
+------------------
+
+
+v. 2020.0805.0.12.16
+
+    [-] SyncUtils
+        [X] Update progress by returning liveData
+        [X] Schedule posts
+
+
+------------------
+
+
+v. 2020.0805.0.12.15
+
+    [-] BUG: Quotes in image attributes are escaped on jetpack sites
+        [X] For jetpack sites, update image attributes in additional call after uploading images
+
+
+------------------
+
+
+v. 2020.0805.0.12.14
+
+    [-] SyncUtils
+        [X] Upload all images together in single call
+
+
+------------------
+
+
+v. 2020.0804.0.12.13
+
+    [-] Gallery
+        [X] Upload all photos then publish as gallery - bug fix
+
+
+------------------
+
+
+v. 2020.0804.0.12.12
+
+    [-] Gallery
+        [X] Upload all photos then publish as gallery
+
+
+------------------
+
+
+v. 2020.0803.0.12.11
+
+    [X] Add database
+        [X] Store post as `uploadPending` true in database
+
+
+------------------
+
+
+v. 2020.0803.0.12.10
+
+    [-] Add database
+        [X] Add entities, dao, app database
+
+
+------------------
+
+
+v. 2020.0803.0.12.9
+
+    [-] Gallery
+        [X] Set post caption (different from image caption in gallery posts)
+        [X] Show image captions in gallery
+
+    [-] Landscape view updates
+
+
+------------------
+
+
+v. 2020.0731.0.12.8
+
+    [X] Remove single image view, just use recycler view for all images
+
+    [-] Gallery
+        [X] Add more photos
+
+
+------------------
+
+
+v. 2020.0731.0.12.7
+
+    [X] If single photo selected, show single photo. Else show gallery.
+    [X] On 'add photos', change to gallery view
+
+    [-] Gallery
+        [X] Select multiple photos
+        [X] Show all selected photos
+        [X] Gallery should show photos as big as possible, max 3 photos a row
+        [X] Tapping individual photo in a gallery opens photo details screen
+
+    [-] Photo details screen
+        [X] Caption
+        [X] Title
+        [X] Detail
+        [X] Alt text
+
+
+------------------
+
+
+v. 2020.0731.0.12.6
+
+    [X] Single photo
+        [X] Show selected photo
+        [X] Save image attributes
+        [X] Post with image attributes
+        [X] Replace post caption with image caption
+
+
+------------------
+
+
+v. 2020.0730.0.12.5
+
+    [X] Update view model to handle multiple photos
+
+    [X] Gallery recyclerview placeholders and core
+
+    [X] Post settings fragment init
+
+
+------------------
+
+
+v. 2020.0730.0.12.4
+
+    [X] Single photo
+        [X] Tapping single photo opens photo details screen
+        [X] Remove info button
+        [X] Keep 'change photo' and 'add photo' buttons
+
+    [X] Replace fab with upload + settings button
+
+
+------------------
+
+
+v. 2020.0730.0.12.3
+
+    [DONE] Use custom components
+        [X] CommonUtils & extension functions
+        [X] update notes
+
+
+------------------
+
+
+v. 2020.0730.0.12.2
+
+    --TBD-- Use custom components
+        [X] Searchable multi select list pref
+        [X] confirmation dialog
+        [X] upgraded list pref
+
+
+------------------
+
+
+v. 2020.0730.0.12.1
+
+    [DONE] Bug fix: New post inputs (viewmodel) was reset on configuration change
+
+    [DONE] Show 'Add caption' placeholder when no caption, touch to open image attributes
 
 
 ------------------

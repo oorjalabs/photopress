@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        
+        <variable
+            name="image"
+            type="net.c306.photopress.database.PostImage" />
+        
+        <variable
+            name="imageCount"
+            type="Integer" />
+        
+        <variable
+            name="handler"
+            type="net.c306.photopress.ui.gallery.GalleryAdapter.GalleryInteraction" />
+        
+        <variable
+            name="isFeaturedImage"
+            type="Boolean" />
+        
+        <variable
+            name="imageContentDescription"
+            type="String" />
+        
+        <import type="android.view.View" />
+    </data>
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <ImageView
+            android:id="@+id/added_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/gallery_grid_item_margin"
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_border_solid"
+            android:contentDescription="@{imageContentDescription}"
+            android:foreground="?selectableItemBackground"
+            android:onClick="@{() -> handler.onImagePressed(image)}"
+            android:tooltipText="@{imageContentDescription}"
+            android:visibility="@{image.uri == null ? View.GONE : View.VISIBLE}"
+            app:imageUri="@{image.uri}"
+            tools:src="@tools:sample/backgrounds/scenic" />
+        
+        <ImageView
+            android:id="@+id/pinned_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_item_spacing_quarter"
+            android:visibility="@{isFeaturedImage ? View.VISIBLE : View.GONE}"
+            android:contentDescription="@string/image_item_cd_featured_image"
+            android:src="@drawable/ic_featured_icon_in_circle"
+            android:tooltipText="@string/image_item_cd_featured_image" />
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:background="#64ffffff"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/list_item_spacing_half"
+            android:paddingVertical="@dimen/list_item_spacing_quarter"
+            android:text="@{image.caption}"
+            android:visibility="@{image.caption == null || imageCount &lt; 2 ? View.GONE : View.VISIBLE}"
+            tools:text="Caption for this image" />
+    </FrameLayout>
+</layout>

@@ -9,12 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
-import net.c306.photopress.ActivityViewModel
+import net.c306.customcomponents.utils.getFloatFromXml
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
 import net.c306.photopress.ui.welcome.WelcomeFragmentAdapter.Screens
-import net.c306.photopress.utils.getFloatFromXml
 
 /**
  * Holder fragment for the welcome fragment views
@@ -29,7 +29,7 @@ class WelcomeFragment : NoBottomNavFragment() {
     
     private val args by navArgs<WelcomeFragmentArgs>()
     
-    private val activityViewModel by activityViewModels<ActivityViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
     
     private lateinit var binding: FragmentWelcomeBinding
@@ -40,8 +40,8 @@ class WelcomeFragment : NoBottomNavFragment() {
     ): View? {
         
         // If already set up, go straight to main app
-        val isLoggedIn = activityViewModel.isLoggedIn.value == true
-        val blogSelected = activityViewModel.blogSelected.value == true
+        val isLoggedIn = appViewModel.isLoggedIn.value == true
+        val blogSelected = appViewModel.blogSelected.value == true
         if (isLoggedIn && blogSelected) {
             findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
             return null
@@ -50,7 +50,7 @@ class WelcomeFragment : NoBottomNavFragment() {
         // Inflate the layout for this fragment
         binding = FragmentWelcomeBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            activityViewModel = this@WelcomeFragment.activityViewModel
+            avm = this@WelcomeFragment.appViewModel
             handler = Handler()
         }
         
@@ -75,7 +75,7 @@ class WelcomeFragment : NoBottomNavFragment() {
         
         
         // If not authenticated, disable screen 3
-        activityViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
+        appViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
             val loggedIn = it == true
             
             mPagerAdapter.setMaxScreen(
