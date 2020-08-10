@@ -78,7 +78,7 @@
             android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:visibility="gone"
-            tools:text="@string/dialog_category_list_empty_view" />
+            tools:text="@string/category_picker_empty_view" />
     
     </LinearLayout>
 </layout>

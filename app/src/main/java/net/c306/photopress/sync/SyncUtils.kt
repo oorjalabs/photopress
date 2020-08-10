@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.WPBlogPost
 import net.c306.photopress.api.WPCategory
@@ -72,24 +73,33 @@ class SyncUtils(context: Context) {
         isJetpackBlog: Boolean?
     ): LiveData<PublishLiveData?> = liveData<PublishLiveData?> {
         
-        emit(PublishLiveData(progress = PublishProgress(false, "Started")))
+        emit(PublishLiveData(progress = PublishProgress(
+            finished = false,
+            statusMessage = applicationContext.getString(R.string.sync_status_started_upload)
+        )))
         
         withContext(Dispatchers.IO) {
             
             if (post.title.isBlank() || images.isEmpty()) {
                 Timber.w("Null inputs to publish: title: '${post.title}', ${images.size} images")
-                val errorMessage = "Error: No title or images"
+                val errorMessage = applicationContext.getString(R.string.sync_status_error_no_title_or_images)
                 val response = PublishPostResponse(
                     errorMessage = errorMessage,
                     publishedPost = null,
                     updatedImages = null
                 )
-                val progress = PublishProgress(true, errorMessage)
+                val progress = PublishProgress(
+                    finished = true,
+                    statusMessage = errorMessage
+                )
                 emit(PublishLiveData(progress, response))
                 return@withContext
             }
             
-            emit(PublishLiveData(progress = PublishProgress(false, "Uploading images")))
+            emit(PublishLiveData(progress = PublishProgress(
+                finished = false,
+                statusMessage = applicationContext.getString(R.string.sync_status_uploading_images)
+            )))
             
             val mediaToUpload = images.mapNotNull { image ->
                 getFileForUri(applicationContext, image)?.let { (file, _) ->
@@ -97,13 +107,38 @@ class SyncUtils(context: Context) {
                 }
             }
             
-            val (uploadSuccess, uploadedMedia) = uploadMedia(post.blogId, mediaToUpload)
+            var uploadSuccess = true
+            val uploadedMedia: List<UploadMediaResponse>
+            
+            if (isJetpackBlog == true) {
+                // Upload images one by one
+                val imageCount = mediaToUpload.size
+                uploadedMedia = mediaToUpload.mapIndexed { index, imagePair ->
+                    emit(PublishLiveData(progress = PublishProgress(
+                        finished = false,
+                        statusMessage = applicationContext.getString(R.string.sync_status_uploading_images_individual, index + 1, imageCount)
+                    )))
+                    val (success, uploaded) = uploadSingleMedia(post.blogId, imagePair)
+                    uploadSuccess = success && uploadSuccess
+                    if (!success) Timber.d("Error uploading image $index: '${uploaded.errorMessage}'")
+                    uploaded
+                }
+            } else {
+                // Upload images all together
+                val uploaded = uploadMedia(post.blogId, mediaToUpload)
+                uploadSuccess = uploaded.first
+                uploadedMedia = uploaded.second
+            }
             
             // Delete images from app storage
             deleteFiles(mediaToUpload.map { it.first })
             
             if (!uploadSuccess) {
-                val errorMessage = uploadedMedia[0].errorMessage ?: "Media upload failed"
+                val errorMessage = applicationContext.getString(
+                    R.string.sync_status_error,
+                    uploadedMedia[0].errorMessage
+                    ?: applicationContext.getString(R.string.sync_status_error_media_upload_failed)
+                )
                 val response = PublishPostResponse(
                     errorMessage = errorMessage,
                     publishedPost = null,
@@ -121,7 +156,10 @@ class SyncUtils(context: Context) {
                 uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
             }
             
-            emit(PublishLiveData(progress = PublishProgress(false, "Uploading post")))
+            emit(PublishLiveData(progress = PublishProgress(
+                finished = false,
+                statusMessage = applicationContext.getString(R.string.sync_status_uploading_post)
+            )))
             
             // Upload post as draft with embedded image
             val (uploadedPost, uploadError) = uploadPost(
@@ -132,7 +170,11 @@ class SyncUtils(context: Context) {
             )
             
             if (uploadError != null || uploadedPost == null) {
-                val errorMessage = "Error: ${uploadError ?: "No response while uploading post."}"
+                val errorMessage = applicationContext.getString(
+                    R.string.sync_status_error,
+                    uploadError
+                    ?: applicationContext.getString(R.string.sync_status_error_post_upload_failed)
+                )
                 val response = PublishPostResponse(
                     errorMessage = errorMessage,
                     publishedPost = null,
@@ -148,7 +190,10 @@ class SyncUtils(context: Context) {
             
             if (post.status != PhotoPressPost.PhotoPostStatus.DRAFT) {
                 
-                emit(PublishLiveData(progress = PublishProgress(false, "Updating post status")))
+                emit(PublishLiveData(progress = PublishProgress(
+                    finished = false,
+                    statusMessage = applicationContext.getString(R.string.sync_status_updating_post_status)
+                )))
                 
                 // Change status to published
                 val publishResult = updateToPublished(
@@ -167,7 +212,10 @@ class SyncUtils(context: Context) {
                 publishedPost = PublishedPost(publishedPost ?: uploadedPost, publishedPost == null),
                 updatedImages = null
             )
-            val progress = PublishProgress(true, "Post uploaded")
+            val progress = PublishProgress(
+                finished = true,
+                statusMessage = applicationContext.getString(R.string.sync_status_post_uploaded)
+            )
             emit(PublishLiveData(progress, response))
         }
     }
@@ -220,7 +268,7 @@ class SyncUtils(context: Context) {
                 
                 override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
                     // Error creating post
-                    Timber.w(t, "Error uploading media!")
+                    Timber.w(t, "Error uploading media: ")
                     cont.resume(
                         Pair(
                             false,
@@ -235,13 +283,13 @@ class SyncUtils(context: Context) {
                     val uploadMediaResponse = response.body()
                     
                     if (uploadMediaResponse == null) {
-                        Timber.w("Uploading media: No response received :(")
+                        Timber.w("Error uploading media: No response received :(")
                         cont.resume(
                             Pair(
                                 false,
                                 images.map {
                                     UploadMediaResponse(
-                                        "No response",
+                                        applicationContext.getString(R.string.sync_status_error_no_response),
                                         null,
                                         it.second
                                     )
@@ -252,6 +300,7 @@ class SyncUtils(context: Context) {
                     
                     
                     if (!uploadMediaResponse.errors.isNullOrEmpty()) {
+                        Timber.w("Error uploading media: ${uploadMediaResponse.errors.joinToString("\n")}")
                         cont.resume(
                             Pair(
                                 false,
@@ -267,12 +316,13 @@ class SyncUtils(context: Context) {
                     }
                     
                     if (uploadMediaResponse.media.isNullOrEmpty()) {
+                        Timber.w("Error uploading media: No media returned")
                         cont.resume(
                             Pair(
                                 false,
                                 images.map {
                                     UploadMediaResponse(
-                                        "No media returned",
+                                        applicationContext.getString(R.string.sync_status_error_no_media_returned),
                                         null,
                                         it.second
                                     )
@@ -284,11 +334,134 @@ class SyncUtils(context: Context) {
                     Timber.v("Media uploaded! $uploadMediaResponse")
                     cont.resume(Pair(true, images.mapIndexed { index, (_, image) ->
                         UploadMediaResponse(
-                            errorMessage = "No response",
+                            errorMessage = null,
                             media = uploadMediaResponse.media.getOrNull(index),
                             originalImage = image
                         )
                     }))
+                    
+                }
+            })
+        
+    }
+    
+    
+    private suspend fun uploadSingleMedia(
+        blogId: Int,
+        imagePair: Pair<File, PostImage>
+    ) = suspendCoroutine<Pair<Boolean, UploadMediaResponse>> { cont ->
+        
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .apply {
+                
+                val (file, image) = imagePair
+                
+                val imageBody = file.asRequestBody(image.fileDetails!!.mimeType.toMediaType())
+                
+                addFormDataPart(
+                    "media[0]",
+                    image.name ?: file.name,
+                    imageBody
+                )
+                addFormDataPart(
+                    "attrs[0][caption]",
+                    image.caption ?: ""
+                )
+                addFormDataPart(
+                    "attrs[0][title]",
+                    image.name ?: file.nameWithoutExtension
+                )
+                addFormDataPart(
+                    "attrs[0][alt]",
+                    image.altText ?: image.name ?: file.nameWithoutExtension
+                )
+                addFormDataPart(
+                    "attrs[0][description]",
+                    image.description ?: ""
+                )
+                
+            }
+            .build()
+        
+        
+        ApiClient().getApiService(applicationContext)
+            .uploadSingleMedia(
+                blogId = blogId.toString(),
+                contents = requestBody,
+                fields = WPMedia.FIELDS_STRING
+            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
+                
+                override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
+                    // Error creating post
+                    Timber.w(t, "Error uploading media: ")
+                    cont.resume(
+                        Pair(
+                            false,
+                            UploadMediaResponse(t.message, null, imagePair.second)
+                        )
+                    )
+                }
+                
+                override fun onResponse(
+                    call: Call<WPMedia.UploadMediaResponse>,
+                    response: Response<WPMedia.UploadMediaResponse>
+                ) {
+                    val uploadMediaResponse = response.body()
+                    
+                    if (uploadMediaResponse == null) {
+                        Timber.w("Error uploading media: No response received :(")
+                        cont.resume(
+                            Pair(
+                                false,
+                                UploadMediaResponse(
+                                    errorMessage = applicationContext.getString(R.string.sync_status_error_no_response),
+                                    media = null,
+                                    originalImage = imagePair.second
+                                )
+                            )
+                        )
+                        return
+                    }
+                    
+                    
+                    if (!uploadMediaResponse.errors.isNullOrEmpty()) {
+                        Timber.w("Error uploading media: ${uploadMediaResponse.errors.joinToString("\n")}")
+                        cont.resume(
+                            Pair(
+                                false,
+                                UploadMediaResponse(uploadMediaResponse.errors[0], null, imagePair.second)
+                            )
+                        )
+                        return
+                    }
+                    
+                    if (uploadMediaResponse.media.isNullOrEmpty()) {
+                        Timber.w("Error uploading media: No media returned")
+                        cont.resume(
+                            Pair(
+                                false,
+                                UploadMediaResponse(
+                                    errorMessage = applicationContext.getString(R.string.sync_status_error_no_media_returned),
+                                    media = null,
+                                    originalImage = imagePair.second
+                                )
+                            )
+                        )
+                        return
+                    }
+                    
+                    Timber.v("Media uploaded! $uploadMediaResponse")
+                    cont.resume(
+                        Pair(
+                            true,
+                            UploadMediaResponse(
+                                errorMessage = null,
+                                media = uploadMediaResponse.media.getOrNull(0),
+                                originalImage = imagePair.second
+                            )
+                        )
+                    )
                     
                 }
             })
@@ -430,7 +603,7 @@ class SyncUtils(context: Context) {
                 override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
                     // Error creating post
                     Timber.w(t, "Error uploading blogpost!")
-                    cont.resume(UploadPostResponse(errorMessage = "Error uploading blogpost: ${t.localizedMessage}"))
+                    cont.resume(UploadPostResponse(errorMessage = t.localizedMessage))
                 }
                 
                 override fun onResponse(
@@ -441,7 +614,9 @@ class SyncUtils(context: Context) {
                     
                     if (publishResponse == null) {
                         Timber.w("Upload post: No response received :(")
-                        cont.resume(UploadPostResponse(errorMessage = "Error uploading post: No response received"))
+                        cont.resume(UploadPostResponse(
+                            errorMessage = applicationContext.getString(R.string.sync_status_error_no_response)
+                        ))
                         return
                     }
                     
@@ -474,7 +649,7 @@ class SyncUtils(context: Context) {
                 override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
                     // Error creating post
                     Timber.w(t, "Error  updating to published!")
-                    cont.resume(UploadPostResponse(errorMessage = "Error  updating to published: ${t.localizedMessage}"))
+                    cont.resume(UploadPostResponse(errorMessage = t.localizedMessage))
                 }
                 
                 override fun onResponse(
@@ -485,7 +660,9 @@ class SyncUtils(context: Context) {
                     
                     if (publishResponse == null) {
                         Timber.w("Error updating to published: No blog response received :(")
-                        cont.resume(UploadPostResponse(errorMessage = "Error publishing: No response received"))
+                        cont.resume(UploadPostResponse(
+                            errorMessage = applicationContext.getString(R.string.sync_status_error_no_response)
+                        ))
                         return
                     }
                     
@@ -575,6 +752,7 @@ class SyncUtils(context: Context) {
         
     }
     
+    
     companion object {
         
         private const val CLASSIC_TEMPLATE_SINGLE_IMAGE = """
@@ -586,10 +764,11 @@ class SyncUtils(context: Context) {
         
         private const val BLOCK_TEMPLATE_SINGLE_IMAGE = """
         <!-- wp:image {"id":%%MEDIA_ID%%,"align":"center","linkDestination":"media"} -->
-        <div class="wp-block-image"><figure class="aligncenter"><a href="%%MEDIA_URL%%"><img src="%%MEDIA_LARGE%%" alt="%%MEDIA_ALT%%" class="wp-image-%%MEDIA_ID%%"/></a><figcaption>%%MEDIA_CAPTION%%</figcaption></figure></div>
+        <div class="wp-block-image"><figure class="aligncenter"><a href="%%MEDIA_URL%%"><img src="%%MEDIA_LARGE%%" alt="%%MEDIA_ALT%%" class="wp-image-%%MEDIA_ID%%"/></a>%%IMAGE_CAPTION%%</figure></div>
         <!-- /wp:image -->
     """
-        
+        private const val BLOCK_TEMPLATE_SINGLE_IMAGE_CAPTION = "<figcaption>%%MEDIA_CAPTION%%</figcaption>"
+    
         private const val CLASSIC_TEMPLATE_GALLERY = """
             [gallery ids="%%MEDIA_ID_LIST%%" columns="%%COLUMN_COUNT%%" size="large"]
             %%POST_CAPTION%%
@@ -605,12 +784,15 @@ class SyncUtils(context: Context) {
     """
         private const val BLOCK_TEMPLATE_GALLERY_BOTTOM = """
             </ul>
-            <figcaption class="blocks-gallery-caption">%%POST_CAPTION%%</figcaption>
+            %%GALLERY_CAPTION%%
         </figure>
 <!-- /wp:gallery -->
     """
         private const val BLOCK_TEMPLATE_GALLERY_IMAGE =
-            """<li class="blocks-gallery-item"><figure><img src="%%MEDIA_URL%%" alt="%%MEDIA_ALT%%" data-id="%%MEDIA_ID%%" class="wp-image-%%MEDIA_ID%%" /><figcaption class="blocks-gallery-item__caption">%%MEDIA_CAPTION%%</figcaption></figure></li>"""
+            """<li class="blocks-gallery-item"><figure><img src="%%MEDIA_URL%%" alt="%%MEDIA_ALT%%" data-id="%%MEDIA_ID%%" class="wp-image-%%MEDIA_ID%%" />%%IMAGE_CAPTION%%</figure></li>"""
+        
+        private const val BLOCK_TEMPLATE_GALLERY_IMAGE_CAPTION = "<figcaption class=\"blocks-gallery-item__caption\">%%MEDIA_CAPTION%%</figcaption>"
+        private const val BLOCK_TEMPLATE_GALLERY_CAPTION = "<figcaption class=\"blocks-gallery-caption\">%%POST_CAPTION%%</figcaption>"
         
         private const val BLOCK_TEMPLATE_FOOTER = """
         <!-- wp:more -->

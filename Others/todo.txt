@@ -40,11 +40,26 @@ v. 2020.0801.0.13.1
 ------------------
 
 
-v. 2020.0808.0.12.27
+v. 2020.0810.0.12.28
+
+    [ ] Gallery
+        [ ] If no image caption, remove figcaption from html
+        [ ] If no gallery caption, remove gallery caption from html
 
     [ ] Landscape view updates
 
     --TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.0810.0.12.27
+
+    [-] Gallery
+        [X] Upload images one by one for jetpack blogs
+            [X] Update status message for each image
+        [X] Move status message strings to xml
 
 
 ------------------

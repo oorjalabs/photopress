@@ -257,13 +257,13 @@ class CategoryPickerDialog : DialogFragment() {
                         previousText.isNotBlank() -> {
                             mSuggestedNewCategory = previousText.trim()
                             getString(
-                                R.string.dialog_category_list_empty_view,
+                                R.string.category_picker_empty_view,
                                 mSuggestedNewCategory
                             )
                         }
                         
                         else                      ->
-                            getString(R.string.dialog_category_list_empty_view_no_projects)
+                            getString(R.string.category_picker_empty_view_no_projects)
                     }
                 }
                 

@@ -471,12 +471,6 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         doPublish.value = null
         
-        if (publishResult.errorMessage != null) {
-            _state.value = State.READY
-            Toast.makeText(applicationContext, publishResult.errorMessage, Toast.LENGTH_LONG).show()
-            return
-        }
-        
         val publishedPost = publishResult.publishedPost!!
         
         // Add and update returned tags in tags list

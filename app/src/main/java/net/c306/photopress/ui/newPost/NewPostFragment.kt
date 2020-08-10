@@ -146,7 +146,7 @@ class NewPostFragment : BottomNavFragment() {
             
             if (publishResult?.errorMessage != null) {
                 newPostViewModel.setState(NewPostViewModel.State.READY)
-                Toast.makeText(requireContext(), publishResult.errorMessage, Toast.LENGTH_LONG)
+                Toast.makeText(requireContext(), "Error: " +  publishResult.errorMessage, Toast.LENGTH_LONG)
                     .show()
                 return@Observer
             }

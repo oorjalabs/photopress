@@ -6,21 +6,11 @@ import androidx.lifecycle.Observer
 import androidx.work.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.WPMedia
 import net.c306.photopress.database.AppDatabase
 import net.c306.photopress.database.PostImage
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.math.min
 
 class UploadWorker(context: Context, workerParams: WorkerParameters) :
@@ -52,93 +42,93 @@ class UploadWorker(context: Context, workerParams: WorkerParameters) :
     )
     
     
-    private suspend fun uploadImage(
-        blogId: Int,
-        postImage: PostImage
-    ) = suspendCoroutine<UploadMediaResponse> { cont ->
-        
-        val imageDetails = getFileForUri(postImage)
-        
-        if (imageDetails == null) {
-            Timber.w("File not found!: $postImage")
-            return@suspendCoroutine
-        }
-        
-        val (file, mimeType) = imageDetails
-        
-        
-        val imageBody = file.asRequestBody(mimeType.toMediaType())
-        
-        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "media[0]",
-            postImage.name ?: file.name,
-            imageBody
-        )
-        
-        val captionAttr = MultipartBody.Part.createFormData(
-            "attrs[0][caption]",
-            postImage.caption ?: ""
-        )
-        val titleAttr = MultipartBody.Part.createFormData(
-            "attrs[0][title]",
-            postImage.name ?: file.nameWithoutExtension
-        )
-        val altAttr = MultipartBody.Part.createFormData(
-            "attrs[0][alt]",
-            postImage.altText ?: postImage.name ?: file.nameWithoutExtension
-        )
-        val descriptionAttr = MultipartBody.Part.createFormData(
-            "attrs[0][description]",
-            postImage.description ?: ""
-        )
-        
-        ApiClient().getApiService(applicationContext)
-            .uploadMedia(
-                blogId = blogId.toString(),
-                media = filePart,
-                title = titleAttr,
-                caption = captionAttr,
-                alt = altAttr,
-                description = descriptionAttr,
-                fields = WPMedia.FIELDS_STRING
-            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
-                
-                override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading media!")
-                    cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: ${t.localizedMessage}"))
-                }
-                
-                override fun onResponse(
-                    call: Call<WPMedia.UploadMediaResponse>,
-                    response: Response<WPMedia.UploadMediaResponse>
-                ) {
-                    val uploadMediaResponse = response.body()
-                    
-                    if (uploadMediaResponse == null) {
-                        Timber.w("Uploading media: No response received :(")
-                        cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: No response received"))
-                        return
-                    }
-                    
-                    
-                    if (!uploadMediaResponse.errors.isNullOrEmpty()) {
-                        cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: ${uploadMediaResponse.errors[0]}"))
-                        return
-                    }
-                    
-                    if (uploadMediaResponse.media.isNullOrEmpty()) {
-                        cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: No media details returned."))
-                        return
-                    }
-                    
-                    Timber.v("Media uploaded! $uploadMediaResponse")
-                    cont.resume(UploadMediaResponse(media = uploadMediaResponse.media[0]))
-                    
-                }
-            })
-        
-    }
+//    private suspend fun uploadImage(
+//        blogId: Int,
+//        postImage: PostImage
+//    ) = suspendCoroutine<UploadMediaResponse> { cont ->
+//
+//        val imageDetails = getFileForUri(postImage)
+//
+//        if (imageDetails == null) {
+//            Timber.w("File not found!: $postImage")
+//            return@suspendCoroutine
+//        }
+//
+//        val (file, mimeType) = imageDetails
+//
+//
+//        val imageBody = file.asRequestBody(mimeType.toMediaType())
+//
+//        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
+//            "media[0]",
+//            postImage.name ?: file.name,
+//            imageBody
+//        )
+//
+//        val captionAttr = MultipartBody.Part.createFormData(
+//            "attrs[0][caption]",
+//            postImage.caption ?: ""
+//        )
+//        val titleAttr = MultipartBody.Part.createFormData(
+//            "attrs[0][title]",
+//            postImage.name ?: file.nameWithoutExtension
+//        )
+//        val altAttr = MultipartBody.Part.createFormData(
+//            "attrs[0][alt]",
+//            postImage.altText ?: postImage.name ?: file.nameWithoutExtension
+//        )
+//        val descriptionAttr = MultipartBody.Part.createFormData(
+//            "attrs[0][description]",
+//            postImage.description ?: ""
+//        )
+//
+//        ApiClient().getApiService(applicationContext)
+//            .uploadSingleMedia(
+//                blogId = blogId.toString(),
+//                media = filePart,
+//                title = titleAttr,
+//                caption = captionAttr,
+//                alt = altAttr,
+//                description = descriptionAttr,
+//                fields = WPMedia.FIELDS_STRING
+//            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
+//
+//                override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
+//                    // Error creating post
+//                    Timber.w(t, "Error uploading media!")
+//                    cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: ${t.localizedMessage}"))
+//                }
+//
+//                override fun onResponse(
+//                    call: Call<WPMedia.UploadMediaResponse>,
+//                    response: Response<WPMedia.UploadMediaResponse>
+//                ) {
+//                    val uploadMediaResponse = response.body()
+//
+//                    if (uploadMediaResponse == null) {
+//                        Timber.w("Uploading media: No response received :(")
+//                        cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: No response received"))
+//                        return
+//                    }
+//
+//
+//                    if (!uploadMediaResponse.errors.isNullOrEmpty()) {
+//                        cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: ${uploadMediaResponse.errors[0]}"))
+//                        return
+//                    }
+//
+//                    if (uploadMediaResponse.media.isNullOrEmpty()) {
+//                        cont.resume(UploadMediaResponse(errorMessage = "Error uploading media: No media details returned."))
+//                        return
+//                    }
+//
+//                    Timber.v("Media uploaded! $uploadMediaResponse")
+//                    cont.resume(UploadMediaResponse(media = uploadMediaResponse.media[0]))
+//
+//                }
+//            })
+//
+//    }
     
     
     /**

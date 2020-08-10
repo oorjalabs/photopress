@@ -83,15 +83,10 @@ interface ApiService {
     
     
     @POST(ApiConstants.UPLOAD_MEDIA)
-    @Multipart
-    fun uploadMedia(
+    fun uploadSingleMedia(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Part media: MultipartBody.Part,
-        @Part caption: MultipartBody.Part,
-        @Part title: MultipartBody.Part,
-        @Part alt: MultipartBody.Part,
-        @Part description: MultipartBody.Part
+        @Body contents: MultipartBody
     ): Call<WPMedia.UploadMediaResponse>
     
     
