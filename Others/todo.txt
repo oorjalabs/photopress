@@ -26,6 +26,12 @@ v. 2020.0801.0.13.1
 
     --TBD-- Refresh sites, tags and categories at least once a day
 
+    --TBD-- Add share intent to receive multiple images to create a gallery post
+
+    --TBD-- Image editing
+        [ ] Crop image
+        [ ] Rotate image
+
     [ ] Sync via database & worker
         [ ] ViewModel
             [ ] Save uploaded images in database, if sync stopped midway
@@ -42,9 +48,11 @@ v. 2020.0801.0.13.1
 
 v. 2020.0810.0.12.29
 
-    [ ] Landscape view updates
+    [X] Landscape view updates
+        [X] New post fragment
+        [X] Image attributes fragment
 
-    --TBD-- Update notes
+    [DONE] Update notes
 
 
 ------------------
