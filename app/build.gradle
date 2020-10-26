@@ -9,7 +9,7 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString = "0.13.0"
+def versionString = "0.13.1"
 def versionNumber = 27
 def showWhatsNew = "true"
 
@@ -62,6 +62,9 @@ android {
 //            shrinkResources true
             minifyEnabled false
             shrinkResources false
+
+            applicationIdSuffix ".debug"
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

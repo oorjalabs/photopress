@@ -81,7 +81,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                         dismiss()
                     } else {
                         // Cancel everything
-                        newPostViewModel.setSchedule(ready = false, dateTime = -1L, showTimePicker = false)
+                        newPostViewModel.resetScheduled()
                     }
                 }
             }

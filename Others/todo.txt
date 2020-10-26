@@ -48,9 +48,13 @@ v. 2020.1026.0.14.0
 
 v. 2020.1026.0.13.1
 
-    --TBD-- Bug: when scheduling is cancelled and post is published immediately, it is scheduled at epoch
+    [DONE] Bug: when scheduling is cancelled and post is published immediately, it is scheduled at epoch
 
---TBD-- Update notes
+    [DONE] Show badge on settings when new update notes are available
+
+    [DONE] Added icon, app name and applicationIdSuffix for debug build
+
+    [DONE] Update notes
 
 
 ------------------

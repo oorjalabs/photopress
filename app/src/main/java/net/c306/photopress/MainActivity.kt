@@ -118,6 +118,18 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             }
         })
         
+        
+        
+        // If update notes available, highlight badge on settings tab
+        appViewModel.showUpdateNotes.observe(this, { appUpdated ->
+            if (appUpdated == true) {
+                nav_view.getOrCreateBadge(R.id.navigation_settings)
+                    .isVisible = true
+            } else {
+                nav_view.removeBadge(R.id.navigation_settings)
+            }
+        })
+    
         // Handle share intent, if provided
         intent?.also { handleIntent(it) }
     }

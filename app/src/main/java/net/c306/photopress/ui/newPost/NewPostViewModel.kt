@@ -307,18 +307,24 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      */
     
     // Scheduled post time
-    private val _scheduledDateTime = MutableLiveData<Long>()
-    val scheduledDateTime: LiveData<Long> = _scheduledDateTime
+    private val _scheduledDateTime = MutableLiveData<Long?>()
+    val scheduledDateTime: LiveData<Long?> = _scheduledDateTime
     
     val showTimePicker = MutableLiveData<Boolean>()
     
     private val _scheduleReady = MutableLiveData<Boolean>()
     val scheduleReady: LiveData<Boolean> = _scheduleReady
     
-    fun setSchedule(ready: Boolean, dateTime: Long, showTimePicker: Boolean) {
+    fun setSchedule(ready: Boolean, dateTime: Long?, showTimePicker: Boolean) {
         _scheduledDateTime.value = dateTime
         this.showTimePicker.value = showTimePicker
         _scheduleReady.value = ready
+    }
+    
+    fun resetScheduled() {
+        _scheduledDateTime.value = null
+        this.showTimePicker.value = false
+        _scheduleReady.value = false
     }
     
     
@@ -501,7 +507,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         Timber.d("Blogpost done! $publishedPost")
         
         _publishedPost.value = publishedPost
-        setSchedule(false, -1L, false)
+        resetScheduled()
         updateState()
     }
     

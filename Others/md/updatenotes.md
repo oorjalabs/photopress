@@ -5,6 +5,20 @@ Known issues:
 
 ----
 
+#### 26 Oct 2020
+
+#### UPDATES
+
+- Bug fix: Posting immediately after cancelling scheduling caused post to be dated in 1969/70.
+- Background upgrades for Android 11
+
+&nbsp;
+
+`version: 0.13.1 (alpha)`
+
+---
+
+
 #### 10 Aug 2020
 
 #### UPDATES

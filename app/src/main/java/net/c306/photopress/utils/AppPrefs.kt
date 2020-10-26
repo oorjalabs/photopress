@@ -21,7 +21,7 @@ class AppPrefs private constructor(context: Context) : BasePrefs() {
         
         private const val KEY_APP_VERSION = "key_app_version"
         private const val KEY_NAMED_APP_VERSION = "key_named_app_version"
-        private const val KEY_SHOW_UPDATE_NOTES = "key_app_updated_ohf8whf38bi"
+        internal const val KEY_SHOW_UPDATE_NOTES = "key_app_updated_ohf8whf38bi"
         private const val KEY_FIRST_USE_TIMESTAMP = "key_first_use_timestamp_lsbcq38ubcj"
         
         
