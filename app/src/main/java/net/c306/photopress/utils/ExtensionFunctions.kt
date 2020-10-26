@@ -3,6 +3,7 @@ package net.c306.photopress.utils
 import android.content.pm.PackageManager
 import android.widget.EditText
 import androidx.annotation.StringRes
+import net.c306.customcomponents.preference.SearchableListPreference
 import net.c306.customcomponents.utils.showKeyboard
 
 fun PackageManager.isPackageInstalled(
@@ -32,4 +33,13 @@ internal fun EditText.setInputFocus(hasFocus: Boolean, @Suppress("SameParameterV
     
     // Due to capturing first focus tab here, the keyboard isn't shown. So, force it to show
     showKeyboard()
+}
+
+fun SearchableListPreference.setCustomDefaultValue(value: String) {
+    val previousValue = values
+    
+    // Set default value
+    if (previousValue.isNullOrEmpty()) {
+        values = setOf(value)
+    }
 }

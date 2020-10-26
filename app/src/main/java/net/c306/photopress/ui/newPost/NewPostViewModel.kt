@@ -17,7 +17,7 @@ import net.c306.photopress.database.PostImage
 import net.c306.photopress.sync.SyncUtils
 import net.c306.photopress.sync.SyncUtils.PublishedPost
 import net.c306.photopress.utils.AuthPrefs
-import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.Settings
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +30,8 @@ import kotlin.coroutines.suspendCoroutine
 class NewPostViewModel(application: Application) : AndroidViewModel(application) {
     
     private val applicationContext = application.applicationContext
+    
+    private val settings by lazy { Settings.getInstance(applicationContext) }
     
     // Fragment state
     enum class State {
@@ -305,18 +307,24 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      */
     
     // Scheduled post time
-    private val _scheduledDateTime = MutableLiveData<Long>()
-    val scheduledDateTime: LiveData<Long> = _scheduledDateTime
+    private val _scheduledDateTime = MutableLiveData<Long?>()
+    val scheduledDateTime: LiveData<Long?> = _scheduledDateTime
     
     val showTimePicker = MutableLiveData<Boolean>()
     
     private val _scheduleReady = MutableLiveData<Boolean>()
     val scheduleReady: LiveData<Boolean> = _scheduleReady
     
-    fun setSchedule(ready: Boolean, dateTime: Long, showTimePicker: Boolean) {
+    fun setSchedule(ready: Boolean, dateTime: Long?, showTimePicker: Boolean) {
         _scheduledDateTime.value = dateTime
         this.showTimePicker.value = showTimePicker
         _scheduleReady.value = ready
+    }
+    
+    fun resetScheduled() {
+        _scheduledDateTime.value = null
+        this.showTimePicker.value = false
+        _scheduleReady.value = false
     }
     
     
@@ -343,19 +351,18 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     // Observer for changes to selected blog id
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        val userPrefs = UserPrefs(applicationContext)
         when (key) {
-            UserPrefs.KEY_SELECTED_BLOG_ID   -> setSelectedBlogId(userPrefs.getSelectedBlogId())
+            Settings.KEY_SELECTED_BLOG_ID   -> setSelectedBlogId(settings.selectedBlogId)
             
-            UserPrefs.KEY_PUBLISH_FORMAT     -> useBlockEditor.value = userPrefs.getUseBlockEditor()
+            Settings.KEY_PUBLISH_FORMAT     -> useBlockEditor.value = settings.useBlockEditor
             
-            UserPrefs.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value =
-                userPrefs.getAddFeaturedImage()
+            Settings.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value =
+                settings.addFeaturedImage
             
-            UserPrefs.KEY_DEFAULT_TAGS       -> defaultTags.value = userPrefs.getDefaultTags()
+            Settings.KEY_DEFAULT_TAGS       -> defaultTags.value = settings.defaultTags
             
-            UserPrefs.KEY_DEFAULT_CATEGORIES -> defaultCategories.value =
-                userPrefs.getDefaultCategories()
+            Settings.KEY_DEFAULT_CATEGORIES -> defaultCategories.value =
+                settings.defaultCategories
         }
     }
     
@@ -363,13 +370,12 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     init {
         updateState()
         
-        val userPrefs = UserPrefs(applicationContext)
-        useBlockEditor.value = userPrefs.getUseBlockEditor()
-        addFeaturedImage.value = userPrefs.getAddFeaturedImage()
-        defaultTags.value = userPrefs.getDefaultTags()
-        defaultCategories.value = userPrefs.getDefaultCategories()
-        setSelectedBlogId(userPrefs.getSelectedBlogId())
-        userPrefs.observe(observer)
+        useBlockEditor.value = settings.useBlockEditor
+        addFeaturedImage.value = settings.addFeaturedImage
+        defaultTags.value = settings.defaultTags
+        defaultCategories.value = settings.defaultCategories
+        setSelectedBlogId(settings.selectedBlogId)
+        settings.observe(observer)
     }
     
     
@@ -501,7 +507,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         Timber.d("Blogpost done! $publishedPost")
         
         _publishedPost.value = publishedPost
-        setSchedule(false, -1L, false)
+        resetScheduled()
         updateState()
     }
     

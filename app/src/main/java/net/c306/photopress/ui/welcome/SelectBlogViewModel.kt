@@ -9,7 +9,7 @@ import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.Blog
 import net.c306.photopress.utils.AuthPrefs
-import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.Settings
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,8 +50,7 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
             selectedBlog.value = allBlogs.find { it.id == value }
         }
         
-        UserPrefs(applicationContext)
-            .setSelectedBlogId(value)
+        Settings.getInstance(applicationContext).setSelectedBlogId(value)
     }
     
     
@@ -65,9 +64,7 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
             // There is no else, because default is 'null' so blogs can be refreshed
         }
         
-        val selectedBlogId = UserPrefs(
-            applicationContext
-        ).getSelectedBlogId()
+        val selectedBlogId = Settings.getInstance(applicationContext).selectedBlogId
         
         selectedBlog.value =
             if (selectedBlogId < 0) null

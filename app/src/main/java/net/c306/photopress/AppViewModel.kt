@@ -7,8 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.c306.photopress.api.UserDetails
+import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.AuthPrefs
-import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.Settings
 import net.c306.photopress.utils.isPackageInstalled
 import timber.log.Timber
 
@@ -29,6 +30,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     
+    private val settings by lazy { Settings.getInstance(applicationContext) }
+    private val appPrefs by lazy { AppPrefs.getInstance(applicationContext) }
+    
     // WordPress app installed
     val isWordPressAppInstalled = MutableLiveData<Boolean>()
     
@@ -40,8 +44,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val blogSelected: LiveData<Boolean> = _blogSelected
     
     private fun setSelectedBlog() {
-        val selectedBlog = UserPrefs(applicationContext)
-            .getSelectedBlogId()
+        val selectedBlog = settings.selectedBlogId
         _selectedBlogId.value = selectedBlog
         _blogSelected.value = selectedBlog > -1
     }
@@ -58,7 +61,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             Timber.i("Logging out...")
             AuthPrefs(applicationContext).clear()
-            UserPrefs(applicationContext).clear()
+            settings.clear()
             // If we use a room database, clear that here too
             
             withContext(Dispatchers.Main) {
@@ -69,6 +72,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     
     val doPostLogoutRestart = MutableLiveData<Boolean>()
     
+    private val _showUpdateNotes = MutableLiveData<Boolean>()
+    val showUpdateNotes: LiveData<Boolean> = _showUpdateNotes
+    
     // Observer
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
@@ -78,7 +84,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             AuthPrefs.ARG_USER_DETAILS     -> userDetails.value =
                 AuthPrefs(applicationContext).getUserDetails()
             
-            UserPrefs.KEY_SELECTED_BLOG_ID -> setSelectedBlog()
+            Settings.KEY_SELECTED_BLOG_ID  -> setSelectedBlog()
+            
+            AppPrefs.KEY_SHOW_UPDATE_NOTES -> _showUpdateNotes.value = appPrefs.showUpdateNotes
         }
     }
     
@@ -91,8 +99,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         _isLoggedIn.value = authPrefs.haveAuthToken()
         setSelectedBlog()
         
+        _showUpdateNotes.value = appPrefs.showUpdateNotes
+        
         authPrefs.observe(observer)
-        UserPrefs(applicationContext).observe(observer)
+        settings.observe(observer)
+        appPrefs.observe(observer)
         
         isWordPressAppInstalled.value =
             application.packageManager.isPackageInstalled("org.wordpress.android") == true

@@ -54,9 +54,9 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         
         nav_view?.setupWithNavController(navController)
         
-        appViewModel.isLoggedIn.observe(this, Observer {  })
-        appViewModel.selectedBlogId.observe(this, Observer {  })
-        appViewModel.blogSelected.observe(this, Observer {  })
+        appViewModel.isLoggedIn.observe(this, {  })
+        appViewModel.selectedBlogId.observe(this, {  })
+        appViewModel.blogSelected.observe(this, {  })
         
         // Restart activity after logout
         appViewModel.doPostLogoutRestart.observe(this, Observer {
@@ -108,26 +108,40 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
              * Update app updated state and the app version in storage
              * only store version in storage when user has seen updates
              */
-            val appPrefs = AppPrefs(applicationContext)
-            if (appPrefs.getShowUpdateNotes()) {
+            AppPrefs.getInstance(applicationContext).run {
                 // Save new version code
-                appPrefs.saveAppVersion(BuildConfig.VERSION_CODE)
-                appPrefs.savePreviousNamedVersion(CommonUtils.getNamedVersion(BuildConfig.VERSION_NAME))
-                appPrefs.setShowUpdateNotes(false)
+                if (showUpdateNotes) {
+                    saveAppVersion(BuildConfig.VERSION_CODE)
+                    savePreviousNamedVersion(CommonUtils.getNamedVersion(BuildConfig.VERSION_NAME))
+                    setShowUpdateNotes(false)
+                }
             }
         })
         
-        // Run on upgrade/install actions if needed
-        onAppUpgrade()
         
+        
+        // If update notes available, highlight badge on settings tab
+        appViewModel.showUpdateNotes.observe(this, { appUpdated ->
+            if (appUpdated == true) {
+                nav_view.getOrCreateBadge(R.id.navigation_settings)
+                    .isVisible = true
+            } else {
+                nav_view.removeBadge(R.id.navigation_settings)
+            }
+        })
+    
         // Handle share intent, if provided
-        intent?.also { intent ->
-            if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true) {
-                (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
-                    // Update UI to reflect image being shared
-                    newPostViewModel.setImageUris(listOf(it))
-                    this.intent = null
-                }
+        intent?.also { handleIntent(it) }
+    }
+    
+    
+    private fun handleIntent(intent: Intent) {
+        
+        if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true) {
+            (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+                // Update UI to reflect image being shared
+                newPostViewModel.setImageUris(listOf(it))
+                this.intent = null
             }
         }
     }
@@ -145,48 +159,4 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         return true
     }
     
-    /**
-     * Performs actions to be completed on new install or upgrade.
-     * Set `show update notes` if required.
-     */
-    private fun onAppUpgrade() {
-        
-        val appPrefs = AppPrefs(applicationContext)
-        // Get last stored app version
-        val savedAppVersion = appPrefs.getAppVersion()
-        
-        when {
-            // New install
-            savedAppVersion == null                    -> {
-                // Mark update notes available
-                appPrefs.setShowUpdateNotes(true)
-            }
-            
-            // App updated
-            BuildConfig.VERSION_CODE > savedAppVersion -> {
-                
-                val previousNamedVersion = appPrefs.getPreviousNamedVersion()
-                val namedVersion = CommonUtils.getNamedVersion(BuildConfig.VERSION_NAME)
-                
-                // If this is first open since app update, set show upgrade notice
-                if (namedVersion > previousNamedVersion) {
-                    appPrefs.setShowUpdateNotes(SHOW_WHATS_NEW_UPDATE)
-                    appPrefs.savePreviousNamedVersion(namedVersion)
-                }
-                
-                // Do other upgrades
-                // ...
-            }
-            
-            // Not an upgrade or install, do nothing
-            else                                       -> return
-        }
-        
-        // Save updated app version
-        appPrefs.saveAppVersion(BuildConfig.VERSION_CODE)
-    }
-    
-    companion object {
-        private const val SHOW_WHATS_NEW_UPDATE = true
-    }
 }
