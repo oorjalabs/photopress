@@ -13,7 +13,7 @@ import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPMedia
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
-import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.Settings
 import net.c306.photopress.utils.Utils
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -526,8 +526,8 @@ class SyncUtils(context: Context) {
         addFeaturedImage: Boolean?
     ) = suspendCoroutine<UploadPostResponse> { cont ->
         
-        val usingBlockEditor = useBlockEditor ?: UserPrefs.DEFAULT_USE_BLOCK_EDITOR
-        val addingFeaturedImage = addFeaturedImage ?: UserPrefs.DEFAULT_ADD_FEATURED_IMAGE
+        val usingBlockEditor = useBlockEditor ?: Settings.DEFAULT_USE_BLOCK_EDITOR
+        val addingFeaturedImage = addFeaturedImage ?: Settings.DEFAULT_ADD_FEATURED_IMAGE
         
         val images = postImages
             .filter { it.media != null }
