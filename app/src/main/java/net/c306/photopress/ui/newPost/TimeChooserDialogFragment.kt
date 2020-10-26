@@ -54,9 +54,10 @@ class TimeChooserDialogFragment : DialogFragment() {
     
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        newPostViewModel.setSchedule(
-            ready = !isCancel,
-            dateTime = if (isCancel) null else date.timeInMillis,
+        if (isCancel) newPostViewModel.resetScheduled()
+        else newPostViewModel.setSchedule(
+            ready = true,
+            dateTime = date.timeInMillis,
             showTimePicker = false
         )
     }

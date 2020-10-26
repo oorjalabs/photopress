@@ -46,6 +46,14 @@ v. 2020.1026.0.14.0
 ------------------
 
 
+v. 2020.1026.0.13.2
+
+    [DONE] Minor code tweaks
+
+
+------------------
+
+
 v. 2020.1026.0.13.1
 
     [DONE] Bug: when scheduling is cancelled and post is published immediately, it is scheduled at epoch

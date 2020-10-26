@@ -15,7 +15,6 @@ import net.c306.photopress.AppViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
 import net.c306.photopress.ui.newPost.NewPostViewModel
-import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
 import net.c306.photopress.utils.setCustomDefaultValue
@@ -85,15 +84,16 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         findPreference<Preference>(KEY_PREF_LOGOUT)?.onPreferenceClickListener = this
     
         // Set up update notes preference
-        val showUpdateNotes = AppPrefs.getInstance(requireContext()).showUpdateNotes
-        findPreference<Preference>(KEY_UPDATE_NOTES)?.apply {
-            onPreferenceClickListener = this@SettingsFragment
-            isVisible = showUpdateNotes
-        }
-        findPreference<Preference>(KEY_UPDATE_NOTES_BOTTOM)?.apply {
-            onPreferenceClickListener = this@SettingsFragment
-            isVisible = !showUpdateNotes
-        }
+        appViewModel.showUpdateNotes.observe(viewLifecycleOwner, {
+            findPreference<Preference>(KEY_UPDATE_NOTES)?.apply {
+                onPreferenceClickListener = this@SettingsFragment
+                isVisible = it == true
+            }
+            findPreference<Preference>(KEY_UPDATE_NOTES_BOTTOM)?.apply {
+                onPreferenceClickListener = this@SettingsFragment
+                isVisible = it != true
+            }
+        })
         
         
         // Show logged in user's name
