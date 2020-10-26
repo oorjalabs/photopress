@@ -10,15 +10,15 @@ import androidx.preference.Preference
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.c306.customcomponents.confirmation.ConfirmationDialog
 import net.c306.customcomponents.preference.CustomPreferenceFragment
-import net.c306.customcomponents.preference.SearchableMultiSelectListPreference
-import net.c306.customcomponents.preference.UpgradedListPreference
+import net.c306.customcomponents.preference.SearchableListPreference
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.MainActivity
 import net.c306.photopress.R
 import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.AuthPrefs
-import net.c306.photopress.utils.UserPrefs
+import net.c306.photopress.utils.Settings
+import net.c306.photopress.utils.setCustomDefaultValue
 
 
 class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClickListener {
@@ -44,12 +44,12 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         }
         
         // Set user's blog list
-        findPreference<UpgradedListPreference>(UserPrefs.KEY_SELECTED_BLOG_ID)?.run {
+        findPreference<SearchableListPreference>(Settings.KEY_SELECTED_BLOG_ID)?.run {
             val authPrefs = AuthPrefs(context)
             val blogs = authPrefs.getBlogsList()
             
             entries = blogs.map {
-                UpgradedListPreference.Entry(
+                SearchableListPreference.Entry(
                     entry = it.name,
                     value = it.id.toString(),
                     enabled = true
@@ -65,25 +65,27 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         }
         
         // Setup blog format preference
-        findPreference<UpgradedListPreference>(UserPrefs.KEY_PUBLISH_FORMAT)?.run {
+        findPreference<SearchableListPreference>(Settings.KEY_PUBLISH_FORMAT)?.run {
             val entriesList = resources.getStringArray(R.array.pref_entries_post_format)
             val valuesList = resources.getStringArray(R.array.pref_values_post_format)
             
             if (entriesList.size != valuesList.size) throw Exception("Entries and values are not the same size.")
             
             entries = entriesList.mapIndexed { index, s ->
-                UpgradedListPreference.Entry(
+                SearchableListPreference.Entry(
                     entry = s,
                     value = valuesList[index],
                     enabled = true
                 )
             }.toTypedArray()
+            
+            setCustomDefaultValue(Settings.PUBLISH_FORMAT_BLOCK)
         }
     
         findPreference<Preference>(KEY_PREF_LOGOUT)?.onPreferenceClickListener = this
     
         // Set up update notes preference
-        val showUpdateNotes = AppPrefs(requireContext()).getShowUpdateNotes()
+        val showUpdateNotes = AppPrefs.getInstance(requireContext()).showUpdateNotes
         findPreference<Preference>(KEY_UPDATE_NOTES)?.apply {
             onPreferenceClickListener = this@SettingsFragment
             isVisible = showUpdateNotes
@@ -117,28 +119,30 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         })
         
         // Set up default tags preference
-        newPostViewModel.blogTags.observe(viewLifecycleOwner, Observer { tags ->
-            findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_TAGS)?.run {
+        newPostViewModel.blogTags.observe(viewLifecycleOwner, { tags ->
+            findPreference<SearchableListPreference>(Settings.KEY_DEFAULT_TAGS)?.run {
                 if (tags.isNullOrEmpty()) {
                     isEnabled = false
+                    entries = emptyArray()
                 } else {
                     isEnabled = true
                     entries = tags
-                        .map { SearchableMultiSelectListPreference.Entry(it.name) }
+                        .map { SearchableListPreference.Entry(it.name) }
                         .toTypedArray()
                 }
             }
         })
     
         // Set up default categories preference
-        newPostViewModel.blogCategories.observe(viewLifecycleOwner, Observer { categories ->
-            findPreference<SearchableMultiSelectListPreference>(UserPrefs.KEY_DEFAULT_CATEGORIES)?.run {
+        newPostViewModel.blogCategories.observe(viewLifecycleOwner, { categories ->
+            findPreference<SearchableListPreference>(Settings.KEY_DEFAULT_CATEGORIES)?.run {
                 if (categories.isNullOrEmpty()) {
                     isEnabled = false
+                    entries = emptyArray()
                 } else {
                     isEnabled = true
                     entries = categories
-                        .map { SearchableMultiSelectListPreference.Entry(it.name) }
+                        .map { SearchableListPreference.Entry(it.name) }
                         .toTypedArray()
                 }
             }

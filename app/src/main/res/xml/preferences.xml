@@ -32,14 +32,17 @@
         app:iconSpaceReserved="false"
         app:title="@string/pref_cat_title_posting">
         
-        <net.c306.customcomponents.preference.UpgradedListPreference
+        <net.c306.customcomponents.preference.SearchableListPreference
+            app:showSearch="false"
+            app:multiSelect="false"
             app:iconSpaceReserved="false"
             app:key="key_selected_blog_id"
             app:summary="%s"
             app:title="@string/pref_title_select_blog" />
         
-        <net.c306.customcomponents.preference.UpgradedListPreference
-            app:defaultValue="block"
+        <net.c306.customcomponents.preference.SearchableListPreference
+            app:showSearch="false"
+            app:multiSelect="false"
             app:iconSpaceReserved="false"
             app:key="key_publish_format"
             app:summary="%s"
@@ -52,12 +55,16 @@
             app:summary="@string/pref_summary_add_featured_image"
             app:title="@string/pref_title_add_featured_image" />
         
-        <net.c306.customcomponents.preference.SearchableMultiSelectListPreference
+        <net.c306.customcomponents.preference.SearchableListPreference
+            app:multiSelect="true"
+            app:showSearch="true"
             app:iconSpaceReserved="false"
             app:key="key_default_tags"
             app:title="@string/pref_title_default_tags" />
         
-        <net.c306.customcomponents.preference.SearchableMultiSelectListPreference
+        <net.c306.customcomponents.preference.SearchableListPreference
+            app:multiSelect="true"
+            app:showSearch="true"
             app:iconSpaceReserved="false"
             app:key="key_default_categories"
             app:title="@string/pref_title_default_categories" />

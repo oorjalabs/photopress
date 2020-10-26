@@ -15,7 +15,7 @@ v. 2020.X.X.X
 ------------------
 
 
-v. 2020.0801.0.13.1
+v. 2020.1026.0.14.0
 
     --TBD-- Wireframe
         [ ] List
@@ -41,6 +41,26 @@ v. 2020.0801.0.13.1
             [ ] Delete after successful syncing
 
     [ ] BUG: Quotes in image attributes are escaped on jetpack sites
+
+
+------------------
+
+
+v. 2020.1026.0.13.1
+
+    --TBD-- Bug: when scheduling is cancelled and post is published immediately, it is scheduled at epoch
+
+--TBD-- Update notes
+
+
+------------------
+
+
+v. 2020.1026.0.13.0
+
+    [DONE] Update custom components
+
+    [DONE] Update target and compile sdks to 30/Android 11
 
 
 ------------------
