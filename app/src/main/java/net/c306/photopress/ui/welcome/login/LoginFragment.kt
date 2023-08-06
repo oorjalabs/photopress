@@ -11,14 +11,13 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_login.*
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiConstants
 import net.c306.photopress.api.ApiConstants.ARG_CODE
 import net.c306.photopress.api.ApiConstants.ARG_ERROR
+import net.c306.photopress.databinding.FragmentLoginBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
 import net.c306.photopress.ui.welcome.WelcomeFragmentAdapter
 import timber.log.Timber
@@ -31,12 +30,22 @@ class LoginFragment : NoBottomNavFragment() {
     
     private val loginViewModel by activityViewModels<LoginViewModel>()
     
+    private var _binding: FragmentLoginBinding? = null
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+    ): View {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
     
     
@@ -44,9 +53,9 @@ class LoginFragment : NoBottomNavFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        toolbar.setNavigationOnClickListener { returnToWelcome() }
+        binding.toolbar.setNavigationOnClickListener { returnToWelcome() }
         
-        webview_login?.apply {
+        with(binding.webviewLogin) {
             // Handle link clicks and scroll to progress on page load
             webViewClient = mWebViewClient
             
@@ -56,18 +65,18 @@ class LoginFragment : NoBottomNavFragment() {
             loadUrl(ApiConstants.AUTHORISE_URL)
         }
         
-        loginViewModel.authComplete.observe(viewLifecycleOwner, Observer {
+        loginViewModel.authComplete.observe(viewLifecycleOwner) {
             // Authorisation complete, navigate back to where we came from
             if (it == true) returnToWelcome()
-        })
-        
-        loginViewModel.authResult.observe(viewLifecycleOwner, Observer { authResponse ->
+        }
+    
+        loginViewModel.authResult.observe(viewLifecycleOwner) { authResponse ->
             //If error, show message to user
             authResponse?.error?.let {
-                Snackbar.make(webview_login, it, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.webviewLogin, it, Snackbar.LENGTH_LONG).show()
             }
-        })
-        
+        }
+    
         findNavController().navigate(LoginFragmentDirections.actionShowTwoFactorWarning())
     }
     
@@ -84,13 +93,13 @@ class LoginFragment : NoBottomNavFragment() {
         
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            loading_bar?.hide()
+            binding.loadingBar.hide()
             Timber.d("Page finished loading... $url")
         }
         
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            loading_bar?.show()
+            binding.loadingBar.show()
             Timber.d("Page started loading... $url")
         }
         
@@ -130,7 +139,7 @@ class LoginFragment : NoBottomNavFragment() {
                     
                     // Show loading bar while token is fetched and validated in background
                     // After which view model will close this fragment
-                    loading_bar?.show()
+                    binding.loadingBar.show()
                     
                     // Save parsed response to view model
                     loginViewModel.setAuthResult(parsedResponse)

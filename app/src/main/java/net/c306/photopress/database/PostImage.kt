@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import net.c306.photopress.utils.Utils
 
 /**

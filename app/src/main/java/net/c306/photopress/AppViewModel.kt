@@ -2,7 +2,11 @@ package net.c306.photopress
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +24,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     // User details and name
     private val userDetails = MutableLiveData<UserDetails>()
     
-    val userDisplayName = Transformations.switchMap(userDetails) {
+    val userDisplayName = userDetails.switchMap {
         MutableLiveData<String>().apply {
             if (it == null || (it.displayName.isNullOrBlank() && it.username.isNullOrBlank())) {
                 return@apply

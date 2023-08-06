@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.switchMap
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.Blog
@@ -20,12 +20,12 @@ class SelectBlogViewModel(application: Application): AndroidViewModel(applicatio
     private val apiClient = ApiClient()
     private val applicationContext = application.applicationContext
     
-    private val _blogList = MutableLiveData<List<Blog>>()
-    val blogList: LiveData<List<Blog>> = _blogList
+    private val _blogList = MutableLiveData<List<Blog>?>()
+    val blogList: LiveData<List<Blog>?> = _blogList
     
-    private val selectedBlog = MutableLiveData<Blog>()
+    private val selectedBlog = MutableLiveData<Blog?>()
     
-    val selectBlogWelcomeSubtitle = Transformations.switchMap(selectedBlog) {
+    val selectBlogWelcomeSubtitle = selectedBlog.switchMap {
         MutableLiveData<String>().apply {
             value = if (it == null)
                 applicationContext.getString(R.string.subtitle_welcome_select_blog)

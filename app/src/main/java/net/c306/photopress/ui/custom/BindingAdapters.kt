@@ -35,28 +35,28 @@ object BindingAdapters {
     }
     
     
-    @BindingAdapter("app:recyclerViewAdapter")
+    @BindingAdapter("recyclerViewAdapter")
     @JvmStatic
     fun setRecyclerViewAdapter(view: RecyclerView, adapter: RecyclerView.Adapter<*>?) {
         adapter?.also { view.adapter = it }
     }
     
     
-    @BindingAdapter("app:listViewAdapter")
+    @BindingAdapter("listViewAdapter")
     @JvmStatic
     fun setListViewAdapter(view: ListView, adapter: BaseAdapter?) {
         adapter?.also { view.adapter = it }
     }
     
     
-    @BindingAdapter("app:onItemClick")
+    @BindingAdapter("onItemClick")
     @JvmStatic
     fun setOnItemClickListener(view: ListView, listener: AdapterView.OnItemClickListener) {
         view.onItemClickListener = listener
     }
     
     
-    @BindingAdapter("app:onTextChanged")
+    @BindingAdapter("onTextChanged")
     @JvmStatic
     fun setOnTextChangedListener(view: EditText, textWatcher: TextWatcher) {
         view.addTextChangedListener(textWatcher)

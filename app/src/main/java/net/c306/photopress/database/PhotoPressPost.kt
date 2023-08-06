@@ -74,7 +74,7 @@ data class PhotoPressPost(
         
         companion object {
             fun fromStorageString(storageString: String): PhotoPostImage {
-                return Json.getInstance().fromJson<PhotoPostImage>(storageString, PhotoPostImage::class.java)
+                return Json.getInstance().fromJson(storageString, PhotoPostImage::class.java)
             }
         }
     }
