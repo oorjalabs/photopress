@@ -19,7 +19,6 @@ static def getDate() {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "net.c306.photopress"
@@ -94,6 +93,7 @@ android {
     buildFeatures {
         dataBinding true
     }
+    namespace 'net.c306.photopress'
 
 }
 

@@ -39,13 +39,13 @@ class NewPostFragment : BottomNavFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentPostNewBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewmodel = newPostViewModel
             handler = mHandler
             galleryAdapter = mGalleryAdapter
-            avm = ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
+            avm = ViewModelProvider(requireActivity())[AppViewModel::class.java]
         }
         return binding.root
     }
@@ -60,13 +60,13 @@ class NewPostFragment : BottomNavFragment() {
         
         
         // Show dialog with published post details when done
-        newPostViewModel.publishedPost.observe(viewLifecycleOwner, Observer {
+        newPostViewModel.publishedPost.observe(viewLifecycleOwner) {
             if (it != null) {
                 findNavController().navigate(NewPostFragmentDirections.actionShowAfterPublishDialog())
             }
-        })
-        
-        
+        }
+    
+    
         newPostViewModel.postImages.observe(viewLifecycleOwner, Observer { postImagesList ->
             if (postImagesList.isNullOrEmpty()) return@Observer
             
@@ -121,7 +121,7 @@ class NewPostFragment : BottomNavFragment() {
         
         
         // Update enabled state for inputs based on fragment state
-        newPostViewModel.state.observe(viewLifecycleOwner, Observer {
+        newPostViewModel.state.observe(viewLifecycleOwner) {
             if (it == NewPostViewModel.State.PUBLISHING) {
                 // Show publishing progress indicator
                 binding.progressPublishing.show()
@@ -129,15 +129,15 @@ class NewPostFragment : BottomNavFragment() {
                 // Hide publishing progress indicator
                 binding.progressPublishing.hide()
             }
-        })
-        
-        
+        }
+    
+    
         // Update state when title text changes
-        newPostViewModel.postTitle.observe(viewLifecycleOwner, Observer {
+        newPostViewModel.postTitle.observe(viewLifecycleOwner) {
             newPostViewModel.updateState()
-        })
-        
-        
+        }
+    
+    
         newPostViewModel.publishLiveData.observe(viewLifecycleOwner, Observer {
             
             if (it == null) return@Observer
@@ -173,16 +173,17 @@ class NewPostFragment : BottomNavFragment() {
         
         
         // Set featured image to be marked in recyclerview
-        newPostViewModel.postFeaturedImageId.observe(viewLifecycleOwner, Observer {
+        newPostViewModel.postFeaturedImageId.observe(viewLifecycleOwner) {
             mGalleryAdapter.setFeaturedImage(it)
-        })
-        
+        }
+    
     }
     
     
     /**
      * Photo picker returns here for pick or add photos
      */
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         
         if (requestCode != RC_PHOTO_PICKER && requestCode != RC_PHOTO_PICKER_ADD_PHOTOS) return
