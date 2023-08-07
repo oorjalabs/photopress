@@ -11,8 +11,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- To load full exif metadata including location -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-    <!-- For in-app subscriptions -->
-    <uses-permission android:name="com.android.vending.BILLING" />
     
     <application
         android:name=".PhotoPressApplication"

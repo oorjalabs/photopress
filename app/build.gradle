@@ -13,7 +13,7 @@ apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties"))
 
 
 def versionString = "0.14.0"
-def versionNumber = 29
+def versionNumber = 30
 def showWhatsNew = "true"
 
 static def getDate() {
@@ -128,9 +128,6 @@ dependencies {
 
     // Better logging
     implementation 'com.jakewharton.timber:timber:5.0.1'
-
-    // In-app billing
-//    implementation 'com.android.billingclient:billing:2.2.0'
 
     // Kotlin co-routines
     def coroutine_version = '1.7.3'
