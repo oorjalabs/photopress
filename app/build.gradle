@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    //id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id "androidx.navigation.safeargs.kotlin"
@@ -13,7 +12,7 @@ apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties"))
 
 
 def versionString = "0.14.0"
-def versionNumber = 30
+def versionNumber = 5031
 def showWhatsNew = "true"
 
 static def getDate() {
