@@ -1,3 +1,8 @@
+---
+layout: page
+title: Privacy Policy for Photopress
+---
+
 This Privacy Policy describes how your personal information is collected, used, and shared when you install and use the 'Photopress' Android app (the “App”).
 
 
