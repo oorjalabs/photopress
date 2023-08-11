@@ -1,15 +1,15 @@
 package net.c306.photopress.ui.welcome
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import net.c306.photopress.AppViewModel
+import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeItemLoginBinding
+import net.c306.photopress.utils.viewBinding
 
 /**
  * Instances of this class are fragments representing a single object in our collection.
@@ -17,40 +17,45 @@ import net.c306.photopress.databinding.FragmentWelcomeItemLoginBinding
 class WelcomeItemFragmentLogin : Fragment() {
     
     private val appViewModel by activityViewModels<AppViewModel>()
-    private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
+    private val viewModel by activityViewModels<WelcomeViewModel>()
     
-    private lateinit var binding: FragmentWelcomeItemLoginBinding
-    
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentWelcomeItemLoginBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            avm = this@WelcomeItemFragmentLogin.appViewModel
-            handler = Handler()
-        }
-        return binding.root
-    }
+    private val binding by viewBinding(FragmentWelcomeItemLoginBinding::bind)
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         
         // Animate done icon when logged in
-        appViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
-            if (it != true) return@Observer
-            binding.animationViewDone.playAnimation()
-        })
+        appViewModel.isLoggedIn.observe(viewLifecycleOwner) {
+            binding.animationViewDone.isVisible = it
+            if (it == true) {
+                binding.animationViewDone.playAnimation()
+            }
+            binding.buttonGoToSelectBlog.isVisible = it
+            binding.buttonLogin.isVisible = !it
+            binding.messageWpOrJetpack.isVisible = !it
+        }
+    
+        appViewModel.userDisplayName.observe(viewLifecycleOwner) {
+            binding.subtitleWelcome.text = if (it == null) {
+                getString(R.string.subtitle_login_to_wordpress)
+            } else {
+                getString(R.string.connected_as, it)
+            }
+        }
         
+        binding.buttonGoToSelectBlog.setOnClickListener { 
+            goToSelectBlog()
+        }
+        
+        binding.buttonLogin.setOnClickListener { 
+            openLoginFragment()
+        }
     }
     
-    inner class Handler {
-        fun goToSelectBlog() {
-            welcomeViewModel.setGoToScreen(WelcomeFragmentAdapter.Screens.SELECT_BLOG)
-        }
-        
-        fun openLoginFragment() {
-            findNavController().navigate(WelcomeFragmentDirections.actionOpenLoginFragment())
-        }
+    private fun goToSelectBlog() {
+        viewModel.setGoToScreen(WelcomeFragmentAdapter.Screens.SELECT_BLOG)
+    }
+    
+    private fun openLoginFragment() {
+        findNavController().navigate(WelcomeFragmentDirections.actionOpenLoginFragment())
     }
 }
