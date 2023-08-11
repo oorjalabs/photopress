@@ -2,10 +2,12 @@ package net.c306.photopress.ui.gallery
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import net.c306.photopress.R
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.ItemGalleryPostBinding
+import net.c306.photopress.ui.custom.BindingAdapters
 
 class GalleryAdapter(caller: Caller, private val handler: GalleryInteraction) :
     RecyclerView.Adapter<GalleryAdapter.ImageItemViewHolder>() {
@@ -70,15 +72,23 @@ class GalleryAdapter(caller: Caller, private val handler: GalleryInteraction) :
             imageCount: Int,
             handler: GalleryInteraction
         ) {
-            binding.image = image
-            binding.handler = handler
-            binding.imageCount = imageCount
-            binding.isFeaturedImage = isFeaturedImage
-            binding.imageContentDescription =
-                binding.root.context.getString(imageContentDescription)
+            with(binding.addedPhoto) {
+                setOnClickListener { handler.onImagePressed(image) }
+                tooltipText = context.getString(imageContentDescription)
+                contentDescription = context.getString(imageContentDescription)
+                BindingAdapters.loadImage(
+                    view = this,
+                    imageUri = image.uri,
+                    imageUriCover = null,
+                    placeHolderDrawable = null
+                )
+                isVisible = image?.uri != null
+            }
+            
+            binding.pinnedIcon.isVisible = isFeaturedImage
+            binding.tvGalleryItemCaption.text = image.caption.orEmpty()
+            binding.tvGalleryItemCaption.isVisible = image.caption != null && imageCount >= 2
             binding.root.tag = image
-            binding.executePendingBindings()
         }
-        
     }
 }
