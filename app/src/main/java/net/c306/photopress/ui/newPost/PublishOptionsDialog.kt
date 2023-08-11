@@ -2,9 +2,7 @@ package net.c306.photopress.ui.newPost
 
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -15,44 +13,30 @@ import net.c306.photopress.R
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.databinding.DialogPublishOptionBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
+import net.c306.photopress.utils.viewBinding
 import java.util.*
 
-class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
+class PublishOptionsDialog : BaseBottomSheetDialogFragment(R.layout.dialog_publish_option) {
     
     private val myTag = this::class.java.name
     
     private val confirmationRC = 9832
     
-    override val layoutId = R.layout.dialog_publish_option
-    
-    private val newPostViewModel by activityViewModels<NewPostViewModel>()
+    private val viewModel by activityViewModels<NewPostViewModel>()
     private val confirmationViewModel by activityViewModels<ConfirmationDialog.ConfirmationViewModel>()
     
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        
-        val binding = DialogPublishOptionBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            handler = Handler()
-        }
-        
-        return binding.root
-    }
-    
+    private val binding by viewBinding(DialogPublishOptionBinding::bind)
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        newPostViewModel.scheduleReady.observe(viewLifecycleOwner, Observer {
+        viewModel.scheduleReady.observe(viewLifecycleOwner, Observer {
             
             if (it != true) return@Observer
             
             val dateString = DateUtils.formatDateTime(
                 view.context,
-                newPostViewModel.scheduledDateTime.value!!,
+                viewModel.scheduledDateTime.value!!,
                 DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
             )
             
@@ -77,50 +61,56 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment() {
                 confirmationRC ->  {
                     if (it.result) {
                         // Publish with schedule and close dialog
-                        newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.SCHEDULE)
+                        viewModel.publishPost(PhotoPressPost.PhotoPostStatus.SCHEDULE)
                         dismiss()
                     } else {
                         // Cancel everything
-                        newPostViewModel.resetScheduled()
+                        viewModel.resetScheduled()
                     }
                 }
             }
         })
         
-        newPostViewModel.showTimePicker.observe(viewLifecycleOwner, Observer {
+        viewModel.showTimePicker.observe(viewLifecycleOwner, Observer {
             if (it != true) return@Observer
             findNavController().navigate(PublishOptionsDialogDirections.actionGetPublishTime())
         })
         
-    }
-    
-    
-    @Suppress("UNUSED_PARAMETER")
-    inner class Handler {
-        
-        fun publish(view: View) {
-            newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.PUBLISH)
-            dismiss()
+        binding.buttonPublishNow.setOnClickListener { 
+            publish()
         }
         
-        /**
-         * Show dialogs to get scheduling date and time
-         */
-        fun publishScheduled(view: View) {
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.schedule_post_title_select_publish_date))
-                .setSelection(Date().time)
-                .build()
-            datePicker.addOnPositiveButtonClickListener {
-                newPostViewModel.setSchedule(ready = false, dateTime = it, showTimePicker = true)
-            }
-            datePicker.show(parentFragmentManager, "datePicker")
+        binding.buttonScheduleForLater.setOnClickListener { 
+            publishScheduled()
         }
         
-        fun uploadAsDraft(view: View) {
-            newPostViewModel.publishPost(PhotoPressPost.PhotoPostStatus.DRAFT)
-            dismiss()
+        binding.buttonSaveAsDraft.setOnClickListener { 
+            uploadAsDraft()
         }
     }
     
+    
+    private fun publish() {
+        viewModel.publishPost(PhotoPressPost.PhotoPostStatus.PUBLISH)
+        dismiss()
+    }
+    
+    /**
+     * Show dialogs to get scheduling date and time
+     */
+    private fun publishScheduled() {
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(R.string.schedule_post_title_select_publish_date))
+            .setSelection(Date().time)
+            .build()
+        datePicker.addOnPositiveButtonClickListener {
+            viewModel.setSchedule(ready = false, dateTime = it, showTimePicker = true)
+        }
+        datePicker.show(parentFragmentManager, "datePicker")
+    }
+    
+    private fun uploadAsDraft() {
+        viewModel.publishPost(PhotoPressPost.PhotoPostStatus.DRAFT)
+        dismiss()
+    }
 }
