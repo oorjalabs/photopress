@@ -1,5 +1,6 @@
 package net.c306.photopress.ui.welcome
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +38,8 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
     private val binding by viewBinding(FragmentWelcomeBinding::bind)
     
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater, 
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         
@@ -49,7 +51,7 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
             return null
         }
 
-        return binding.root
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,7 +76,11 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
             val loggedIn = it == true
     
             mPagerAdapter.setMaxScreen(
-                1 + if (loggedIn) Screens.SELECT_BLOG.screenNumber else Screens.LOGIN.screenNumber
+                1 + if (loggedIn) {
+                    Screens.SELECT_BLOG.screenNumber
+                } else {
+                    Screens.LOGIN.screenNumber
+                }
             )
         }
     
@@ -98,14 +104,22 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
         }
     }
     
+    override fun onDestroyView() {
+        binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
+        super.onDestroyView()
+    }
+
     private fun setPageIndicators(pageIndex: Int) {
+        binding.progressIndicatorPage1.setImageDrawable(getCircleIndicator(pageIndex == 0))
+        binding.progressIndicatorPage2.setImageDrawable(getCircleIndicator(pageIndex == 1))
+        binding.progressIndicatorPage3.setImageDrawable(getCircleIndicator(pageIndex == 2))
+    }
+    
+    private fun getCircleIndicator(isSelected: Boolean): Drawable? {
         val context = requireContext()
         val filledCircle = ContextCompat.getDrawable(context, R.drawable.ic_circle_filled)
         val emptyCircle = ContextCompat.getDrawable(context, R.drawable.ic_circle_empty)
-        
-        binding.progressIndicatorPage1.setImageDrawable(if (pageIndex == 0) filledCircle else emptyCircle)
-        binding.progressIndicatorPage2.setImageDrawable(if (pageIndex == 1) filledCircle else emptyCircle)
-        binding.progressIndicatorPage3.setImageDrawable(if (pageIndex == 2) filledCircle else emptyCircle)
+        return if (isSelected) filledCircle else emptyCircle
     }
     
     private fun goToApp() {
