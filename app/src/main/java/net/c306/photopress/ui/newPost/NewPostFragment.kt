@@ -238,7 +238,6 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         }
     }
     
-    
     /**
      * Photo picker returns here for pick or add photos
      */
@@ -274,14 +273,13 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         }
     }
     
-    
     /**
      * Public methods that can be called from data binding
      */
     /**
      * Open file picker to select file location for syncing
      */
-    fun openPhotoPicker(addPhotos: Boolean = false) {
+    private fun openPhotoPicker(addPhotos: Boolean = false) {
         val galleryIntent = Intent(
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -302,23 +300,21 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
     }
     
-    fun openPostSettings() {
+    private fun openPostSettings() {
         findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
     }
     
-    fun onPublishPressed() {
+    private fun onPublishPressed() {
         findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
     }
     
     
-    fun openReorderingScreen() {
+    private fun openReorderingScreen() {
         findNavController().navigate(NewPostFragmentDirections.actionReorderImages())
     }
-    
     
     companion object {
         const val RC_PHOTO_PICKER = 9723
         const val RC_PHOTO_PICKER_ADD_PHOTOS = 3942
     }
-    
 }
