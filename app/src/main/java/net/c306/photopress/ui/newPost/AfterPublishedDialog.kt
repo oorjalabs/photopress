@@ -3,7 +3,10 @@ package net.c306.photopress.ui.newPost
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.DialogAfterPublishBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
@@ -19,6 +22,12 @@ class AfterPublishedDialog : BaseBottomSheetDialogFragment(R.layout.dialog_after
         super.onViewCreated(view, savedInstanceState)
         
         binding.highlightActionTitle.text = viewModel.publishedDialogMessage
+    
+        ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
+            .isWordPressAppInstalled
+            .observe(viewLifecycleOwner) {
+                binding.buttonOpenPostInWordpressApp.isVisible = it
+            }
         
         binding.buttonSharePost.setOnClickListener { 
             viewModel.sharePost()
