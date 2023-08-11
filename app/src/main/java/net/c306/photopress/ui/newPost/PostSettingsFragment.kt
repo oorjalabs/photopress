@@ -12,7 +12,12 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentPostSettingsBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
@@ -66,6 +71,18 @@ class PostSettingsFragment : AppBarNoBottomNavFragment(R.layout.fragment_post_se
         binding.toolbar.setNavigationOnClickListener { dismiss() }
         binding.buttonDone.setOnClickListener { done() }
         binding.categoriesCollect.setOnClickListener { openCategoriesPicker() }
+
+        // Also clear/reset these after a post has been published 
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.resetState.collectLatest {
+                    if (it) {
+                        binding.inputPostTags.setText("")
+                        binding.categories.text =  getString(R.string.string_none)
+                    }
+                }
+            }
+        }
     }
     
     override fun onResume() {

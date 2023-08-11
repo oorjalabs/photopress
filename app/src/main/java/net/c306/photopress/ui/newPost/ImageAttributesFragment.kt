@@ -6,8 +6,13 @@ import androidx.annotation.IdRes
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentImageAttributesBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
@@ -64,20 +69,50 @@ class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_imag
         binding.toolbar.setNavigationOnClickListener { dismiss() }
         binding.buttonDone.setOnClickListener { done() }
         binding.image.setOnClickListener { openFullImage() }
-        binding.buttonFeaturedImage.setOnClickListener { viewModel.toggleFeaturedImage(viewModel.editingImage.value?.id) }
+        binding.buttonFeaturedImage.setOnClickListener {
+            viewModel.toggleFeaturedImage(viewModel.editingImage.value?.id)
+        }
         binding.buttonRemoveImage.setOnClickListener { removeImage() }
-
+        
         binding.inputPostTitle.doAfterTextChanged {
-            viewModel.editingImage.value = viewModel.editingImage.value?.copy(name = it?.toString().orEmpty())
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(
+                name = it?.toString().orEmpty()
+            )
         }
         binding.inputPostCaption.doAfterTextChanged {
-            viewModel.editingImage.value = viewModel.editingImage.value?.copy(caption = it?.toString().orEmpty())
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(
+                caption = it?.toString().orEmpty()
+            )
         }
         binding.inputPostAltText.doAfterTextChanged {
-            viewModel.editingImage.value = viewModel.editingImage.value?.copy(altText = it?.toString().orEmpty())
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(
+                altText = it?.toString().orEmpty()
+            )
         }
         binding.inputPostDescription.doAfterTextChanged {
-            viewModel.editingImage.value = viewModel.editingImage.value?.copy(description = it?.toString().orEmpty())
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(
+                description = it?.toString().orEmpty()
+            )
+        }
+        
+        // Also clear/reset these after a post has been published 
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.resetState.collectLatest {
+                    if (it) {
+                        binding.inputPostTitle.setText("")
+                        binding.inputPostCaption.setText("")
+                        binding.inputPostAltText.setText("")
+                        binding.inputPostDescription.setText("")
+                        binding.inputPostCaption.hint =
+                            getString(R.string.new_post_placeholder_image_caption)
+                        binding.featuredIndicator.isVisible = false
+                        binding.buttonFeaturedImage.text = getString(
+                            R.string.image_attributes_button_set_as_featured_image
+                        )
+                    }
+                }
+            }
         }
     }
     

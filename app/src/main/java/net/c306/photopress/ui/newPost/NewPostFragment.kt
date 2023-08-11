@@ -12,8 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.api.WPBlogPost
@@ -87,8 +92,9 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
                 val imageCaption = postImagesList[0].caption
                 val postCaption = viewModel.postCaption.value
         
-                if (imageCaption != postCaption) viewModel.postCaption.value =
-                    postImagesList[0].caption
+                if (imageCaption != postCaption) {
+                    viewModel.postCaption.value = postImagesList[0].caption
+                }
             }
         }
     
@@ -232,11 +238,28 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         binding.inputPostCaption.doAfterTextChanged {
             viewModel.postCaption.value = it?.toString().orEmpty()
         }
+    
+        // Also clear/reset these after a post has been published 
+        viewLifecycleOwner.lifecycleScope.launch { 
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.resetState.collectLatest { 
+                    if (it) {
+                        binding.inputPostTitle.setText("")
+                        binding.inputPostCaption.setText("")
+                        binding.photoTarget.isVisible = true
+                        binding.addedGallery.isVisible = false
+                        binding.buttonChangeImage.isVisible = false
+                        binding.buttonAddMorePhotos.isVisible = false
+                        binding.buttonReorderPhotos.isVisible = false
+                        binding.inputPostCaption.hint = getString(R.string.new_post_placeholder_image_caption)
+                    }
+                }
+            }
+        }
     }
     
     override fun onResume() {
         super.onResume()
-        // TODO: 11/08/2023 Also clear/reset these after a post has been published 
         binding.inputPostTitle.setText(viewModel.postTitle.value.orEmpty())
         binding.inputPostCaption.setText(viewModel.postCaption.value.orEmpty())
     }

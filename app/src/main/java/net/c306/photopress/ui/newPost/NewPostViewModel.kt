@@ -13,6 +13,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
@@ -68,6 +70,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     internal fun setState(newState: State) {
         _state.value = newState
     }
+    
+    private val _resetState = MutableSharedFlow<Boolean>()
+    val resetState = _resetState.asSharedFlow()
     
     internal fun updateState() {
         val title = postTitle.value ?: ""
@@ -364,6 +369,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         setImageUris(null)
         updateState()
+        viewModelScope.launch {
+            _resetState.emit(true)
+        }
     }
     
     
