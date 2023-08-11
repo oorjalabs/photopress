@@ -18,7 +18,6 @@ import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.Blog
-import net.c306.photopress.api.WPBlogPost
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPTag
 import net.c306.photopress.database.PhotoPressPost
@@ -620,37 +619,43 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         }
     
     
-    fun sharePost(post: WPBlogPost) {
-        CommonUtils.sendSharingIntent(
-            context = applicationContext,
-            title = post.url,
-            text = post.title
-        )
+    fun sharePost() {
+        publishedPost.value?.post?.let { post ->
+            CommonUtils.sendSharingIntent(
+                context = applicationContext,
+                title = post.url,
+                text = post.title
+            )
+        }
     }
     
     
-    fun openPostExternal(post: WPBlogPost) {
-        applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
+    fun openPostExternal() {
+        publishedPost.value?.post?.let { post ->
+            applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
+        }
     }
     
     
-    fun openPostInWordPress(post: WPBlogPost) {
-        applicationContext.startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("wordpress://viewpost?blogId=${selectedBlogId.value}&postId=${post.id}")
-                // Uri.parse("wordpress://post?blogId=${selectedBlogId.value}&postId=${post.id}")
-                // Uri.parse("https://wordpress.com/post/${selectedBlogId.value}/${post.id}")
-            ).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        )
+    fun openPostInWordPress() {
+        publishedPost.value?.post?.let { post ->
+            applicationContext.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("wordpress://viewpost?blogId=${selectedBlogId.value}&postId=${post.id}")
+                    // Uri.parse("wordpress://post?blogId=${selectedBlogId.value}&postId=${post.id}")
+                    // Uri.parse("https://wordpress.com/post/${selectedBlogId.value}/${post.id}")
+                ).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            )
+        }
     }
     
     
-    fun copyPostToClipboard(post: WPBlogPost) {
-        CommonUtils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
+    fun copyPostToClipboard() {
+        publishedPost.value?.post?.let { post ->
+            CommonUtils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
+        }
     }
-    
-    
 }
