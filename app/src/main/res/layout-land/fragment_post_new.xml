@@ -3,29 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
-    <data>
-        
-        <variable
-            name="viewmodel"
-            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
-        
-        <variable
-            name="avm"
-            type="net.c306.photopress.AppViewModel" />
-        
-        <variable
-            name="galleryAdapter"
-            type="net.c306.photopress.ui.gallery.GalleryAdapter" />
-        
-        <variable
-            name="handler"
-            type="net.c306.photopress.ui.newPost.NewPostFragment.Handler" />
-        
-        <import type="net.c306.photopress.ui.newPost.NewPostViewModel.State" />
-        
-        <import type="android.view.View" />
-    </data>
-    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,16 +23,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/ic_puppy_photo_target"
-                android:clickable="@{viewmodel.state == State.EMPTY}"
-                android:enabled="@{viewmodel.state == State.EMPTY}"
                 android:foreground="?selectableItemBackground"
                 android:gravity="bottom|center_horizontal"
-                android:onClick="@{() -> handler.openPhotoPicker(false)}"
                 android:paddingBottom="40dp"
                 android:text="@string/new_post_label_tap_to_add_photo"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textColor="?android:textColorSecondary"
-                android:visibility="@{viewmodel.imageCount == 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -71,9 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="@dimen/list_item_spacing_quarter"
-                    android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                    app:recyclerViewAdapter="@{galleryAdapter}"
                     tools:itemCount="15"
                     tools:listitem="@layout/item_gallery_post"
                     tools:spanCount="3" />
@@ -87,9 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_post_cd_change_photo"
-                android:onClick="@{() -> handler.openPhotoPicker(false)}"
                 android:tooltipText="@string/new_post_cd_change_photo"
-                android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/ic_swap"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -100,9 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_post_cd_add_more_photos"
-                android:onClick="@{() -> handler.openPhotoPicker(true)}"
                 android:tooltipText="@string/new_post_cd_add_more_photos"
-                android:visibility="@{viewmodel.imageCount > 0 ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -113,9 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_post_cd_reorder_photos"
-                android:onClick="@{handler::openReorderingScreen}"
                 android:tooltipText="@string/new_post_cd_reorder_photos"
-                android:visibility="@{viewmodel.imageCount > 1 ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/ic_reorder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -143,7 +108,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="@{viewmodel.selectedBlog.name.empty ? @string/new_post_label_no_blog_selected :  @string/new_post_label_posting_as_author_to_blog(avm.userDisplayName, viewmodel.selectedBlog.name)}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     tools:text="@string/new_post_label_no_blog_selected" />
                 
@@ -160,11 +124,9 @@
                         style="@style/UnderlinedTextInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="@{viewmodel.inputsEnabled}"
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences"
-                        android:lines="1"
-                        android:text="@={viewmodel.postTitle}" />
+                        android:lines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputLayout
@@ -173,8 +135,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/list_item_spacing_half"
-                    android:enabled="@{viewmodel.inputsEnabled}"
-                    android:hint="@{viewmodel.imageCount &lt; 2 ? @string/new_post_placeholder_image_caption : @string/new_post_placeholder_gallery_caption}"
                     tools:hint="@string/new_post_placeholder_image_caption">
                     
                     <EditText
@@ -182,10 +142,8 @@
                         style="@style/UnderlinedTextInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="@{viewmodel.inputsEnabled}"
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences|textMultiLine"
-                        android:text="@={viewmodel.postCaption}"
                         tools:ignore="LabelFor"
                         tools:text="This is a long caption to test what happens to the layout when the caption and title are both long, very long..." />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -206,11 +164,7 @@
                         style="@style/Button.Secondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@{viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
-                        android:clickable="@{viewmodel.state == State.READY}"
                         android:contentDescription="@string/new_post_cd_fab_publish"
-                        android:focusable="@{viewmodel.state == State.READY}"
-                        android:onClick="@{handler::onPublishPressed}"
                         android:text="@string/new_post_button_upload_post"
                         android:tooltipText="@string/new_post_cd_fab_publish"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -222,11 +176,7 @@
                         android:id="@+id/button_post_settings"
                         style="@style/GroupButton.Secondary.IconOnly"
                         android:layout_height="match_parent"
-                        android:backgroundTint="@{viewmodel.state == State.HAVE_IMAGE || viewmodel.state == State.READY ? @color/secondaryColor : @color/bg_fab_disabled}"
-                        android:clickable="@{viewmodel.state == State.HAVE_IMAGE || viewmodel.state == State.READY}"
                         android:contentDescription="@string/new_post_cd_button_post_settings"
-                        android:focusable="@{viewmodel.state == State.HAVE_IMAGE || viewmodel.state == State.READY}"
-                        android:onClick="@{handler::openPostSettings}"
                         android:tooltipText="@string/new_post_cd_button_post_settings"
                         app:icon="@drawable/ic_settings"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -247,7 +197,6 @@
             android:alpha="@dimen/alpha_scrim_publishing"
             android:background="?colorSurface"
             android:focusableInTouchMode="true"
-            android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
             tools:visibility="gone" />
         
         <TextView
@@ -260,7 +209,6 @@
             android:shadowDy="0"
             android:shadowRadius="2"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:visibility="@{viewmodel.state == State.PUBLISHING ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@id/scrim_publishing"
             app:layout_constraintStart_toStartOf="@id/scrim_publishing"
             app:layout_constraintTop_toBottomOf="@id/progress_publishing"
