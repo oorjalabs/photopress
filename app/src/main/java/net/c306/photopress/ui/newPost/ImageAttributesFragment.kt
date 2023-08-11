@@ -45,10 +45,6 @@ class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_imag
         
         viewModel.editingImage.observe(viewLifecycleOwner) {
             binding.image.loadImage(imageUriCover = it?.uri)
-            binding.inputPostTitle.setText(it?.name.orEmpty())
-            binding.inputPostCaption.setText(it?.caption.orEmpty())
-            binding.inputPostAltText.setText(it?.altText.orEmpty())
-            binding.inputPostDescription.setText(it?.description.orEmpty())
         }
         
         viewModel.postFeaturedImageId.observe(viewLifecycleOwner) {
@@ -71,7 +67,6 @@ class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_imag
         binding.buttonFeaturedImage.setOnClickListener { viewModel.toggleFeaturedImage(viewModel.editingImage.value?.id) }
         binding.buttonRemoveImage.setOnClickListener { removeImage() }
 
-        // If this doesn't work, then set initial values only, don't set reactively.
         binding.inputPostTitle.doAfterTextChanged {
             viewModel.editingImage.value = viewModel.editingImage.value?.copy(name = it?.toString().orEmpty())
         }
@@ -84,6 +79,15 @@ class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_imag
         binding.inputPostDescription.doAfterTextChanged {
             viewModel.editingImage.value = viewModel.editingImage.value?.copy(description = it?.toString().orEmpty())
         }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        val image = viewModel.editingImage.value
+        binding.inputPostTitle.setText(image?.name.orEmpty())
+        binding.inputPostCaption.setText(image?.caption.orEmpty())
+        binding.inputPostAltText.setText(image?.altText.orEmpty())
+        binding.inputPostDescription.setText(image?.description.orEmpty())
     }
     
     /**

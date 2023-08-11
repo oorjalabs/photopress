@@ -102,8 +102,6 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         
         // Update image caption from post caption if there is only one image
         viewModel.postCaption.observe(viewLifecycleOwner) {
-            binding.inputPostCaption.setText(it.orEmpty())
-            
             if (it.isNullOrBlank() || viewModel.imageCount.value != 1) {
                 return@observe
             }
@@ -157,7 +155,6 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         
         // Update state when title text changes
         viewModel.postTitle.observe(viewLifecycleOwner) {
-            binding.inputPostTitle.setText(it.orEmpty())
             viewModel.updateState()
         }
         
@@ -229,13 +226,18 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         binding.buttonUpload.setOnClickListener { onPublishPressed() }   
         binding.buttonPostSettings.setOnClickListener { openPostSettings() }
     
-        // If this doesn't work, then set initial values only, don't set reactively.
         binding.inputPostTitle.doAfterTextChanged {
             viewModel.postTitle.value = it?.toString().orEmpty()
         }
         binding.inputPostCaption.doAfterTextChanged {
             viewModel.postCaption.value = it?.toString().orEmpty()
         }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        binding.inputPostTitle.setText(viewModel.postTitle.value.orEmpty())
+        binding.inputPostCaption.setText(viewModel.postCaption.value.orEmpty())
     }
     
     /**
@@ -273,9 +275,6 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
         }
     }
     
-    /**
-     * Public methods that can be called from data binding
-     */
     /**
      * Open file picker to select file location for syncing
      */

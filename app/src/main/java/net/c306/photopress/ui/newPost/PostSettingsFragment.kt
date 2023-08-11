@@ -54,11 +54,6 @@ class PostSettingsFragment : AppBarNoBottomNavFragment(R.layout.fragment_post_se
             mTagsAdapter.setList(list?.map { it.name } ?: emptyList())
         }
         
-        viewModel.postTags.observe(viewLifecycleOwner) {
-            binding.inputPostTags.setText(it.orEmpty())
-        }
-    
-        // If this doesn't work, then set initial values only, don't set reactively.
         binding.inputPostTags.doAfterTextChanged { 
             viewModel.postTags.value = it?.toString().orEmpty()
         }
@@ -71,6 +66,11 @@ class PostSettingsFragment : AppBarNoBottomNavFragment(R.layout.fragment_post_se
         binding.toolbar.setNavigationOnClickListener { dismiss() }
         binding.buttonDone.setOnClickListener { done() }
         binding.categoriesCollect.setOnClickListener { openCategoriesPicker() }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        binding.inputPostTags.setText(viewModel.postTags.value.orEmpty())
     }
     
     
