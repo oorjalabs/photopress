@@ -144,7 +144,7 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
                 binding.buttonPostSettings.isClickable = true
                 binding.buttonPostSettings.isFocusable = true
             } else {
-                binding.buttonPostSettings.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondaryColor))
+                binding.buttonPostSettings.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bg_fab_disabled))
                 binding.buttonPostSettings.isClickable = false
                 binding.buttonPostSettings.isFocusable = false
             }
@@ -236,6 +236,7 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
     
     override fun onResume() {
         super.onResume()
+        // TODO: 11/08/2023 Also clear/reset these after a post has been published 
         binding.inputPostTitle.setText(viewModel.postTitle.value.orEmpty())
         binding.inputPostCaption.setText(viewModel.postCaption.value.orEmpty())
     }

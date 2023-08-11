@@ -202,7 +202,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * Post Images
      */
     
-    private val _postImages = MutableLiveData<List<PostImage>>()
+    private val _postImages = MutableLiveData<List<PostImage>>(emptyList())
     val postImages: LiveData<List<PostImage>> = _postImages
     
     /**
@@ -211,10 +211,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     fun setImageUris(value: List<Uri>?) {
         _postImages.value =
             if (value.isNullOrEmpty()) {
-                mutableListOf()
+                emptyList()
             } else {
                 value.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }
-                    .toMutableList()
             }
         
         updateState()
@@ -235,7 +234,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * Update [_postImages], usually called after [PostImage.FileDetails] attributes are updated.
      */
     internal fun setPostImages(list: List<PostImage>) {
-        _postImages.value = list.toMutableList()
+        _postImages.value = list
         updateState()
     }
     
@@ -251,10 +250,13 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         val index = list.indexOfFirst { it.id == image.id }
         
         // If image in list, update it, else add it
-        if (index > -1) list[index] = image
-        else list.add(image)
+        if (index > -1) {
+            list[index] = image
+        } else {
+            list.add(image)
+        }
         
-        _postImages.value = list.toMutableList()
+        _postImages.value = list
         updateState()
     }
     
