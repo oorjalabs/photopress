@@ -5,16 +5,20 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.api.WPBlogPost
@@ -24,32 +28,22 @@ import net.c306.photopress.ui.custom.BottomNavFragment
 import net.c306.photopress.ui.gallery.GalleryAdapter
 import net.c306.photopress.utils.Utils
 import net.c306.photopress.utils.setInputFocus
+import net.c306.photopress.utils.viewBinding
 
-class NewPostFragment : BottomNavFragment() {
+class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
+                        GalleryAdapter.GalleryInteraction {
     
-    private val newPostViewModel: NewPostViewModel by activityViewModels()
+    private val viewModel: NewPostViewModel by activityViewModels()
+    private val avm by activityViewModels<AppViewModel>()
     
-    private lateinit var binding: FragmentPostNewBinding
+    private val binding by viewBinding(FragmentPostNewBinding::bind)
     
-    private val mHandler = Handler()
-    
-    private val mGalleryAdapter by lazy { GalleryAdapter(GalleryAdapter.Caller.NEW_POST_GALLERY, mHandler) }
-    
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentPostNewBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewmodel = newPostViewModel
-            handler = mHandler
-            galleryAdapter = mGalleryAdapter
-            avm = ViewModelProvider(requireActivity())[AppViewModel::class.java]
-        }
-        return binding.root
+    private val mGalleryAdapter by lazy {
+        GalleryAdapter(
+            GalleryAdapter.Caller.NEW_POST_GALLERY,
+            this
+        )
     }
-    
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,70 +52,78 @@ class NewPostFragment : BottomNavFragment() {
             (v as EditText).setInputFocus(hasFocus, R.string.new_post_hint_post_title)
         }
         
-        
         // Show dialog with published post details when done
-        newPostViewModel.publishedPost.observe(viewLifecycleOwner) {
+        viewModel.publishedPost.observe(viewLifecycleOwner) {
             if (it != null) {
                 findNavController().navigate(NewPostFragmentDirections.actionShowAfterPublishDialog())
             }
         }
+        
+        viewModel.postImages.observe(viewLifecycleOwner) { postImagesList ->
+            if (postImagesList.isNullOrEmpty()) return@observe
     
-    
-        newPostViewModel.postImages.observe(viewLifecycleOwner, Observer { postImagesList ->
-            if (postImagesList.isNullOrEmpty()) return@Observer
-            
             if (postImagesList.any { it.fileDetails == null }) {
                 // Update list with file details
                 val updatedWithFileDetails = postImagesList.map {
                     if (it.fileDetails != null) return@map it
-                    
-                    val fileDetails = newPostViewModel.getFileName(it.uri)
+            
+                    val fileDetails = viewModel.getFileName(it.uri)
                     it.copy(
                         fileDetails = fileDetails,
                         name = fileDetails.fileName
                     )
                 }
-                
-                newPostViewModel.setPostImages(updatedWithFileDetails)
-                
-                return@Observer
+        
+                viewModel.setPostImages(updatedWithFileDetails)
+                return@observe
             }
-            
+    
             // All images already have file details
-            
+    
             // Update grid layout manager's span count to image count limited by max
             (binding.addedGallery.layoutManager as? StaggeredGridLayoutManager)?.spanCount =
                 Utils.calculateColumnCount(postImagesList.size)
-            
+    
             // Update gallery adapter
             mGalleryAdapter.setList(postImagesList)
-            
+    
             // Set image caption as post caption if there is only one image
             if (postImagesList.size == 1 && !postImagesList[0].caption.isNullOrBlank()) {
                 val imageCaption = postImagesList[0].caption
-                val postCaption = newPostViewModel.postCaption.value
-                
-                if (imageCaption != postCaption) newPostViewModel.postCaption.value =
-                    postImagesList[0].caption
-            }
-        })
+                val postCaption = viewModel.postCaption.value
         
+                if (imageCaption != postCaption) {
+                    viewModel.postCaption.value = postImagesList[0].caption
+                }
+            }
+        }
+    
+        viewModel.selectedBlog.observe(viewLifecycleOwner) {
+            binding.blogName.text = if (it?.name.isNullOrBlank()) {
+                getString(R.string.new_post_label_no_blog_selected)
+            } else {
+                getString(R.string.new_post_label_posting_as_author_to_blog, avm.userDisplayName.value, it!!.name)
+            }
+        }
         
         // Update image caption from post caption if there is only one image
-        newPostViewModel.postCaption.observe(viewLifecycleOwner, Observer {
-            if (it.isNullOrBlank() || newPostViewModel.imageCount.value != 1) return@Observer
-            
-            val image = newPostViewModel.postImages.value?.getOrNull(0) ?: return@Observer
-            
+        viewModel.postCaption.observe(viewLifecycleOwner) {
+            if (it.isNullOrBlank() || viewModel.imageCount.value != 1) {
+                return@observe
+            }
+    
+            val image = viewModel.postImages.value?.getOrNull(0) ?: return@observe
+    
             val imageCaption = image.caption
             val postCaption = it
-            
-            if (imageCaption != postCaption) newPostViewModel.updatePostImage(image.copy(caption = it))
-        })
-        
-        
+    
+            if (imageCaption != postCaption) {
+                viewModel.updatePostImage(image.copy(caption = it))
+            }
+        }
+    
         // Update enabled state for inputs based on fragment state
-        newPostViewModel.state.observe(viewLifecycleOwner) {
+        viewModel.state.observe(viewLifecycleOwner) {
             if (it == NewPostViewModel.State.PUBLISHING) {
                 // Show publishing progress indicator
                 binding.progressPublishing.show()
@@ -129,33 +131,61 @@ class NewPostFragment : BottomNavFragment() {
                 // Hide publishing progress indicator
                 binding.progressPublishing.hide()
             }
-        }
+
+            binding.photoTarget.isClickable = it == NewPostViewModel.State.EMPTY
+            binding.photoTarget.isEnabled = it == NewPostViewModel.State.EMPTY
+
+            if (it == NewPostViewModel.State.READY) {
+                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondaryColor))
+                binding.buttonUpload.isClickable = true
+                binding.buttonUpload.isFocusable = true
+            } else {
+                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bg_fab_disabled))
+                binding.buttonUpload.isClickable = false
+                binding.buttonUpload.isFocusable = false
+            }
     
-    
-        // Update state when title text changes
-        newPostViewModel.postTitle.observe(viewLifecycleOwner) {
-            newPostViewModel.updateState()
-        }
-    
-    
-        newPostViewModel.publishLiveData.observe(viewLifecycleOwner, Observer {
-            
-            if (it == null) return@Observer
-            
-            val (progress, publishResult) = it
-            
-            if (publishResult?.errorMessage != null) {
-                newPostViewModel.setState(NewPostViewModel.State.READY)
-                Toast.makeText(requireContext(), "Error: " +  publishResult.errorMessage, Toast.LENGTH_LONG)
-                    .show()
-                return@Observer
+            if (it == NewPostViewModel.State.HAVE_IMAGE || it == NewPostViewModel.State.READY) {
+                binding.buttonPostSettings.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondaryColor))
+                binding.buttonPostSettings.isClickable = true
+                binding.buttonPostSettings.isFocusable = true
+            } else {
+                binding.buttonPostSettings.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bg_fab_disabled))
+                binding.buttonPostSettings.isClickable = false
+                binding.buttonPostSettings.isFocusable = false
             }
             
+            binding.scrimPublishing.isVisible = it == NewPostViewModel.State.PUBLISHING
+            binding.messagePublishingStatus.isVisible = it == NewPostViewModel.State.PUBLISHING
+        }
+        
+        // Update state when title text changes
+        viewModel.postTitle.observe(viewLifecycleOwner) {
+            viewModel.updateState()
+        }
+        
+        viewModel.publishLiveData.observe(viewLifecycleOwner) {
+    
+            if (it == null) return@observe
+    
+            val (progress, publishResult) = it
+    
+            if (publishResult?.errorMessage != null) {
+                viewModel.setState(NewPostViewModel.State.READY)
+                Toast.makeText(
+                    requireContext(),
+                    "Error: " + publishResult.errorMessage,
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+                return@observe
+            }
+    
             // Show message
             binding.messagePublishingStatus.text = progress.statusMessage
-            
-            if (!progress.finished) return@Observer
-            
+    
+            if (!progress.finished) return@observe
+    
             if (publishResult?.publishedPost != null) {
                 // Post uploaded, show message
                 val toastMessageId = when {
@@ -164,21 +194,75 @@ class NewPostFragment : BottomNavFragment() {
                     else                                                                       -> R.string.new_post_toast_published
                 }
                 Toast.makeText(requireContext(), toastMessageId, Toast.LENGTH_SHORT).show()
-                
+        
                 // Update view model, tags, state, etc
-                newPostViewModel.onPublishFinished(publishResult)
+                viewModel.onPublishFinished(publishResult)
             }
-            
-        })
-        
-        
+    
+        }
+    
+        viewModel.inputsEnabled.observe(viewLifecycleOwner) {
+            binding.inputPostCaption.isEnabled = it
+            binding.inputPostTitle.isEnabled = it
+        }
+    
         // Set featured image to be marked in recyclerview
-        newPostViewModel.postFeaturedImageId.observe(viewLifecycleOwner) {
+        viewModel.postFeaturedImageId.observe(viewLifecycleOwner) {
             mGalleryAdapter.setFeaturedImage(it)
         }
     
+        viewModel.imageCount.observe(viewLifecycleOwner) {
+            binding.photoTarget.isVisible = it == 0
+            binding.addedGallery.isVisible = it > 0
+            binding.buttonChangeImage.isVisible = it > 0
+            binding.buttonAddMorePhotos.isVisible = it > 0
+            binding.buttonReorderPhotos.isVisible = it > 1
+            binding.inputPostCaption.hint = if (it < 2) {
+                getString(R.string.new_post_placeholder_image_caption)
+            } else {
+                getString(R.string.new_post_placeholder_gallery_caption)
+            }
+        }
+        
+        binding.addedGallery.adapter = mGalleryAdapter
+        binding.photoTarget.setOnClickListener { openPhotoPicker(false) }
+        binding.buttonChangeImage.setOnClickListener { openPhotoPicker(false) }
+        binding.buttonAddMorePhotos.setOnClickListener { openPhotoPicker(true) }
+        binding.buttonReorderPhotos.setOnClickListener { openReorderingScreen() }
+        binding.buttonUpload.setOnClickListener { onPublishPressed() }   
+        binding.buttonPostSettings.setOnClickListener { openPostSettings() }
+    
+        binding.inputPostTitle.doAfterTextChanged {
+            viewModel.postTitle.value = it?.toString().orEmpty()
+        }
+        binding.inputPostCaption.doAfterTextChanged {
+            viewModel.postCaption.value = it?.toString().orEmpty()
+        }
+    
+        // Also clear/reset these after a post has been published 
+        viewLifecycleOwner.lifecycleScope.launch { 
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.resetState.collectLatest { 
+                    if (it) {
+                        binding.inputPostTitle.setText("")
+                        binding.inputPostCaption.setText("")
+                        binding.photoTarget.isVisible = true
+                        binding.addedGallery.isVisible = false
+                        binding.buttonChangeImage.isVisible = false
+                        binding.buttonAddMorePhotos.isVisible = false
+                        binding.buttonReorderPhotos.isVisible = false
+                        binding.inputPostCaption.hint = getString(R.string.new_post_placeholder_image_caption)
+                    }
+                }
+            }
+        }
     }
     
+    override fun onResume() {
+        super.onResume()
+        binding.inputPostTitle.setText(viewModel.postTitle.value.orEmpty())
+        binding.inputPostCaption.setText(viewModel.postCaption.value.orEmpty())
+    }
     
     /**
      * Photo picker returns here for pick or add photos
@@ -207,63 +291,53 @@ class NewPostFragment : BottomNavFragment() {
             
             if (requestCode == RC_PHOTO_PICKER_ADD_PHOTOS) {
                 // Add selected Uris to list
-                newPostViewModel.addImageUris(uriList)
+                viewModel.addImageUris(uriList)
             } else {
                 // Set selected Uris as new list
-                newPostViewModel.setImageUris(uriList)
+                viewModel.setImageUris(uriList)
             }
         }
     }
-    
     
     /**
-     * Public methods that can be called from data binding
+     * Open file picker to select file location for syncing
      */
-    @Suppress("UNUSED_PARAMETER")
-    inner class Handler : GalleryAdapter.GalleryInteraction {
-        
-        /**
-         * Open file picker to select file location for syncing
-         */
-        fun openPhotoPicker(addPhotos: Boolean = false) {
-            val galleryIntent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            ).apply {
-                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            }
-            
-            startActivityForResult(
-                galleryIntent,
-                if (addPhotos) RC_PHOTO_PICKER_ADD_PHOTOS else RC_PHOTO_PICKER
-            )
+    private fun openPhotoPicker(addPhotos: Boolean = false) {
+        val galleryIntent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        ).apply {
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
         
-        /**
-         * Open image attributes fragment
-         */
-        override fun onImagePressed(image: PostImage) {
-            findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
-        }
-        
-        fun openPostSettings(view: View) {
-            findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
-        }
-        
-        fun onPublishPressed(view: View) {
-            findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
-        }
-        
-        
-        fun openReorderingScreen(view: View) {
-            findNavController().navigate(NewPostFragmentDirections.actionReorderImages())
-        }
+        startActivityForResult(
+            galleryIntent,
+            if (addPhotos) RC_PHOTO_PICKER_ADD_PHOTOS else RC_PHOTO_PICKER
+        )
     }
     
+    /**
+     * Open image attributes fragment
+     */
+    override fun onImagePressed(image: PostImage) {
+        findNavController().navigate(NewPostFragmentDirections.actionEditImageAttributes(image.id))
+    }
+    
+    private fun openPostSettings() {
+        findNavController().navigate(NewPostFragmentDirections.actionEditPostSettings())
+    }
+    
+    private fun onPublishPressed() {
+        findNavController().navigate(NewPostFragmentDirections.actionShowPublishOptions())
+    }
+    
+    
+    private fun openReorderingScreen() {
+        findNavController().navigate(NewPostFragmentDirections.actionReorderImages())
+    }
     
     companion object {
         const val RC_PHOTO_PICKER = 9723
         const val RC_PHOTO_PICKER_ADD_PHOTOS = 3942
     }
-    
 }

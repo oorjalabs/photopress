@@ -1,11 +1,12 @@
 package net.c306.photopress.ui.welcome
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
@@ -15,11 +16,12 @@ import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
 import net.c306.photopress.ui.welcome.WelcomeFragmentAdapter.Screens
+import net.c306.photopress.utils.viewBinding
 
 /**
  * Holder fragment for the welcome fragment views
  */
-class WelcomeFragment : NoBottomNavFragment() {
+class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
     
     // When requested, this adapter returns a DemoObjectFragment,
     // representing an object in the collection.
@@ -31,11 +33,12 @@ class WelcomeFragment : NoBottomNavFragment() {
     
     private val appViewModel by activityViewModels<AppViewModel>()
     private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
-    
-    private lateinit var binding: FragmentWelcomeBinding
+
+    private val binding by viewBinding(FragmentWelcomeBinding::bind)
     
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater, 
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         
@@ -47,14 +50,7 @@ class WelcomeFragment : NoBottomNavFragment() {
             return null
         }
         
-        // Inflate the layout for this fragment
-        binding = FragmentWelcomeBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            avm = this@WelcomeFragment.appViewModel
-            handler = Handler()
-        }
-        
-        return binding.root
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,56 +71,66 @@ class WelcomeFragment : NoBottomNavFragment() {
         
         
         // If not authenticated, disable screen 3
-        appViewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
+        appViewModel.isLoggedIn.observe(viewLifecycleOwner) {
             val loggedIn = it == true
-            
+    
             mPagerAdapter.setMaxScreen(
-                1 + if (loggedIn) Screens.SELECT_BLOG.screenNumber else Screens.LOGIN.screenNumber
+                1 + if (loggedIn) {
+                    Screens.SELECT_BLOG.screenNumber
+                } else {
+                    Screens.LOGIN.screenNumber
+                }
             )
-        })
-        
-        
-        welcomeViewModel.goToScreen.observe(viewLifecycleOwner, Observer {
+        }
+    
+        welcomeViewModel.goToScreen.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.pager.setCurrentItem(it, true)
                 welcomeViewModel.setGoToScreen(null)
             }
-        })
-        
-    }
+        }
     
+        binding.buttonCloseWelcome.setOnClickListener {
+            goToApp()
+        }
+        
+        appViewModel.isLoggedIn.observe(viewLifecycleOwner) {
+            binding.progressIndicatorPage3.alpha = if (it) {
+                defaultIconAlpha
+            } else {
+                disabledIconAlpha
+            }
+        }
+    }
     
     override fun onDestroyView() {
-        if (::binding.isInitialized) {
-            binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
-        }
+//        binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
         super.onDestroyView()
     }
-    
-    
+
     private fun setPageIndicators(pageIndex: Int) {
-        val context = requireContext()
-        val filledCircle = context.getDrawable(R.drawable.ic_circle_filled)
-        val emptyCircle = context.getDrawable(R.drawable.ic_circle_empty)
-        
-        binding.progressIndicatorPage1.setImageDrawable(if (pageIndex == 0) filledCircle else emptyCircle)
-        binding.progressIndicatorPage2.setImageDrawable(if (pageIndex == 1) filledCircle else emptyCircle)
-        binding.progressIndicatorPage3.setImageDrawable(if (pageIndex == 2) filledCircle else emptyCircle)
+        binding.progressIndicatorPage1.setImageDrawable(getCircleIndicator(pageIndex == 0))
+        binding.progressIndicatorPage2.setImageDrawable(getCircleIndicator(pageIndex == 1))
+        binding.progressIndicatorPage3.setImageDrawable(getCircleIndicator(pageIndex == 2))
     }
     
-    inner class Handler {
-        fun goToApp() {
-            findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
-        }
-        
-        val disabledIconAlpha by lazy { requireContext().getFloatFromXml(R.dimen.icon_alpha_disabled) }
-        val defaultIconAlpha by lazy { requireContext().getFloatFromXml(R.dimen.icon_alpha_default) }
+    private fun getCircleIndicator(isSelected: Boolean): Drawable? {
+        val context = requireContext()
+        val filledCircle = ContextCompat.getDrawable(context, R.drawable.ic_circle_filled)
+        val emptyCircle = ContextCompat.getDrawable(context, R.drawable.ic_circle_empty)
+        return if (isSelected) filledCircle else emptyCircle
     }
+    
+    private fun goToApp() {
+        findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
+    }
+    
+    private val disabledIconAlpha by lazy { requireContext().getFloatFromXml(R.dimen.icon_alpha_disabled) }
+    private val defaultIconAlpha by lazy { requireContext().getFloatFromXml(R.dimen.icon_alpha_default) }
     
     private val onPageSelectedListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             setPageIndicators(position)
         }
     }
-    
 }

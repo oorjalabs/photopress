@@ -22,6 +22,7 @@ import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.ui.settings.SettingsFragment
 import net.c306.photopress.ui.settings.SettingsFragmentDirections
 import net.c306.photopress.utils.AppPrefs
+import net.c306.photopress.utils.viewBinding
 
 class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
     private val appViewModel by viewModels<AppViewModel>()
     private val newPostViewModel by viewModels<NewPostViewModel>()
     
-    private lateinit var binding: ActivityMainBinding
+    private val binding by viewBinding(ActivityMainBinding::inflate)
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,27 +51,25 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             )
         }
     
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        
         setContentView(binding.root)
         
         binding.navView.setupWithNavController(navController)
         
-        appViewModel.isLoggedIn.observe(this, {  })
-        appViewModel.selectedBlogId.observe(this, {  })
-        appViewModel.blogSelected.observe(this, {  })
-        
+        appViewModel.isLoggedIn.observe(this) { }
+        appViewModel.selectedBlogId.observe(this) { }
+        appViewModel.blogSelected.observe(this) { }
+    
         // Restart activity after logout
-        appViewModel.doPostLogoutRestart.observe(this, Observer {
-            if (it != true) return@Observer
-            
+        appViewModel.doPostLogoutRestart.observe(this) {
+            if (it != true) return@observe
+    
             appViewModel.doPostLogoutRestart.value = false
-            
+    
             finish()
             startActivity(Intent.makeRestartActivityTask(componentName))
-        })
-        
-        
+        }
+    
+    
         // If post tags are empty (app start or new post), set default tags as tags.
         // Don't use `newPost` instead because it causes image and input loss on configuration
         // change.
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         newPostViewModel.defaultCategories.observe(this, Observer {
             if (it.isNullOrEmpty()) return@Observer
             
-            if (newPostViewModel.postCategories.isNullOrEmpty()) {
+            if (newPostViewModel.postCategories.isEmpty()) {
                 newPostViewModel.postCategories = it
             }
         })

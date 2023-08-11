@@ -11,9 +11,9 @@ def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(rootProject.file("apikey.properties")))
 
 
-def versionString = "0.14.0"
-def versionNumber = 5032
-def showWhatsNew = "true"
+def versionString = "0.14.1"
+def versionNumber = 5036
+def showWhatsNew = "false"
 
 static def getDate() {
     return new Date().format('yyyy.MMdd')
@@ -92,7 +92,6 @@ android {
     }
 
     buildFeatures {
-        dataBinding true
         viewBinding true
     }
     namespace 'net.c306.photopress'

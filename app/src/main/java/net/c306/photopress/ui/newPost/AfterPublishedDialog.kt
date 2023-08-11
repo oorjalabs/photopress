@@ -2,37 +2,52 @@ package net.c306.photopress.ui.newPost
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.DialogAfterPublishBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
+import net.c306.photopress.utils.viewBinding
 
-class AfterPublishedDialog : BaseBottomSheetDialogFragment() {
+class AfterPublishedDialog : BaseBottomSheetDialogFragment(R.layout.dialog_after_publish) {
 
-    override val layoutId: Int = R.layout.dialog_after_publish
-
-    private val newPostViewModel by activityViewModels<NewPostViewModel>()
+    private val viewModel by activityViewModels<NewPostViewModel>()
     
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        val binding = DialogAfterPublishBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewmodel = newPostViewModel
-        binding.avm = ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
-        return binding.root
+    private val binding by viewBinding(DialogAfterPublishBinding::bind)
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        binding.highlightActionTitle.text = viewModel.publishedDialogMessage
+    
+        ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
+            .isWordPressAppInstalled
+            .observe(viewLifecycleOwner) {
+                binding.buttonOpenPostInWordpressApp.isVisible = it
+            }
+        
+        binding.buttonSharePost.setOnClickListener { 
+            viewModel.sharePost()
+        }
+        
+        binding.buttonCopyPostToClipboard.setOnClickListener { 
+            viewModel.copyPostToClipboard()
+        }
+        
+        binding.buttonOpenPostInBrowser.setOnClickListener { 
+            viewModel.openPostExternal()
+        }
+        
+        binding.buttonOpenPostInWordpressApp.setOnClickListener { 
+            viewModel.openPostInWordPress()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        newPostViewModel.newPost()
+        viewModel.newPost()
         super.onDismiss(dialog)
     }
     

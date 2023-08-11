@@ -13,12 +13,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.Blog
-import net.c306.photopress.api.WPBlogPost
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPTag
 import net.c306.photopress.database.PhotoPressPost
@@ -38,7 +39,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class NewPostViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val applicationContext = application.applicationContext
+    private val applicationContext by lazy { application.applicationContext }
     
     private val settings by lazy { Settings.getInstance(applicationContext) }
     
@@ -69,6 +70,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     internal fun setState(newState: State) {
         _state.value = newState
     }
+    
+    private val _resetState = MutableSharedFlow<Boolean>()
+    val resetState = _resetState.asSharedFlow()
     
     internal fun updateState() {
         val title = postTitle.value ?: ""
@@ -203,17 +207,19 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * Post Images
      */
     
-    private val _postImages = MutableLiveData<MutableList<PostImage>>()
-    val postImages: LiveData<MutableList<PostImage>> = _postImages
+    private val _postImages = MutableLiveData<List<PostImage>>(emptyList())
+    val postImages: LiveData<List<PostImage>> = _postImages
     
     /**
      * Set or clear selected image Uri(s). Called on selection of images by user, or on `newPost`.
      */
     fun setImageUris(value: List<Uri>?) {
         _postImages.value =
-            if (value.isNullOrEmpty()) mutableListOf()
-            else value.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }
-                .toMutableList()
+            if (value.isNullOrEmpty()) {
+                emptyList()
+            } else {
+                value.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }
+            }
         
         updateState()
     }
@@ -221,7 +227,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     fun addImageUris(newUris: List<Uri>) {
         val list = _postImages.value ?: mutableListOf()
         
-        list.addAll(newUris.mapIndexed { index, uri -> PostImage(uri = uri, order = index) })
+        list.toMutableList().apply {
+            addAll(newUris.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }) 
+        }
         
         _postImages.value = list
         updateState()
@@ -231,7 +239,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * Update [_postImages], usually called after [PostImage.FileDetails] attributes are updated.
      */
     internal fun setPostImages(list: List<PostImage>) {
-        _postImages.value = list.toMutableList()
+        _postImages.value = list
         updateState()
     }
     
@@ -242,15 +250,18 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * If image is not in list, it is added at the end.
      */
     internal fun updatePostImage(image: PostImage) {
-        val list = _postImages.value ?: mutableListOf()
+        val list = _postImages.value?.toMutableList() ?: mutableListOf()
         
         val index = list.indexOfFirst { it.id == image.id }
         
         // If image in list, update it, else add it
-        if (index > -1) list[index] = image
-        else list.add(image)
+        if (index > -1) {
+            list[index] = image
+        } else {
+            list.add(image)
+        }
         
-        _postImages.value = list.toMutableList()
+        _postImages.value = list
         updateState()
     }
     
@@ -258,7 +269,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      * Remove image from [_postImages] list
      */
     internal fun removeImage(image: PostImage) {
-        val list = _postImages.value ?: mutableListOf()
+        val list = _postImages.value?.toMutableList() ?: mutableListOf()
         
         list.removeIf { it.id == image.id }
         
@@ -358,6 +369,9 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         setImageUris(null)
         updateState()
+        viewModelScope.launch {
+            _resetState.emit(true)
+        }
     }
     
     
@@ -411,7 +425,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         
         var fileName = ""
         var mimeType = ""
-        metaCursor?.use { it ->
+        metaCursor?.use {
             if (it.moveToFirst()) {
                 fileName = it.getString(0)
                 mimeType = it.getString(1)
@@ -433,7 +447,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     internal val publishLiveData: LiveData<SyncUtils.PublishLiveData?> =
-        doPublish.switchMap<Boolean?, SyncUtils.PublishLiveData?> {
+        doPublish.switchMap {
             
             if (it != true) return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
             
@@ -444,10 +458,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             val images = postImages.value
             val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
                 .apply { add(applicationContext.getString(R.string.app_post_tag)) }
-                .filter { tag -> !tag.isBlank() }
+                .filter { tag -> tag.isNotBlank() }
                 .distinct()
             val categories = postCategories
-                .filter { category -> !category.isBlank() }
+                .filter { category -> category.isNotBlank() }
                 .distinct()
             
             if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
@@ -529,7 +543,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         val tags: List<WPTag>? = null
     )
     
-    private suspend fun refreshTags() = suspendCoroutine<RefreshTagsResult> { cont ->
+    private suspend fun refreshTags() = suspendCoroutine { cont ->
         val blogId = selectedBlogId.value?.toString()
         
         if (blogId.isNullOrBlank()) {
@@ -569,7 +583,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         val categories: List<WPCategory>? = null
     )
     
-    private suspend fun refreshCategories() = suspendCoroutine<RefreshCategoriesResult> { cont ->
+    private suspend fun refreshCategories() = suspendCoroutine { cont ->
         val blogId = selectedBlogId.value?.toString()
         
         if (blogId.isNullOrBlank()) {
@@ -620,37 +634,43 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         }
     
     
-    fun sharePost(post: WPBlogPost) {
-        CommonUtils.sendSharingIntent(
-            context = applicationContext,
-            title = post.url,
-            text = post.title
-        )
+    fun sharePost() {
+        publishedPost.value?.post?.let { post ->
+            CommonUtils.sendSharingIntent(
+                context = applicationContext,
+                title = post.url,
+                text = post.title
+            )
+        }
     }
     
     
-    fun openPostExternal(post: WPBlogPost) {
-        applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
+    fun openPostExternal() {
+        publishedPost.value?.post?.let { post ->
+            applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
+        }
     }
     
     
-    fun openPostInWordPress(post: WPBlogPost) {
-        applicationContext.startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("wordpress://viewpost?blogId=${selectedBlogId.value}&postId=${post.id}")
-                // Uri.parse("wordpress://post?blogId=${selectedBlogId.value}&postId=${post.id}")
-                // Uri.parse("https://wordpress.com/post/${selectedBlogId.value}/${post.id}")
-            ).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        )
+    fun openPostInWordPress() {
+        publishedPost.value?.post?.let { post ->
+            applicationContext.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("wordpress://viewpost?blogId=${selectedBlogId.value}&postId=${post.id}")
+                    // Uri.parse("wordpress://post?blogId=${selectedBlogId.value}&postId=${post.id}")
+                    // Uri.parse("https://wordpress.com/post/${selectedBlogId.value}/${post.id}")
+                ).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            )
+        }
     }
     
     
-    fun copyPostToClipboard(post: WPBlogPost) {
-        CommonUtils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
+    fun copyPostToClipboard() {
+        publishedPost.value?.post?.let { post ->
+            CommonUtils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
+        }
     }
-    
-    
 }

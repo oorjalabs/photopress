@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import net.c306.photopress.R
@@ -22,7 +23,6 @@ import net.c306.photopress.databinding.DialogCategoryPickerBinding
 import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.Utils
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CategoryPickerDialog : DialogFragment() {
     
@@ -119,11 +119,11 @@ class CategoryPickerDialog : DialogFragment() {
             layoutInflater,
             null,
             false
-        ).apply {
-            listOnClickListener = mOnCategoryClickListener
-            listAdapter = mCategoryListAdapter
-            onSearchTextChanged = mSearchTextWatcher
-            onEmptyViewClicked = mOnEmptyViewClick
+        ).apply { 
+            categorySearch.addTextChangedListener(mSearchTextWatcher)
+            categoriesList.adapter = mCategoryListAdapter
+            categoriesList.onItemClickListener = mOnCategoryClickListener
+            categoryListEmptyView.setOnClickListener(mOnEmptyViewClick)
         }
         
         // Set buttons and title
@@ -178,10 +178,13 @@ class CategoryPickerDialog : DialogFragment() {
                 // Mark selected if project previously selected
                 isActivated = category in postCategories
                 
-                background = context.resources.getDrawable(
-                    if (isActivated) SELECTED_ITEM_BACKGROUND_COLOUR_ID
-                    else NORMAL_ITEM_BACKGROUND_COLOUR_ID,
-                    context.theme
+                background = ContextCompat.getDrawable(
+                    context,
+                    if (isActivated) {
+                        SELECTED_ITEM_BACKGROUND_COLOUR_ID
+                    } else {
+                        NORMAL_ITEM_BACKGROUND_COLOUR_ID
+                    },
                 )
                 
                 // Set project text
@@ -196,13 +199,13 @@ class CategoryPickerDialog : DialogFragment() {
             
             private val sourceList = ArrayList(objects)
             
-            internal fun setSourceList(list: List<String>) {
+            fun setSourceList(list: List<String>) {
                 sourceList.clear()
                 sourceList.addAll(list)
             }
             
             override fun performFiltering(chars: CharSequence): FilterResults {
-                val filterSeq = chars.toString().toLowerCase(Locale.getDefault())
+                val filterSeq = chars.toString().lowercase()
                 val result = FilterResults()
                 
                 if (filterSeq.isBlank()) {
@@ -218,7 +221,7 @@ class CategoryPickerDialog : DialogFragment() {
                     
                     // The filtering itself
                     val filteredList = sourceList.filter {
-                        it.toLowerCase(Locale.getDefault()).contains(filterSeq)
+                        it.lowercase().contains(filterSeq)
                     }
                     
                     values = filteredList
@@ -240,7 +243,7 @@ class CategoryPickerDialog : DialogFragment() {
     
     private inner class EditTextWatcher : TextWatcher {
         
-        internal var previousText = ""
+        var previousText = ""
             private set
         
         private val onFilter = Filter.FilterListener {

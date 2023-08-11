@@ -1,134 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/activity_horizontal_margin"
+    android:tag="welcome2">
     
-    <data>
-        
-        <variable
-            name="avm"
-            type="net.c306.photopress.AppViewModel" />
-        
-        <variable
-            name="handler"
-            type="net.c306.photopress.ui.welcome.WelcomeItemFragmentLogin.Handler" />
-        
-        <import type="android.view.View" />
-    </data>
-    
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/image_guide"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingHorizontal="@dimen/activity_horizontal_margin"
-        android:tag="welcome2">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+    
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:contentDescription="@string/cd_photopress_logo"
+        android:src="@drawable/ic_puppy_full_white"
+        app:layout_constraintBottom_toTopOf="@id/image_guide"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    
+    <TextView
+        android:id="@+id/text_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/title_login_to_wordpress"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
+    
+    <TextView
+        android:id="@+id/subtitle_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_spacing_half"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome"
+        tools:text="@string/subtitle_login_to_wordpress" />
+    
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view_done"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        app:layout_constraintBottom_toTopOf="@id/button_go_to_select_blog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/anim_done"
+        tools:visibility="visible" />
+    
+    <Button
+        android:id="@+id/button_go_to_select_blog"
+        style="@style/OutlinedButton.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_item_spacing_half"
+        android:drawableEnd="@drawable/ic_next"
+        android:drawableTint="?colorControlNormal"
+        android:text="@string/label_next_pick_a_blog"
+        app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
+        app:layout_constraintVertical_bias="0.9"
+        tools:visibility="visible" />
+    
+    <Button
+        android:id="@+id/button_login"
+        style="@style/Button.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_connect_with_wordpress"
+        app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
         
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/image_guide"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.25" />
-        
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:contentDescription="@string/cd_photopress_logo"
-            android:src="@drawable/ic_puppy_full_white"
-            app:layout_constraintBottom_toTopOf="@id/image_guide"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-        
-        <TextView
-            android:id="@+id/text_welcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/title_login_to_wordpress"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/logo" />
-        
-        <TextView
-            android:id="@+id/subtitle_welcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_item_spacing_half"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="@{avm.userDisplayName == null ? @string/subtitle_login_to_wordpress : @string/connected_as(avm.userDisplayName)}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_welcome"
-            tools:text="@string/subtitle_login_to_wordpress" />
-        
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animation_view_done"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:visibility="@{avm.isLoggedIn ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toTopOf="@id/button_go_to_select_blog"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
-            app:lottie_autoPlay="false"
-            app:lottie_rawRes="@raw/anim_done"
-            tools:visibility="visible" />
-        
-        <Button
-            android:id="@+id/button_go_to_select_blog"
-            style="@style/OutlinedButton.Secondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_item_spacing_half"
-            android:drawableEnd="@drawable/ic_next"
-            android:drawableTint="?colorControlNormal"
-            android:onClick="@{() -> handler.goToSelectBlog()}"
-            android:text="@string/label_next_pick_a_blog"
-            android:visibility="@{avm.isLoggedIn ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subtitle_welcome"
-            app:layout_constraintVertical_bias="0.9"
-            tools:visibility="visible" />
-        
-        <Button
-            android:id="@+id/button_login"
-            style="@style/Button.Secondary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> handler.openLoginFragment()}"
-            android:text="@string/button_connect_with_wordpress"
-            android:visibility="@{avm.isLoggedIn ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
-            
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subtitle_welcome" />
-        
-        <TextView
-            android:id="@+id/message_wp_or_jetpack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
-            android:text="@string/message_login_to_wordpress"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="?android:textColorSecondary"
-            android:visibility="@{avm.isLoggedIn ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-        
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_progress_indicator_space"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_end="48dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle_welcome" />
+    
+    <TextView
+        android:id="@+id/message_wp_or_jetpack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
+        android:text="@string/message_login_to_wordpress"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="?android:textColorSecondary"
+        app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_progress_indicator_space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="48dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
