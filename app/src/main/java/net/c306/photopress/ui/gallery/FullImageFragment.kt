@@ -1,9 +1,7 @@
 package net.c306.photopress.ui.gallery
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -11,33 +9,36 @@ import androidx.navigation.fragment.navArgs
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentFullImageBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
+import net.c306.photopress.ui.custom.BindingAdapters
+import net.c306.photopress.utils.viewBinding
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class FullImageFragment : AppBarNoBottomNavFragment() {
+class FullImageFragment : AppBarNoBottomNavFragment(R.layout.fragment_full_image) {
     
     @IdRes
     override val myNavId: Int = R.id.fullImageFragment
     
     private var systemUIVisible: Boolean = true
     
-    private lateinit var binding: FragmentFullImageBinding
+    private val binding by viewBinding(FragmentFullImageBinding::bind)
+    
     private val args: FullImageFragmentArgs by navArgs()
     
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFullImageBinding.inflate(inflater, container, false).apply {
-            image = args.image
-            handler = FragmentHandler()
-        }
-        return binding.root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.photo.setOnClickListener { toggle() }
+        BindingAdapters.loadImage(
+            view = binding.photo,
+            imageUri = args.image.uri,
+            imageUriCover = null,
+            placeHolderDrawable = null,
+        )
+        binding.close.setOnClickListener { dismiss() }
+        binding.caption.text = args.image.caption ?: args.image.name ?: ""
     }
-    
     
     override fun onResume() {
         super.onResume()
@@ -85,19 +86,8 @@ class FullImageFragment : AppBarNoBottomNavFragment() {
         systemUIVisible = true
     }
     
-    
-    @Suppress("UNUSED_PARAMETER")
-    inner class FragmentHandler {
-        
-        fun close(view: View) {
-            dismiss()
-        }
-        
-        fun toggle(view: View) {
-            if (systemUIVisible) hideSystemUI()
-            else showSystemUI()
-        }
-        
+    private fun toggle() {
+        if (systemUIVisible) hideSystemUI()
+        else showSystemUI()
     }
-    
 }
