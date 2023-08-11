@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import net.c306.photopress.R
@@ -55,6 +56,11 @@ class PostSettingsFragment : AppBarNoBottomNavFragment(R.layout.fragment_post_se
         
         viewModel.postTags.observe(viewLifecycleOwner) {
             binding.inputPostTags.setText(it.orEmpty())
+        }
+    
+        // If this doesn't work, then set initial values only, don't set reactively.
+        binding.inputPostTags.doAfterTextChanged { 
+            viewModel.postTags.value = it?.toString().orEmpty()
         }
         
         viewModel.postCategoriesDisplayString.observe(viewLifecycleOwner) {

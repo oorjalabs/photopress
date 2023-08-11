@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -69,6 +70,20 @@ class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_imag
         binding.image.setOnClickListener { openFullImage() }
         binding.buttonFeaturedImage.setOnClickListener { viewModel.toggleFeaturedImage(viewModel.editingImage.value?.id) }
         binding.buttonRemoveImage.setOnClickListener { removeImage() }
+
+        // If this doesn't work, then set initial values only, don't set reactively.
+        binding.inputPostTitle.doAfterTextChanged {
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(name = it?.toString().orEmpty())
+        }
+        binding.inputPostCaption.doAfterTextChanged {
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(caption = it?.toString().orEmpty())
+        }
+        binding.inputPostAltText.doAfterTextChanged {
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(altText = it?.toString().orEmpty())
+        }
+        binding.inputPostDescription.doAfterTextChanged {
+            viewModel.editingImage.value = viewModel.editingImage.value?.copy(description = it?.toString().orEmpty())
+        }
     }
     
     /**
