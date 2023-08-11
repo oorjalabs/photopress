@@ -9,7 +9,7 @@ import androidx.navigation.fragment.navArgs
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentFullImageBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
-import net.c306.photopress.ui.custom.BindingAdapters
+import net.c306.photopress.ui.custom.loadImage
 import net.c306.photopress.utils.viewBinding
 
 /**
@@ -30,12 +30,7 @@ class FullImageFragment : AppBarNoBottomNavFragment(R.layout.fragment_full_image
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.photo.setOnClickListener { toggle() }
-        BindingAdapters.loadImage(
-            view = binding.photo,
-            imageUri = args.image.uri,
-            imageUriCover = null,
-            placeHolderDrawable = null,
-        )
+        binding.photo.loadImage(imageUri = args.image.uri)
         binding.close.setOnClickListener { dismiss() }
         binding.caption.text = args.image.caption ?: args.image.name ?: ""
     }

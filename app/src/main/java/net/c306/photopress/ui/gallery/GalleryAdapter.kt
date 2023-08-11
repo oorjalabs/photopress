@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.c306.photopress.R
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.ItemGalleryPostBinding
-import net.c306.photopress.ui.custom.BindingAdapters
+import net.c306.photopress.ui.custom.loadImage
 
 class GalleryAdapter(caller: Caller, private val handler: GalleryInteraction) :
     RecyclerView.Adapter<GalleryAdapter.ImageItemViewHolder>() {
@@ -76,12 +76,7 @@ class GalleryAdapter(caller: Caller, private val handler: GalleryInteraction) :
                 setOnClickListener { handler.onImagePressed(image) }
                 tooltipText = context.getString(imageContentDescription)
                 contentDescription = context.getString(imageContentDescription)
-                BindingAdapters.loadImage(
-                    view = this,
-                    imageUri = image.uri,
-                    imageUriCover = null,
-                    placeHolderDrawable = null
-                )
+                loadImage(imageUri = image.uri)
                 isVisible = image?.uri != null
             }
             

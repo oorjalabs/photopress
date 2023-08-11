@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentImageAttributesBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
-import net.c306.photopress.ui.custom.BindingAdapters
+import net.c306.photopress.ui.custom.loadImage
 import net.c306.photopress.utils.viewBinding
 
 class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_image_attributes) {
@@ -43,12 +43,7 @@ class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_imag
         }
         
         viewModel.editingImage.observe(viewLifecycleOwner) {
-            BindingAdapters.loadImage(
-                view = binding.image,
-                imageUri = null,
-                imageUriCover = it?.uri,
-                placeHolderDrawable = null,
-            )
+            binding.image.loadImage(imageUriCover = it?.uri)
             binding.inputPostTitle.setText(it?.name.orEmpty())
             binding.inputPostCaption.setText(it?.caption.orEmpty())
             binding.inputPostAltText.setText(it?.altText.orEmpty())
