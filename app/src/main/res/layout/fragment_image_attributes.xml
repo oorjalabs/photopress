@@ -3,19 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
-    <data>
-        
-        <variable
-            name="viewmodel"
-            type="net.c306.photopress.ui.newPost.NewPostViewModel" />
-        
-        <variable
-            name="fragmentHandler"
-            type="net.c306.photopress.ui.newPost.ImageAttributesFragment.Handler" />
-        
-        <import type="android.view.View" />
-    </data>
-    
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,7 +29,6 @@
                     android:layout_gravity="center_vertical|end"
                     android:layout_marginEnd="@dimen/list_item_spacing_half"
                     android:contentDescription="@string/string_done"
-                    android:onClick="@{fragmentHandler::done}"
                     android:text="@string/string_done"
                     android:tooltipText="@string/string_done" />
             
@@ -72,9 +58,7 @@
                         android:layout_height="0dp"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/image_attributes_cd_selected_image"
-                        android:onClick="@{fragmentHandler::openFullImage}"
                         android:tooltipText="@string/image_attributes_cd_selected_image"
-                        app:imageUriCover="@{viewmodel.editingImage.uri}"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintHorizontal_bias="0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +76,6 @@
                         android:contentDescription="@string/image_attributes_cd_featured"
                         android:src="@drawable/ic_featured_icon_in_circle"
                         android:tooltipText="@string/image_attributes_cd_featured"
-                        android:visibility="@{viewmodel.postFeaturedImageId == viewmodel.editingImage.id ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="@id/image"
                         app:layout_constraintTop_toTopOf="@id/image" />
                     
@@ -105,8 +88,6 @@
                         android:ellipsize="end"
                         android:gravity="start|center_vertical"
                         android:lines="1"
-                        android:onClick="@{() -> viewmodel.toggleFeaturedImage(viewmodel.editingImage.id)}"
-                        android:text="@{viewmodel.postFeaturedImageId == viewmodel.editingImage.id ? @string/image_attributes_button_unset_as_featured_image : @string/image_attributes_button_set_as_featured_image}"
                         app:icon="@drawable/ic_featured"
                         app:iconGravity="end"
                         app:iconTint="?colorControlNormal"
@@ -123,7 +104,6 @@
                         android:ellipsize="end"
                         android:gravity="start|center_vertical"
                         android:lines="1"
-                        android:onClick="@{fragmentHandler::removeImage}"
                         android:text="@string/image_attributes_button_remove_image"
                         app:icon="@drawable/ic_delete"
                         app:iconGravity="end"
@@ -148,8 +128,7 @@
                         android:layout_height="wrap_content"
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences"
-                        android:lines="1"
-                        android:text="@={viewmodel.editingImage.name}" />
+                        android:lines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputLayout
@@ -166,8 +145,7 @@
                         android:layout_height="wrap_content"
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences"
-                        android:lines="1"
-                        android:text="@={viewmodel.editingImage.caption}" />
+                        android:lines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputLayout
@@ -185,8 +163,7 @@
                         android:layout_height="wrap_content"
                         android:importantForAutofill="no"
                         android:inputType="textCapSentences"
-                        android:lines="1"
-                        android:text="@={viewmodel.editingImage.altText}" />
+                        android:lines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
                 
                 <com.google.android.material.textfield.TextInputEditText
@@ -200,8 +177,7 @@
                     android:inputType="textCapSentences|textMultiLine"
                     android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
                     android:lines="4"
-                    android:nextFocusDown="@string/button_text_done"
-                    android:text="@={viewmodel.editingImage.description}" />
+                    android:nextFocusDown="@string/button_text_done" />
                 
                 <View
                     android:layout_width="match_parent"
