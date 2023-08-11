@@ -14,7 +14,7 @@ import net.c306.photopress.utils.viewBinding
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
-class WelcomeItemFragmentLogin : Fragment() {
+class WelcomeItemFragmentLogin : Fragment(R.layout.fragment_welcome_item_login) {
     
     private val appViewModel by activityViewModels<AppViewModel>()
     private val viewModel by activityViewModels<WelcomeViewModel>()

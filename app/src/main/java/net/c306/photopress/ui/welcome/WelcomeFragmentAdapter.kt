@@ -2,6 +2,7 @@ package net.c306.photopress.ui.welcome
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import net.c306.photopress.R
 
 class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
@@ -17,7 +18,7 @@ class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
         return when (position) {
             Screens.SELECT_BLOG.screenNumber -> WelcomeItemFragmentSelectBlog()
             Screens.LOGIN.screenNumber     -> WelcomeItemFragmentLogin()
-            else                             -> WelcomeItemFragmentInit()
+            else                             -> Fragment(R.layout.fragment_welcome_item_init)
         }
     }
     

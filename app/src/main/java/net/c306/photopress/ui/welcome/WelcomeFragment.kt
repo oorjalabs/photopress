@@ -34,7 +34,6 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
     private val appViewModel by activityViewModels<AppViewModel>()
     private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
 
-    
     private val binding by viewBinding(FragmentWelcomeBinding::bind)
     
     override fun onCreateView(
@@ -50,7 +49,7 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
             findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
             return null
         }
-
+        
         return super.onCreateView(inflater, container, savedInstanceState)
     }
     
@@ -105,7 +104,7 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
     }
     
     override fun onDestroyView() {
-        binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
+//        binding.pager.unregisterOnPageChangeCallback(onPageSelectedListener)
         super.onDestroyView()
     }
 

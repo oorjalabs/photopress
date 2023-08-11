@@ -3,6 +3,7 @@ package net.c306.photopress.ui.settings
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -37,10 +38,9 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        (activity as? MainActivity)?.apply {
-            // Do this to ensure that bottom nav is visible when we return from a fragment which hides it
-            findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
-        }
+        // Do this to ensure that bottom nav is visible when we return from a fragment which hides it
+        (activity as? MainActivity)
+            ?.findViewById<BottomNavigationView>(R.id.nav_view)?.isVisible = true
         
         // Set user's blog list
         findPreference<SearchableListPreference>(Settings.KEY_SELECTED_BLOG_ID)?.run {
@@ -84,7 +84,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         findPreference<Preference>(KEY_PREF_LOGOUT)?.onPreferenceClickListener = this
     
         // Set up update notes preference
-        appViewModel.showUpdateNotes.observe(viewLifecycleOwner, {
+        appViewModel.showUpdateNotes.observe(viewLifecycleOwner) {
             findPreference<Preference>(KEY_UPDATE_NOTES)?.apply {
                 onPreferenceClickListener = this@SettingsFragment
                 isVisible = it == true
@@ -93,9 +93,9 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
                 onPreferenceClickListener = this@SettingsFragment
                 isVisible = it != true
             }
-        })
-        
-        
+        }
+    
+    
         // Show logged in user's name
         appViewModel.userDisplayName.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
@@ -119,7 +119,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
         })
         
         // Set up default tags preference
-        newPostViewModel.blogTags.observe(viewLifecycleOwner, { tags ->
+        newPostViewModel.blogTags.observe(viewLifecycleOwner) { tags ->
             findPreference<SearchableListPreference>(Settings.KEY_DEFAULT_TAGS)?.run {
                 if (tags.isNullOrEmpty()) {
                     isEnabled = false
@@ -131,10 +131,10 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
                         .toTypedArray()
                 }
             }
-        })
+        }
     
         // Set up default categories preference
-        newPostViewModel.blogCategories.observe(viewLifecycleOwner, { categories ->
+        newPostViewModel.blogCategories.observe(viewLifecycleOwner) { categories ->
             findPreference<SearchableListPreference>(Settings.KEY_DEFAULT_CATEGORIES)?.run {
                 if (categories.isNullOrEmpty()) {
                     isEnabled = false
@@ -146,8 +146,8 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
                         .toTypedArray()
                 }
             }
-        })
-        
+        }
+    
     }
     
     
@@ -155,7 +155,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
      * Handle non-persistent preference clicks
      */
     override fun onPreferenceClick(preference: Preference): Boolean {
-        when (preference?.key) {
+        when (preference.key) {
             
             KEY_PREF_LOGOUT -> {
                 //Show confirmation dialog, then logout
