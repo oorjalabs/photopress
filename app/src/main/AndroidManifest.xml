@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.c306.photopress">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
     Allows Glide to monitor connectivity status and restart failed requests if users go from a
     a disconnected to a connected network state.
     -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- To load images for users -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- To load full exif metadata including location -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-    <!-- For in-app subscriptions -->
-    <uses-permission android:name="com.android.vending.BILLING" />
-
+    
     <application
+        android:name=".PhotoPressApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".PhotoPressApplication"
         android:theme="@style/AppTheme.Splash">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-    
+                
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>

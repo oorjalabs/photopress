@@ -154,7 +154,7 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
     /**
      * Handle non-persistent preference clicks
      */
-    override fun onPreferenceClick(preference: Preference?): Boolean {
+    override fun onPreferenceClick(preference: Preference): Boolean {
         when (preference?.key) {
             
             KEY_PREF_LOGOUT -> {

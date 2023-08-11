@@ -7,11 +7,20 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.text.Html
 import android.widget.Toast
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
-import net.c306.photopress.api.*
+import net.c306.photopress.api.ApiClient
+import net.c306.photopress.api.Blog
+import net.c306.photopress.api.WPBlogPost
+import net.c306.photopress.api.WPCategory
+import net.c306.photopress.api.WPTag
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.sync.SyncUtils
@@ -76,7 +85,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         }
     }
     
-    val inputsEnabled = Transformations.switchMap(state) {
+    val inputsEnabled = state.switchMap {
         MutableLiveData<Boolean>().apply {
             value = it != State.NO_BLOG_SELECTED && it != State.PUBLISHING && it != State.PUBLISHED
         }
@@ -93,12 +102,15 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     // Selected Blog
     private val _selectedBlogId = MutableLiveData<Int>()
     private val selectedBlogId: LiveData<Int> = _selectedBlogId
-    val selectedBlog = Transformations.switchMap(selectedBlogId) { blogId ->
+    val selectedBlog = selectedBlogId.switchMap { blogId ->
         val selectedBlog =
-            if (blogId == null || blogId < 0) null
-            else AuthPrefs(applicationContext)
-                .getBlogsList()
-                .find { it.id == blogId }
+            if (blogId < 0) {
+                null
+            } else {
+                AuthPrefs(applicationContext)
+                    .getBlogsList()
+                    .find { it.id == blogId }
+            }
         
         MutableLiveData<Blog?>().apply { value = selectedBlog }
     }
@@ -264,10 +276,10 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     // Post publishing state
-    private val postStatus = MutableLiveData<PhotoPressPost.PhotoPostStatus>()
+    private val postStatus = MutableLiveData<PhotoPressPost.PhotoPostStatus?>()
     
     // Title text
-    val postTitle = MutableLiveData<String>()
+    val postTitle = MutableLiveData<String?>()
     
     // Post tags
     val postTags = MutableLiveData<String>()
@@ -286,7 +298,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     // Post caption (same as image caption in case of single image post)
-    val postCaption = MutableLiveData<String>()
+    val postCaption = MutableLiveData<String?>()
     
     // Post caption (same as image caption in case of single image post)
     private val _postFeaturedImageId = MutableLiveData<Int>()
@@ -329,8 +341,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     
     
     // Published post data
-    private val _publishedPost = MutableLiveData<PublishedPost>()
-    val publishedPost: LiveData<PublishedPost> = _publishedPost
+    private val _publishedPost = MutableLiveData<PublishedPost?>()
+    val publishedPost: LiveData<PublishedPost?> = _publishedPost
     
     /**
      * Reset view model state for a new post
@@ -413,7 +425,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
     }
     
     
-    private val doPublish = MutableLiveData<Boolean>()
+    private val doPublish = MutableLiveData<Boolean?>()
     
     internal fun publishPost(status: PhotoPressPost.PhotoPostStatus) {
         postStatus.value = status

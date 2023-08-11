@@ -15,9 +15,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import kotlinx.android.synthetic.main.activity_main.*
 import net.c306.customcomponents.updatenotes.UpdateNotesViewModel
 import net.c306.customcomponents.utils.CommonUtils
+import net.c306.photopress.databinding.ActivityMainBinding
 import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.ui.settings.SettingsFragment
 import net.c306.photopress.ui.settings.SettingsFragmentDirections
@@ -30,7 +30,8 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
     
     private val appViewModel by viewModels<AppViewModel>()
     private val newPostViewModel by viewModels<NewPostViewModel>()
-
+    
+    private lateinit var binding: ActivityMainBinding
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,11 +49,12 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
                 )
             )
         }
+    
+        binding = ActivityMainBinding.inflate(layoutInflater)
         
+        setContentView(binding.root)
         
-        setContentView(R.layout.activity_main)
-        
-        nav_view?.setupWithNavController(navController)
+        binding.navView.setupWithNavController(navController)
         
         appViewModel.isLoggedIn.observe(this, {  })
         appViewModel.selectedBlogId.observe(this, {  })
@@ -121,14 +123,14 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         
         
         // If update notes available, highlight badge on settings tab
-        appViewModel.showUpdateNotes.observe(this, { appUpdated ->
+        appViewModel.showUpdateNotes.observe(this) { appUpdated ->
             if (appUpdated == true) {
-                nav_view.getOrCreateBadge(R.id.navigation_settings)
+                binding.navView.getOrCreateBadge(R.id.navigation_settings)
                     .isVisible = true
             } else {
-                nav_view.removeBadge(R.id.navigation_settings)
+                binding.navView.removeBadge(R.id.navigation_settings)
             }
-        })
+        }
     
         // Handle share intent, if provided
         intent?.also { handleIntent(it) }
@@ -146,17 +148,15 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         }
     }
     
-    
     override fun onPreferenceStartFragment(
-        caller: PreferenceFragmentCompat?,
-        pref: Preference?
+        caller: PreferenceFragmentCompat,
+        pref: Preference
     ): Boolean {
-        when (pref?.key) {
+        when (pref.key) {
             SettingsFragment.KEY_OPEN_CREDITS -> {
                 navController.navigate(SettingsFragmentDirections.actionOpenCreditsFragment())
             }
         }
         return true
     }
-    
 }

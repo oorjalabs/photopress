@@ -73,7 +73,8 @@
     </style>
 
 
-    <style name="AppTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog">
+<!--    <style name="AppTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog">-->
+    <style name="AppTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle.Rounded</item>
     </style>
 
