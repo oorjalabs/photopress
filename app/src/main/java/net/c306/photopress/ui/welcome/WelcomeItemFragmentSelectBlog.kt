@@ -1,66 +1,62 @@
 package net.c306.photopress.ui.welcome
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import net.c306.photopress.AppViewModel
+import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
+import net.c306.photopress.utils.viewBinding
 
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
-class WelcomeItemFragmentSelectBlog : Fragment() {
+class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_select_blog) {
     
     private val appViewModel by activityViewModels<AppViewModel>()
     
-    private val selectBlogViewModel by activityViewModels<SelectBlogViewModel>()
+    private val viewModel by activityViewModels<SelectBlogViewModel>()
     
-    private lateinit var binding: FragmentWelcomeItemSelectBlogBinding
-    
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentWelcomeItemSelectBlogBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            selectBlogViewModel = this@WelcomeItemFragmentSelectBlog.selectBlogViewModel
-            avm = this@WelcomeItemFragmentSelectBlog.appViewModel
-            handler = Handler()
-        }
-        
-        return binding.root
-    }
+    private val binding by viewBinding(FragmentWelcomeItemSelectBlogBinding::bind)
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         
-        selectBlogViewModel.blogsAvailable.observe(viewLifecycleOwner, Observer {
+        viewModel.blogsAvailable.observe(viewLifecycleOwner) {
             if (it == null) {
-                selectBlogViewModel.refreshBlogsList()
+                viewModel.refreshBlogsList()
             }
-        })
-        
-        appViewModel.blogSelected.observe(viewLifecycleOwner, Observer {
+            binding.tvNoBlogMessage.isVisible = it == false
+        }
+    
+        appViewModel.blogSelected.observe(viewLifecycleOwner) {
+            binding.animationViewDone.isVisible = it
             if (it == true) {
                 binding.animationViewDone.playAnimation()
             }
-        })
+            binding.groupSetupComplete.isVisible = it
+            binding.buttonSelectBlog.isVisible = !it
+        }
         
+        viewModel.selectBlogWelcomeSubtitle.observe(viewLifecycleOwner) {
+            binding.subtitleWelcomeSelectBlog.text = it
+        }
+        
+        viewModel.blogList.observe(viewLifecycleOwner) {
+            binding.buttonSelectBlog.isEnabled = !it.isNullOrEmpty()
+        }
+        
+        binding.buttonStart.setOnClickListener { goToApp() }
+        binding.buttonSelectBlog.setOnClickListener { openBlogChooser() }
     }
     
+    private fun goToApp() {
+        findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
+    }
     
-    inner class Handler {
-        fun goToApp(@Suppress("UNUSED_PARAMETER") view: View) {
-            findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
-        }
-        
-        fun openBlogChooser(@Suppress("UNUSED_PARAMETER") view: View) {
-            findNavController().navigate(WelcomeFragmentDirections.actionSelectBlog())
-        }
+    private fun openBlogChooser() {
+        findNavController().navigate(WelcomeFragmentDirections.actionSelectBlog())
     }
 }

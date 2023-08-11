@@ -3,25 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
-    <data>
-        
-        <variable
-            name="selectBlogViewModel"
-            type="net.c306.photopress.ui.welcome.SelectBlogViewModel" />
-        
-        <variable
-            name="avm"
-            type="net.c306.photopress.AppViewModel" />
-        
-        <variable
-            name="handler"
-            type="net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Handler" />
-        
-        <import type="net.c306.photopress.api.Blog" />
-        
-        <import type="android.view.View" />
-    </data>
-    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,7 +44,6 @@
             android:layout_marginTop="@dimen/list_item_spacing_half"
             android:ellipsize="end"
             android:lines="1"
-            android:text="@{selectBlogViewModel.selectBlogWelcomeSubtitle}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +54,6 @@
             android:id="@+id/group_setup_complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{avm.blogSelected ? View.VISIBLE : View.GONE}"
             app:constraint_referenced_ids="animation_view_done,button_start"
             tools:layout_editor_absoluteX="16dp"
             tools:visibility="visible" />
@@ -83,7 +62,6 @@
             android:id="@+id/animation_view_done"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:visibility="@{avm.blogSelected ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/button_start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +74,6 @@
             style="@style/OutlinedButton.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{handler::goToApp}"
             android:text="@string/button_get_started"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,32 +86,27 @@
             style="@style/Button.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="@{!selectBlogViewModel.blogList.empty}"
-            android:onClick="@{handler::openBlogChooser}"
             android:text="@string/button_select_blog"
-            android:visibility="@{avm.blogSelected ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/guide_progress_indicator_space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subtitle_welcome_select_blog" />
         
         <TextView
+            android:id="@+id/tvNoBlogMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:autoLink="web"
             android:lineSpacingMultiplier="@dimen/line_spacing_extra_quarter"
             android:text="@string/message_welcome_no_blogs_found"
-            android:visibility="@{selectBlogViewModel.blogsAvailable == false ? View.VISIBLE : View.GONE}"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_select_blog"
-            
-            />
+            app:layout_constraintTop_toBottomOf="@id/button_select_blog" />
         
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_progress_indicator_space"
