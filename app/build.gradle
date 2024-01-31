@@ -155,13 +155,13 @@ dependencies {
     // testImplementation libs.androidx.room.testing
 
     // Testing
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
 
     // Photo view for viewing full image
     implementation libs.cb.photoView
 
     // My custom components
-    implementation libs.ab.CustomComponents
+    implementation libs.ab.customComponents
 }
