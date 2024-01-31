@@ -103,17 +103,16 @@ dependencies {
     implementation libs.kotlin.stdlib.jdk7
 
     // Core
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.constraintlayout
 
     // Networking
-    def okhttp_version = '4.11.0'
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation libs.okhttp
+    implementation libs.okhttp.loggingInterceptor
     def retrofit_version = "2.9.0"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.gson
 
     // Images
     implementation 'com.github.bumptech.glide:glide:4.15.1'
