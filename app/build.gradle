@@ -100,7 +100,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libs.kotlin.stdlib.jdk7
 
     // Core
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -136,8 +136,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     // Navigation component
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
 
     // Lifecycle
     def lifecycle_version = '2.6.1'
