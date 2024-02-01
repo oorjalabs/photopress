@@ -61,17 +61,6 @@ android {
         )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-//        javaCompileOptions {
-//            annotationProcessorOptions {
-//                arguments = [
-//                        // Export schema location
-//                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
-//                        // Incremental processing annotations
-//                        "room.incremental"     : "true"
-//                ]
-//            }
-//        }
     }
 
     buildTypes {
@@ -84,14 +73,10 @@ android {
             )
         }
         debug {
-//            isMinifyEnabled true
-//            isShrinkResources true
             isMinifyEnabled = true
             isShrinkResources = false
 
             applicationIdSuffix = ".debug"
-
-//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -142,7 +127,6 @@ dependencies {
 
     // Images
     implementation(libs.glide)
-//    annotationProcessor libs.compiler
     ksp(libs.glide.compiler)
 
     // WorkManager
@@ -178,7 +162,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.javax.annotation)
-    // testImplementation libs.androidx.room.testing
+    // testImplementation(libs.androidx.room.testing)
 
     // Testing
     testImplementation(libs.junit)
