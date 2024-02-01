@@ -114,7 +114,7 @@ ksp {
 
 dependencies {
     implementation(fileTree(baseDir = "libs") { include("*.jar") })
-    implementation(libs.kotlin.stdlib.jdk7)
+    implementation(libs.kotlin.stdlib)
 
     // Core
     implementation(libs.androidx.legacySupport)
