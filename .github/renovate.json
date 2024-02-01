@@ -44,11 +44,5 @@
   "enabledManagers": ["github-actions", "gradle", "gradle-wrapper"],
   "prBodyNotes": ["{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}"],
   "prConcurrentLimit": 4,
-  "separateMultipleMajor": true,
-  "ignoreDeps": [
-    "ttsuper.android.application:ttsuper.android.application.gradle.plugin",
-    "ttsuper.android.library:ttsuper.android.library.gradle.plugin",
-    "ttsuper.android.compose.library:ttsuper.android.compose.library.gradle.plugin",
-    "ttsuper.android.compose.application:ttsuper.android.compose.application.gradle.plugin"
-  ]
+  "separateMultipleMajor": true
 }
