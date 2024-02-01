@@ -1,0 +1,144 @@
+name: Build
+
+on:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+#  lint:
+#    name: ktlint
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#
+#      - name: Setup Gradle
+#        uses: gradle/gradle-build-action@v2
+#
+#      - name: Run ktlint
+#        run: |
+#          ./gradlew lintKotlinMain lintKotlinTest
+
+#  unit_tests:
+#    needs: [lint]
+#    runs-on: [ ubuntu-latest ]
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#
+#      - name: Setup Gradle
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          gradle-version: wrapper
+#
+#      - name: Add google-services.json
+#        run: echo $GOOGLE_SERVICES >> app/google-services.json
+#        env:
+#          GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES_JSON}}
+#
+#      - name: Run unit tests
+#        run: |
+#          ./gradlew assembleHermioneDebug
+#          ./gradlew testHermioneDebugUnitTest
+
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+
+#      - name: Add google-services.json
+#        run: echo $GOOGLE_SERVICES >> app/google-services.json
+#        env:
+#          GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: Clean build artifacts
+        run: ./gradlew clean
+
+      - name: Build release APK (as check because I don't have any tests yet)
+        env:
+          WP_CLIENT_ID : ${{ secrets.WP_CLIENT_ID }}
+          WP_CLIENT_SECRET : ${{ secrets.WP_CLIENT_SECRET }}
+        run: :app:assembleGrannyRelease
+
+#      - name: Generate Release AAB
+#        env:
+#          WP_CLIENT_ID : ${{ secrets.WP_CLIENT_ID }}
+#          WP_CLIENT_SECRET : ${{ secrets.WP_CLIENT_SECRET }}
+#        run: ./gradlew -PversionNumber=${GITHUB_RUN_NUMBER} app:bundleHermioneRelease
+#
+#      - name: Sign AAB
+#        uses: r0adkll/sign-android-release@v1
+#        # ID used to access action output
+#        id: sign_app
+#        with:
+#          releaseDirectory: app/build/outputs/bundle/hermioneRelease
+#          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+#          alias: ${{ secrets.ALIAS }}
+#          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+#          keyPassword: ${{ secrets.KEY_PASSWORD }}
+#      #        env:
+#      #          # override default build-tools version (29.0.3) -- optional
+#      #          BUILD_TOOLS_VERSION: "30.0.2"
+#
+#      - name: Remove google-services.json
+#        run: rm app/google-services.json
+#
+#      - name: Upload AAB
+#        uses: actions/upload-artifact@master
+#        with:
+#          name: app-hermione-release.aab
+#          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+#
+#  deploy-play-store:
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    steps:
+#
+#      - name: Checkout code to get release notes
+#        uses: actions/checkout@v4
+#
+#      - name: Download aab
+#        uses: actions/download-artifact@master
+#        with:
+#          name: app-hermione-release.aab
+#
+#      - name: Publish to Play Store internal test track
+#        uses: r0adkll/upload-google-play@v1.1.2
+#        with:
+#          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+#          packageName: net.c306.ttsuper
+#          releaseFiles: app-hermione-release.aab
+#          track: internal
+#          whatsNewDirectory: Others/whatsnew

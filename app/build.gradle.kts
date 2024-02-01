@@ -19,7 +19,6 @@ if (apiKeyPropertiesFile.exists()) {
 val envWpClientId = System.getenv("WP_CLIENT_ID") ?: ""
 val envWpClientSecret = System.getenv("WP_CLIENT_SECRET") ?: ""
 
-
 val versionString = "0.14.1"
 val versionNumber = 36
 val showWhatsNew = "false"
