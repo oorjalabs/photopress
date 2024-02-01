@@ -1,4 +1,9 @@
 [versions]
+java = "17"
+minSdk = "26"
+targetSdk = "32"
+compileSdk = "33"
+
 agp = "7.4.2"
 kotlin = "1.8.20"
 kotlinx-coroutines = "1.7.3"

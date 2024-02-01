@@ -99,3 +99,6 @@ updatenotes.html
 PhotoPress.ipr
 PhotoPress.iws
 /temp/
+.idea/deploymentTargetDropDown.xml
+.idea/detekt.xml
+.idea/migrations.xml

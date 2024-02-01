@@ -21,17 +21,17 @@ static def getDate() {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get()))
     }
 }
 
 android {
-    compileSdk 33
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
         applicationId "net.c306.photopress"
-        minSdk 26
-        targetSdk 32
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
         versionCode versionNumber
         versionName "${getDate()}.${versionString}"
 
@@ -87,8 +87,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.toVersion(libs.versions.java.get())
+        targetCompatibility JavaVersion.toVersion(libs.versions.java.get())
     }
 
     buildFeatures {
