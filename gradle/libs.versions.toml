@@ -2,9 +2,9 @@
 java = "17"
 minSdk = "26"
 targetSdk = "32"
-compileSdk = "33"
+compileSdk = "34"
 
-agp = "7.4.2"
+agp = "8.2.2"
 kotlin = "1.9.22"
 kotlinx-coroutines = "1.7.3"
 ksp = "1.9.22-1.0.17"
