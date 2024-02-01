@@ -45,12 +45,12 @@ android {
         buildConfigField(
             type = "String",
             name = "WP_ID",
-            value = apiKeyProperties["CLIENT_ID"] as? String ?: envWpClientId,
+            value = apiKeyProperties["CLIENT_ID"] as? String ?: "\"$envWpClientId\"",
         )
         buildConfigField(
             type = "String",
             name = "WP_SECRET",
-            value = apiKeyProperties["CLIENT_SECRET"] as? String ?: envWpClientSecret,
+            value = apiKeyProperties["CLIENT_SECRET"] as? String ?: "\"$envWpClientSecret\"",
         )
 
         buildConfigField(

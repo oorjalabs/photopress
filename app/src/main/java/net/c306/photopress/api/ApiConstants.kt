@@ -9,17 +9,17 @@ object ApiConstants {
     internal const val AUTH_REDIRECT_URL = "https://$AUTH_REDIRECT_HOST$AUTH_REDIRECT_PATH"
 
     @Suppress("unused")
-    const val AUTHORISE_URL_TOKEN = "https://public-api.wordpress.com/oauth2/authorize?client_id=${BuildConfig.WP_ID}&response_type=token&redirect_uri=$AUTH_REDIRECT_URL&scope=global"
+    val AUTHORISE_URL_TOKEN = "https://public-api.wordpress.com/oauth2/authorize?client_id=${BuildConfig.WP_ID}&response_type=token&redirect_uri=$AUTH_REDIRECT_URL&scope=global"
 
-    const val AUTHORISE_URL = "https://public-api.wordpress.com/oauth2/authorize?client_id=${BuildConfig.WP_ID}&response_type=code&redirect_uri=$AUTH_REDIRECT_URL&scope=global"
+    val AUTHORISE_URL = "https://public-api.wordpress.com/oauth2/authorize?client_id=${BuildConfig.WP_ID}&response_type=code&redirect_uri=$AUTH_REDIRECT_URL&scope=global"
 
     const val TOKEN_URL = "https://public-api.wordpress.com/oauth2/token"
-    
+
     const val VALIDATE_URL = "https://public-api.wordpress.com/oauth2/token-info"
-    
-    
+
+
     const val BASE_URL = "https://public-api.wordpress.com/rest/v1.1/"
-    
+
     const val ABOUT_ME_URL = "me"
     const val BLOG_LIST = "me/sites"
     const val CREATE_POST = "sites/{blog_id}/posts/new"
@@ -29,7 +29,7 @@ object ApiConstants {
     const val GET_TAGS_FOR_SITE = "sites/{blog_id}/tags"
     const val GET_CATEGORIES_FOR_SITE = "sites/{blog_id}/categories"
     const val CREATE_CATEGORY = "sites/{blog_id}/categories/new"
-    
+
 
 
     const val ARG_FIELDS = "fields"
