@@ -2,12 +2,12 @@
 java = "17"
 minSdk = "26"
 targetSdk = "32"
-compileSdk = "33"
+compileSdk = "34"
 
-agp = "7.4.2"
-kotlin = "1.8.20"
+agp = "8.2.2"
+kotlin = "1.9.22"
 kotlinx-coroutines = "1.7.3"
-ksp = "1.8.21-1.0.11"
+ksp = "1.9.22-1.0.17"
 
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
@@ -51,13 +51,13 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "androidx-room" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "androidx-viewpager2" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
-cb-PhotoView = { module = "com.github.chrisbanes:PhotoView", version.ref = "photoView" }
+cb-photoView = { module = "com.github.chrisbanes:PhotoView", version.ref = "photoView" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 google-material = { module = "com.google.android.material:material", version.ref = "material" }
 javax-annotation = { module = "javax.annotation:javax.annotation-api", version.ref = "javaxAnnotation" }
 junit = { module = "junit:junit", version.ref = "junit" }
-kotlin-stdlib-jdk7 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk7", version.ref = "kotlin" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 airbnb-lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }

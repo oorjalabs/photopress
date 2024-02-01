@@ -25,21 +25,21 @@ import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.viewBinding
 
 class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-    
+
     private val navController: NavController
         get() = findNavController(R.id.nav_host_fragment)
-    
+
     private val appViewModel by viewModels<AppViewModel>()
     private val newPostViewModel by viewModels<NewPostViewModel>()
-    
+
     private val binding by viewBinding(ActivityMainBinding::inflate)
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
-        
+
         // On Android P+, set app icon in app switcher view
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             setTaskDescription(
@@ -50,57 +50,57 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
                 )
             )
         }
-    
+
         setContentView(binding.root)
-        
+
         binding.navView.setupWithNavController(navController)
-        
+
         appViewModel.isLoggedIn.observe(this) { }
         appViewModel.selectedBlogId.observe(this) { }
         appViewModel.blogSelected.observe(this) { }
-    
+
         // Restart activity after logout
         appViewModel.doPostLogoutRestart.observe(this) {
             if (it != true) return@observe
-    
+
             appViewModel.doPostLogoutRestart.value = false
-    
+
             finish()
             startActivity(Intent.makeRestartActivityTask(componentName))
         }
-    
-    
+
+
         // If post tags are empty (app start or new post), set default tags as tags.
         // Don't use `newPost` instead because it causes image and input loss on configuration
         // change.
         newPostViewModel.defaultTags.observe(this, Observer {
             if (it.isNullOrBlank()) return@Observer
-            
+
             if (newPostViewModel.postTags.value.isNullOrBlank()) {
                 newPostViewModel.postTags.value = it
             }
         })
-        
+
         // If post categories are empty (app start or new post), set default categories as categories.
         // Don't use `newPost` instead because it causes image and input loss on configuration
         // change.
         newPostViewModel.defaultCategories.observe(this, Observer {
             if (it.isNullOrEmpty()) return@Observer
-            
+
             if (newPostViewModel.postCategories.isEmpty()) {
                 newPostViewModel.postCategories = it
             }
         })
-        
+
         // Set up Update notes viewModel for component view
         val updateNotesViewModel = ViewModelProvider(this)
             .get(UpdateNotesViewModel::class.java)
             .apply {
                 setTitle(getString(R.string.title_update_notes))
                 setShowOwnToolbar(true)
-                setContentResourceId(R.raw.updatenotes)
+                setContentResourceId(net.c306.customcomponents.R.raw.updatenotes)
             }
-        
+
         // Mark update notes seen when fragment is opened
         updateNotesViewModel.seen.observe(this, Observer {
             if (it != true) return@Observer
@@ -118,9 +118,9 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
                 }
             }
         })
-        
-        
-        
+
+
+
         // If update notes available, highlight badge on settings tab
         appViewModel.showUpdateNotes.observe(this) { appUpdated ->
             if (appUpdated == true) {
@@ -130,14 +130,14 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
                 binding.navView.removeBadge(R.id.navigation_settings)
             }
         }
-    
+
         // Handle share intent, if provided
         intent?.also { handleIntent(it) }
     }
-    
-    
+
+
     private fun handleIntent(intent: Intent) {
-        
+
         if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true) {
             (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
                 // Update UI to reflect image being shared
@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
             }
         }
     }
-    
+
     override fun onPreferenceStartFragment(
         caller: PreferenceFragmentCompat,
         pref: Preference
