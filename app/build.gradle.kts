@@ -21,7 +21,7 @@ val envWpClientSecret = System.getenv("WP_CLIENT_SECRET") ?: ""
 
 
 val versionString = "0.14.1"
-val versionNumber = 5036
+val versionNumber = 36
 val showWhatsNew = "false"
 
 fun getDate(): String = SimpleDateFormat("yyyy.MMdd").format(Date())
@@ -85,10 +85,13 @@ android {
     productFlavors {
         create("elsa") {
             versionName = "${getDate()}.${versionString}"
+            versionCode = 1000 + versionNumber
+
         }
 
         create("granny") {
             versionName = "${getDate()}.${versionString}-granny"
+            versionCode = 5000 + versionNumber
         }
     }
 
