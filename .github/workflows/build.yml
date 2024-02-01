@@ -90,7 +90,7 @@ jobs:
         env:
           WP_CLIENT_ID : ${{ secrets.WP_CLIENT_ID }}
           WP_CLIENT_SECRET : ${{ secrets.WP_CLIENT_SECRET }}
-        run: :app:assembleGrannyRelease
+        run: ./gradlew :app:assembleGrannyRelease
 
 #      - name: Generate Release AAB
 #        env:
