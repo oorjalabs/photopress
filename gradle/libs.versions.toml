@@ -1,7 +1,7 @@
 [versions]
 java = "17"
-minSdk = "26"
-targetSdk = "32"
+minSdk = "29"
+targetSdk = "34"
 compileSdk = "34"
 
 agp = "8.2.2"
