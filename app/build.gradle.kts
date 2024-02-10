@@ -84,13 +84,13 @@ android {
     productFlavors {
         create("elsa") {
             versionName = "${getDate()}.${versionString}"
-            versionCode = 1000 + versionNumber
+            versionCode = 1100 + versionNumber
 
         }
 
         create("granny") {
             versionName = "${getDate()}.${versionString}-granny"
-            versionCode = 5000 + versionNumber
+            versionCode = 5100 + versionNumber
         }
     }
 
