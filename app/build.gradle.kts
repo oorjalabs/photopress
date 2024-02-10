@@ -20,7 +20,7 @@ val envWpClientId = System.getenv("WP_CLIENT_ID") ?: ""
 val envWpClientSecret = System.getenv("WP_CLIENT_SECRET") ?: ""
 
 val versionString = "0.14.1"
-val versionNumber = 36
+val versionNumber = findProperty("versionNumber")?.toString()?.toInt() ?: 1
 val showWhatsNew = "false"
 
 fun getDate(): String = SimpleDateFormat("yyyy.MMdd").format(Date())
