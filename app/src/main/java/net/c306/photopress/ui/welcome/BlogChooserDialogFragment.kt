@@ -9,18 +9,25 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Filter
+import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
 import net.c306.photopress.R
 import net.c306.photopress.api.Blog
+import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECTED_BLOG_KEY
+import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECT_BLOG_REQUEST_KEY
 import net.c306.photopress.utils.AuthPrefs
 import java.util.*
-import kotlin.collections.ArrayList
 
-class BlogChooserDialogFragment: DialogFragment() {
+class BlogChooserDialogFragment : DialogFragment() {
 
     private val args by navArgs<BlogChooserDialogFragmentArgs>()
 
@@ -31,32 +38,29 @@ class BlogChooserDialogFragment: DialogFragment() {
     private var mSearchEditText: EditText? = null
     private var mSuggestedNewBlog: String? = null
 
-    private val selectBlogViewModel by activityViewModels<SelectBlogViewModel>()
-
     private val mBlogChooserListAdapter: BlogAdapter by lazy {
-        context?.let {context ->
-            val blogList = AuthPrefs(context).getBlogsList()
+        val context = requireContext()
+        val blogList = AuthPrefs(context).getBlogsList()
 
-            BlogAdapter(
-                context,
-                android.R.layout.simple_list_item_1,
-                blogList.toMutableList(),
-                args.currentBlogId
-            )
-        } ?: throw Exception("No Context found!")
+        BlogAdapter(
+            context,
+            android.R.layout.simple_list_item_1,
+            blogList.toMutableList(),
+            args.currentBlogId
+        )
     }
-
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         mCurrentBlogId = args.currentBlogId
 
-        return activity?.let {
+        return with(requireActivity()) {
 
-            // Inflate and set the layout for the dialog (Pass null as the parent view because its going in the dialog layout)
-            val contentView = it.layoutInflater.inflate(R.layout.dialog_blog_chooser, null).apply {
-                
+            // Inflate and set the layout for the dialog (Pass null as the parent view because its
+            // going in the dialog layout)
+            val contentView = layoutInflater.inflate(R.layout.dialog_blog_chooser, null).apply {
+
                 // Create list view - add adapter and click listeners
                 val listView = findViewById<ListView>(R.id.blog_list)?.apply {
                     choiceMode = ListView.CHOICE_MODE_SINGLE
@@ -101,7 +105,10 @@ class BlogChooserDialogFragment: DialogFragment() {
 //                                mCurrentBlogList.add(mSuggestedNewBlog!!)
 //                                getView(index, null, listView as ViewGroup).apply {
 //                                    isActivated = true
-//                                    background = context.getDrawable(SELECTED_ITEM_BACKGROUND_COLOUR_ID, context.theme)
+//                                    background = context.getDrawable(
+//                                        SELECTED_ITEM_BACKGROUND_COLOUR_ID,
+//                                        context.theme
+//                                    )
 //                                }
 //                            }
 //                        }
@@ -123,19 +130,20 @@ class BlogChooserDialogFragment: DialogFragment() {
                 .setView(contentView)
                 .setTitle(getString(R.string.blog_selector_title))
                 .setPositiveButton(getString(R.string.button_text_done)) { _, _ ->
-                    selectBlogViewModel.setSelectedBlogId(mCurrentBlogId)
+                    setFragmentResult(
+                        requestKey = SELECT_BLOG_REQUEST_KEY,
+                        result = bundleOf(SELECTED_BLOG_KEY to mCurrentBlogId),
+                    )
                 }
                 .setNegativeButton(getString(R.string.button_text_cancel), null)
                 .create()
-
-        } ?: throw IllegalStateException("Activity cannot be null")
-
+        }
     }
 
 
     private inner class EditTextWatcher : TextWatcher {
 
-        internal var previousText = ""
+        var previousText = ""
             private set
 
         private val onFilter = Filter.FilterListener {
@@ -148,7 +156,7 @@ class BlogChooserDialogFragment: DialogFragment() {
             }
         }
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
         override fun afterTextChanged(s: Editable?) {
             val inputText = s?.trim().toString()
@@ -162,7 +170,7 @@ class BlogChooserDialogFragment: DialogFragment() {
             mBlogChooserListAdapter.filter.filter(previousText, onFilter)
         }
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
     }
 
@@ -199,7 +207,7 @@ class BlogChooserDialogFragment: DialogFragment() {
                 // Mark selected if blog previously selected
                 isActivated = currentBlogId != null && blog?.id == currentBlogId
 
-                background = context.getDrawable(R.drawable.sl_bg_item_blog_chooser)
+                background = ContextCompat.getDrawable(context, R.drawable.sl_bg_item_blog_chooser)
 
                 // Set blog text
                 findViewById<TextView>(android.R.id.text1).text = blog?.name
@@ -213,13 +221,13 @@ class BlogChooserDialogFragment: DialogFragment() {
 
             private val sourceList: ArrayList<Blog> = ArrayList(objects)
 
-            internal fun setSourceList(list: MutableList<Blog>) {
+            fun setSourceList(list: MutableList<Blog>) {
                 sourceList.clear()
                 sourceList.addAll(list)
             }
 
             override fun performFiltering(chars: CharSequence): FilterResults {
-                val filterSeq = chars.toString().toLowerCase(Locale.getDefault())
+                val filterSeq = chars.toString().lowercase()
                 val result = FilterResults()
 
                 if (filterSeq.isBlank()) {
@@ -235,8 +243,8 @@ class BlogChooserDialogFragment: DialogFragment() {
 
                     // The filtering itself
                     val filteredList = sourceList.filter {
-                        it.name.toLowerCase(Locale.getDefault()).contains(filterSeq) ||
-                        it.url.toLowerCase(Locale.getDefault()).contains(filterSeq)
+                        it.name.lowercase().contains(filterSeq) ||
+                            it.url.lowercase().contains(filterSeq)
                     }
 
                     values = filteredList

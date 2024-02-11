@@ -6,7 +6,7 @@ import net.c306.photopress.R
 
 class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
-    private var mItemCount = 3
+    private var mItemCount = Screens.entries.size
 
     internal fun setMaxScreen(value: Int) {
         mItemCount = value
@@ -14,17 +14,16 @@ class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
 
     override fun getItemCount() = mItemCount
 
-    override fun createFragment(position: Int): Fragment {
-        return when (position) {
-            Screens.SELECT_BLOG.screenNumber -> WelcomeItemFragmentSelectBlog()
-            Screens.LOGIN.screenNumber     -> WelcomeItemFragmentLogin()
-            else                             -> Fragment(R.layout.fragment_welcome_item_init)
+    override fun createFragment(position: Int): Fragment =
+        when (Screens.entries.getOrElse(position) { Screens.WELCOME }) {
+            Screens.WELCOME -> Fragment(R.layout.fragment_welcome_item_init)
+            Screens.LOGIN -> WelcomeItemFragmentLogin()
+            Screens.SELECT_BLOG -> WelcomeItemFragmentSelectBlog()
         }
-    }
-    
-    enum class Screens(val screenNumber: Int) {
-        WELCOME (0),
-        LOGIN (1),
-        SELECT_BLOG (2)
+
+    enum class Screens {
+        WELCOME,
+        LOGIN,
+        SELECT_BLOG
     }
 }
