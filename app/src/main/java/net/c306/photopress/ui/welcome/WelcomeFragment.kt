@@ -76,9 +76,9 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
 
             mPagerAdapter.setMaxScreen(
                 1 + if (loggedIn) {
-                    Screens.SELECT_BLOG.screenNumber
+                    Screens.SELECT_BLOG.ordinal
                 } else {
-                    Screens.LOGIN.screenNumber
+                    Screens.LOGIN.ordinal
                 }
             )
         }
