@@ -7,7 +7,8 @@ plugins {
     id("kotlin-android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 
@@ -130,6 +131,10 @@ dependencies {
     // Images
     implementation(libs.glide)
     ksp(libs.glide.compiler)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
