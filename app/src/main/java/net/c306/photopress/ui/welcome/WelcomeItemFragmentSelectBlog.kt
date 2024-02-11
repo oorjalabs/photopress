@@ -7,7 +7,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
@@ -52,8 +57,20 @@ class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_se
             binding.buttonSelectBlog.isVisible = !it
         }
 
-        viewModel.selectBlogWelcomeSubtitle.observe(viewLifecycleOwner) {
-            binding.subtitleWelcomeSelectBlog.text = it
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.selectBlogWelcomeSubtitle.collectLatest {
+                    binding.subtitleWelcomeSelectBlog.text = when (it) {
+                        SelectBlogViewModel.Title.Default -> {
+                            getString(R.string.subtitle_welcome_select_blog)
+                        }
+
+                        is SelectBlogViewModel.Title.SelectedBlog -> {
+                            getString(R.string.posting_on_blog, it.blogName)
+                        }
+                    }
+                }
+            }
         }
 
         viewModel.blogList.observe(viewLifecycleOwner) {
