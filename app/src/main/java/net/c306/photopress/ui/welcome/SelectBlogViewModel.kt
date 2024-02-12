@@ -4,22 +4,28 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
-import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.Blog
+import net.c306.photopress.api.WpService
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SelectBlogViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+internal class SelectBlogViewModel @Inject constructor(
+    application: Application,
+    private val wpService: WpService,
+    private val authPrefs: AuthPrefs,
+) : AndroidViewModel(application) {
 
-    private val apiClient = ApiClient()
     private val applicationContext = application.applicationContext
 
     private val _blogList = MutableLiveData<List<Blog>?>()
@@ -78,8 +84,7 @@ class SelectBlogViewModel(application: Application) : AndroidViewModel(applicati
      * Get user details from server
      */
     internal fun refreshBlogsList() {
-
-        apiClient.getApiService(applicationContext)
+        wpService
             .listBlogs(Blog.FIELDS_STRING, Blog.OPTIONS_STRING)
             .enqueue(object : Callback<Blog.GetSitesResponse> {
                 override fun onFailure(call: Call<Blog.GetSitesResponse>, t: Throwable) {
@@ -105,14 +110,13 @@ class SelectBlogViewModel(application: Application) : AndroidViewModel(applicati
                     blogsAvailable.value = blogsList.isNotEmpty()
 
                     // Save to storage
-                    AuthPrefs(applicationContext)
-                        .saveBlogsList(blogsList)
+                    authPrefs.saveBlogsList(blogsList)
                 }
             })
     }
 
     sealed interface Title {
         data object Default : Title
-        data class SelectedBlog(val blogName: String): Title
+        data class SelectedBlog(val blogName: String) : Title
     }
 }
