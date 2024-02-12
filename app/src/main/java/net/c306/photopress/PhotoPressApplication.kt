@@ -17,6 +17,9 @@ class PhotoPressApplication : Application() {
     @Inject
     lateinit var settings: Settings
 
+    @Inject
+    lateinit var appPrefs: AppPrefs
+
     override fun onCreate() {
         super.onCreate()
 
@@ -45,7 +48,6 @@ class PhotoPressApplication : Application() {
      */
     private fun doAppUpgrades() {
 
-        val appPrefs = AppPrefs.getInstance(applicationContext)
         // Get last stored app version
         val savedAppVersion = appPrefs.appVersion
 

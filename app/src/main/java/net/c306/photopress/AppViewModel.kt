@@ -23,6 +23,7 @@ import javax.inject.Inject
 class AppViewModel @Inject constructor(
     application: Application,
     private val settings: Settings,
+    private val appPrefs: AppPrefs,
 ) : AndroidViewModel(application) {
 
     private val applicationContext = application.applicationContext
@@ -39,8 +40,6 @@ class AppViewModel @Inject constructor(
             value = if (!it.displayName.isNullOrBlank()) it.displayName else it.username
         }
     }
-
-    private val appPrefs by lazy { AppPrefs.getInstance(applicationContext) }
 
     // WordPress app installed
     val isWordPressAppInstalled = MutableLiveData<Boolean>()
