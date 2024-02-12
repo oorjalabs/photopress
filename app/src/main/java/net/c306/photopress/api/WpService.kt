@@ -18,24 +18,6 @@ import retrofit2.http.Query
  */
 internal interface WpService {
 
-    @GET(ApiConstants.GET_TAGS_FOR_SITE)
-    fun getTagsForSite(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(WPTag.ARG_ORDER_BY) orderBy: String = WPTag.VALUE_ORDER_BY,
-        @Query(WPTag.ARG_ORDER) order: String = WPTag.VALUE_ORDER,
-        @Query(WPTag.ARG_NUMBER) number: Number = WPTag.VALUE_NUMBER,
-        @Query(WPTag.ARG_FIELDS) fields: String = WPTag.FIELDS_STRING
-    ): Call<WPTag.TagsResponse>
-
-    @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
-    fun getCategoriesForSite(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(WPCategory.ARG_ORDER_BY) orderBy: String = WPCategory.VALUE_ORDER_BY,
-        @Query(WPCategory.ARG_ORDER) order: String = WPCategory.VALUE_ORDER,
-        @Query(WPCategory.ARG_NUMBER) number: Number = WPCategory.VALUE_NUMBER,
-        @Query(WPCategory.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING
-    ): Call<WPCategory.GetCategoriesResponse>
-
     @POST(ApiConstants.CREATE_CATEGORY)
     @FormUrlEncoded
     fun addCategory(
@@ -101,7 +83,7 @@ internal interface WpService {
     ): Blog.GetSitesResponse
 
     @GET(ApiConstants.GET_TAGS_FOR_SITE)
-    suspend fun getTagsForSiteAsync(
+    suspend fun getTagsForSite(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(WPTag.ARG_ORDER_BY) orderBy: String = WPTag.VALUE_ORDER_BY,
         @Query(WPTag.ARG_ORDER) order: String = WPTag.VALUE_ORDER,
@@ -110,7 +92,7 @@ internal interface WpService {
     ): WPTag.TagsResponse
 
     @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
-    suspend fun getCategoriesForSiteAsync(
+    suspend fun getCategoriesForSite(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(WPCategory.ARG_ORDER_BY) orderBy: String = WPCategory.VALUE_ORDER_BY,
         @Query(WPCategory.ARG_ORDER) order: String = WPCategory.VALUE_ORDER,

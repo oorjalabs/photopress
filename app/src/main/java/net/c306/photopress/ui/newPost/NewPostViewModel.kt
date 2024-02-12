@@ -30,14 +30,10 @@ import net.c306.photopress.sync.SyncUtils
 import net.c306.photopress.sync.SyncUtils.PublishedPost
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
+import java.io.IOException
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @HiltViewModel
 internal class NewPostViewModel @Inject constructor(
@@ -545,39 +541,27 @@ internal class NewPostViewModel @Inject constructor(
         val tags: List<WPTag>? = null
     )
 
-    private suspend fun refreshTags() = suspendCoroutine { cont ->
+    private suspend fun refreshTags(): RefreshTagsResult {
         val blogId = selectedBlogId.value?.toString()
 
-        if (blogId.isNullOrBlank()) {
-            cont.resume(RefreshTagsResult(errorMessage = "No blog selected"))
-            return@suspendCoroutine
+        return if (blogId.isNullOrBlank()) {
+            RefreshTagsResult(errorMessage = "No blog selected")
+        } else {
+            val fetchTagsResponse = try {
+                wpService.getTagsForSite(blogId)
+            } catch (e: IOException) {
+                Timber.d(e, "Error fetching tags!")
+                null
+            }
+
+            if (fetchTagsResponse != null) {
+                Timber.v("Fetched ${fetchTagsResponse.found} tags")
+                RefreshTagsResult(tags = fetchTagsResponse.tags)
+            } else {
+                Timber.d("Error updating to published: No blog response received :(")
+                RefreshTagsResult(errorMessage = "Error publishing: No response received")
+            }
         }
-
-        wpService
-            .getTagsForSite(blogId)
-            .enqueue(object : Callback<WPTag.TagsResponse> {
-                override fun onFailure(call: Call<WPTag.TagsResponse>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error fetching tags!")
-                    cont.resume(RefreshTagsResult(errorMessage = "Error fetching tags: ${t.localizedMessage}"))
-                }
-
-                override fun onResponse(
-                    call: Call<WPTag.TagsResponse>,
-                    response: Response<WPTag.TagsResponse>
-                ) {
-                    val fetchTagsResponse = response.body()
-
-                    if (fetchTagsResponse == null) {
-                        Timber.w("Error updating to published: No blog response received :(")
-                        cont.resume(RefreshTagsResult(errorMessage = "Error publishing: No response received"))
-                        return
-                    }
-
-                    Timber.v("Fetched ${fetchTagsResponse.found} tags")
-                    cont.resume(RefreshTagsResult(tags = fetchTagsResponse.tags))
-                }
-            })
     }
 
     private data class RefreshCategoriesResult(
@@ -585,43 +569,27 @@ internal class NewPostViewModel @Inject constructor(
         val categories: List<WPCategory>? = null
     )
 
-    private suspend fun refreshCategories() = suspendCoroutine { cont ->
+    private suspend fun refreshCategories(): RefreshCategoriesResult {
         val blogId = selectedBlogId.value?.toString()
 
-        if (blogId.isNullOrBlank()) {
-            cont.resume(RefreshCategoriesResult(errorMessage = "No blog selected"))
-            return@suspendCoroutine
+        return if (blogId.isNullOrBlank()) {
+            RefreshCategoriesResult(errorMessage = "No blog selected")
+        } else {
+            val fetchCategoriesResponse = try {
+                wpService.getCategoriesForSite(blogId)
+            } catch (e: IOException) {
+                Timber.d(e, "Error fetching categories!")
+                null
+            }
+
+            if (fetchCategoriesResponse != null) {
+                Timber.v("Fetched ${fetchCategoriesResponse.found} categories")
+                RefreshCategoriesResult(categories = fetchCategoriesResponse.categories)
+            } else {
+                Timber.d("Error updating to published: No blog response received :(")
+                RefreshCategoriesResult(errorMessage = "Error publishing: No response received")
+            }
         }
-
-        wpService
-            .getCategoriesForSite(blogId)
-            .enqueue(object : Callback<WPCategory.GetCategoriesResponse> {
-                override fun onFailure(call: Call<WPCategory.GetCategoriesResponse>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error fetching categories!")
-                    cont.resume(
-                        RefreshCategoriesResult(
-                            errorMessage = "Error fetching categories: ${t.localizedMessage}",
-                        ),
-                    )
-                }
-
-                override fun onResponse(
-                    call: Call<WPCategory.GetCategoriesResponse>,
-                    response: Response<WPCategory.GetCategoriesResponse>
-                ) {
-                    val fetchCategoriesResponse = response.body()
-
-                    if (fetchCategoriesResponse == null) {
-                        Timber.w("Error updating to published: No blog response received :(")
-                        cont.resume(RefreshCategoriesResult(errorMessage = "Error publishing: No response received"))
-                        return
-                    }
-
-                    Timber.v("Fetched ${fetchCategoriesResponse.found} categories")
-                    cont.resume(RefreshCategoriesResult(categories = fetchCategoriesResponse.categories))
-                }
-            })
     }
 
 
