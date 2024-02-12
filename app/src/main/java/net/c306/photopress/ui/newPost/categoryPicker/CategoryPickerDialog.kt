@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.databinding.DialogCategoryPickerBinding
@@ -24,6 +25,7 @@ import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.Utils
 import java.util.*
 
+@AndroidEntryPoint
 class CategoryPickerDialog : DialogFragment() {
 
     private val newPostViewModel: NewPostViewModel by activityViewModels()

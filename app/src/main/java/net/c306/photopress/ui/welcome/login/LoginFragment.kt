@@ -13,6 +13,7 @@ import android.webkit.WebViewClient
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
 import net.c306.photopress.api.ApiConstants
 import net.c306.photopress.api.ApiConstants.ARG_CODE
@@ -26,6 +27,7 @@ import timber.log.Timber
  * Use to send user to wordpress auth page. Auth redirects to c306 hosted page,
  * from where I read the auth credentials in header/url.
  */
+@AndroidEntryPoint
 class LoginFragment : NoBottomNavFragment() {
 
     private val loginViewModel by activityViewModels<LoginViewModel>()
