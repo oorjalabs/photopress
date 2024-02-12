@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.customcomponents.confirmation.ConfirmationDialog
 import net.c306.photopress.R
 import net.c306.photopress.database.PhotoPressPost
@@ -16,30 +17,31 @@ import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
 import net.c306.photopress.utils.viewBinding
 import java.util.*
 
+@AndroidEntryPoint
 class PublishOptionsDialog : BaseBottomSheetDialogFragment(R.layout.dialog_publish_option) {
-    
+
     private val myTag = this::class.java.name
-    
+
     private val confirmationRC = 9832
-    
+
     private val viewModel by activityViewModels<NewPostViewModel>()
     private val confirmationViewModel by activityViewModels<ConfirmationDialog.ConfirmationViewModel>()
-    
+
     private val binding by viewBinding(DialogPublishOptionBinding::bind)
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         viewModel.scheduleReady.observe(viewLifecycleOwner, Observer {
-            
+
             if (it != true) return@Observer
-            
+
             val dateString = DateUtils.formatDateTime(
                 view.context,
                 viewModel.scheduledDateTime.value!!,
                 DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
             )
-            
+
             findNavController().navigate(
                 R.id.confirmationDialog,
                 bundleOf(ConfirmationDialog.KEY_CONFIRMATION_DETAILS to ConfirmationDialog.Details(
@@ -51,12 +53,12 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment(R.layout.dialog_publi
                 ))
             )
         })
-        
+
         confirmationViewModel.result.observe(viewLifecycleOwner, Observer {
             if (it == null || it.callerTag != myTag) return@Observer
-            
+
             confirmationViewModel.reset()
-            
+
             when (it.requestCode) {
                 confirmationRC ->  {
                     if (it.result) {
@@ -70,31 +72,31 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment(R.layout.dialog_publi
                 }
             }
         })
-        
+
         viewModel.showTimePicker.observe(viewLifecycleOwner, Observer {
             if (it != true) return@Observer
             findNavController().navigate(PublishOptionsDialogDirections.actionGetPublishTime())
         })
-        
-        binding.buttonPublishNow.setOnClickListener { 
+
+        binding.buttonPublishNow.setOnClickListener {
             publish()
         }
-        
-        binding.buttonScheduleForLater.setOnClickListener { 
+
+        binding.buttonScheduleForLater.setOnClickListener {
             publishScheduled()
         }
-        
-        binding.buttonSaveAsDraft.setOnClickListener { 
+
+        binding.buttonSaveAsDraft.setOnClickListener {
             uploadAsDraft()
         }
     }
-    
-    
+
+
     private fun publish() {
         viewModel.publishPost(PhotoPressPost.PhotoPostStatus.PUBLISH)
         dismiss()
     }
-    
+
     /**
      * Show dialogs to get scheduling date and time
      */
@@ -108,7 +110,7 @@ class PublishOptionsDialog : BaseBottomSheetDialogFragment(R.layout.dialog_publi
         }
         datePicker.show(parentFragmentManager, "datePicker")
     }
-    
+
     private fun uploadAsDraft() {
         viewModel.publishPost(PhotoPressPost.PhotoPostStatus.DRAFT)
         dismiss()

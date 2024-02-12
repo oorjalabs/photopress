@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.customcomponents.updatenotes.UpdateNotesViewModel
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.databinding.ActivityMainBinding
@@ -23,8 +24,13 @@ import net.c306.photopress.ui.settings.SettingsFragment
 import net.c306.photopress.ui.settings.SettingsFragmentDirections
 import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.viewBinding
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+
+    @Inject
+    lateinit var appPrefs: AppPrefs
 
     private val navController: NavController
         get() = findNavController(R.id.nav_host_fragment)
@@ -109,7 +115,7 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
              * Update app updated state and the app version in storage
              * only store version in storage when user has seen updates
              */
-            AppPrefs.getInstance(applicationContext).run {
+            with(appPrefs) {
                 // Save new version code
                 if (showUpdateNotes) {
                     saveAppVersion(BuildConfig.VERSION_CODE)

@@ -9,9 +9,16 @@ import net.c306.photopress.utils.Settings
 import timber.log.Timber
 import java.util.*
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 @HiltAndroidApp
 class PhotoPressApplication : Application() {
+
+    @Inject
+    lateinit var settings: Settings
+
+    @Inject
+    lateinit var appPrefs: AppPrefs
 
     override fun onCreate() {
         super.onCreate()
@@ -41,7 +48,6 @@ class PhotoPressApplication : Application() {
      */
     private fun doAppUpgrades() {
 
-        val appPrefs = AppPrefs.getInstance(applicationContext)
         // Get last stored app version
         val savedAppVersion = appPrefs.appVersion
 
@@ -70,10 +76,11 @@ class PhotoPressApplication : Application() {
                 // Do other upgrades
                 // ...
 
-                // Update stored values for previous list preference or upgradedListPreference from string to set<string>
+                // Update stored values for previous list preference or upgradedListPreference from
+                // string to set<string>
                 if (savedAppVersion < APP_VERSION_UPGRADED_CUSTOM_PREFERENCES) {
                     Timber.v("OnUpgrade: Upgrade custom preferences")
-                    Settings.getInstance(applicationContext).upgradeCustomPreferences()
+                    settings.upgradeCustomPreferences()
                 }
 
                 if (savedAppVersion < APP_VERSION_SAVE_INSTALL_DATE) {

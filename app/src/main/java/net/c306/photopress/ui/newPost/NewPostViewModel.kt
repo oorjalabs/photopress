@@ -1,19 +1,20 @@
 package net.c306.photopress.ui.newPost
 
-import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Html
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -40,14 +41,13 @@ import kotlin.coroutines.suspendCoroutine
 
 @HiltViewModel
 internal class NewPostViewModel @Inject constructor(
-    application: Application,
+    @ApplicationContext
+    private val applicationContext: Context,
     private val wpService: WpService,
     private val syncUtils: SyncUtils,
-) : AndroidViewModel(application) {
-
-    private val applicationContext by lazy { application.applicationContext }
-
-    private val settings by lazy { Settings.getInstance(applicationContext) }
+    private val settings: Settings,
+    private val authPrefs: AuthPrefs,
+) : ViewModel() {
 
     // Fragment state
     enum class State {
@@ -117,7 +117,7 @@ internal class NewPostViewModel @Inject constructor(
             if (blogId < 0) {
                 null
             } else {
-                AuthPrefs(applicationContext)
+                authPrefs
                     .getBlogsList()
                     .find { it.id == blogId }
             }
@@ -130,8 +130,8 @@ internal class NewPostViewModel @Inject constructor(
 
         updateState()
 
-        val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
-        val selectedBlogCategories = AuthPrefs(applicationContext).getCategoriesList()
+        val selectedBlogTags = authPrefs.getTagsList()
+        val selectedBlogCategories = authPrefs.getCategoriesList()
 
         setBlogTags(selectedBlogTags ?: emptyList())
         setBlogCategories(selectedBlogCategories ?: emptyList())
@@ -153,8 +153,7 @@ internal class NewPostViewModel @Inject constructor(
         viewModelScope.launch {
             refreshTags().tags?.let {
                 setBlogTags(it)
-                AuthPrefs(applicationContext)
-                    .saveTagsList(it)
+                authPrefs.saveTagsList(it)
             }
         }
     }
@@ -179,7 +178,7 @@ internal class NewPostViewModel @Inject constructor(
         _blogCategories.value = list
 
         // Update storage
-        AuthPrefs(applicationContext).saveCategoriesList(list)
+        authPrefs.saveCategoriesList(list)
 
         // Update on server and sync list
         viewModelScope.launch {
@@ -203,8 +202,7 @@ internal class NewPostViewModel @Inject constructor(
         viewModelScope.launch {
             refreshCategories().categories?.let {
                 setBlogCategories(it)
-                AuthPrefs(applicationContext)
-                    .saveCategoriesList(it)
+                authPrefs.saveCategoriesList(it)
             }
         }
     }
@@ -526,8 +524,7 @@ internal class NewPostViewModel @Inject constructor(
             blogTags.sortBy { it.slug }
 
             // Save and set updated list
-            AuthPrefs(applicationContext)
-                .saveTagsList(blogTags)
+            authPrefs.saveTagsList(blogTags)
             setBlogTags(blogTags)
 
         }

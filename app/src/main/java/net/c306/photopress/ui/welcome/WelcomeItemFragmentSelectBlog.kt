@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.c306.photopress.AppViewModel
@@ -21,6 +22,7 @@ import net.c306.photopress.utils.viewBinding
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
+@AndroidEntryPoint
 class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_select_blog) {
 
     private val appViewModel by activityViewModels<AppViewModel>()
