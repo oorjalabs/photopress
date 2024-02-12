@@ -19,10 +19,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
-import net.c306.photopress.api.ApiService
 import net.c306.photopress.api.Blog
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPTag
+import net.c306.photopress.api.WpService
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.sync.SyncUtils
@@ -41,7 +41,7 @@ import kotlin.coroutines.suspendCoroutine
 @HiltViewModel
 internal class NewPostViewModel @Inject constructor(
     application: Application,
-    private val apiService: ApiService,
+    private val wpService: WpService,
     private val syncUtils: SyncUtils,
 ) : AndroidViewModel(application) {
 
@@ -556,7 +556,7 @@ internal class NewPostViewModel @Inject constructor(
             return@suspendCoroutine
         }
 
-        apiService
+        wpService
             .getTagsForSite(blogId)
             .enqueue(object : Callback<WPTag.TagsResponse> {
                 override fun onFailure(call: Call<WPTag.TagsResponse>, t: Throwable) {
@@ -596,7 +596,7 @@ internal class NewPostViewModel @Inject constructor(
             return@suspendCoroutine
         }
 
-        apiService
+        wpService
             .getCategoriesForSite(blogId)
             .enqueue(object : Callback<WPCategory.GetCategoriesResponse> {
                 override fun onFailure(call: Call<WPCategory.GetCategoriesResponse>, t: Throwable) {

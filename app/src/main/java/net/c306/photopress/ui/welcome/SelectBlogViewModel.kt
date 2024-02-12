@@ -8,8 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
-import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.Blog
+import net.c306.photopress.api.WpService
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
 import retrofit2.Call
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class SelectBlogViewModel @Inject constructor(
     application: Application,
-    private val apiClient: ApiClient,
+    private val wpService: WpService,
     private val authPrefs: AuthPrefs,
 ) : AndroidViewModel(application) {
 
@@ -84,8 +84,7 @@ internal class SelectBlogViewModel @Inject constructor(
      * Get user details from server
      */
     internal fun refreshBlogsList() {
-
-        apiClient.apiService
+        wpService
             .listBlogs(Blog.FIELDS_STRING, Blog.OPTIONS_STRING)
             .enqueue(object : Callback<Blog.GetSitesResponse> {
                 override fun onFailure(call: Call<Blog.GetSitesResponse>, t: Throwable) {

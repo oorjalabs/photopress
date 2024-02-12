@@ -8,10 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import net.c306.photopress.R
-import net.c306.photopress.api.ApiClient
 import net.c306.photopress.api.WPBlogPost
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPMedia
+import net.c306.photopress.api.WpService
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.utils.Settings
@@ -32,7 +32,7 @@ import kotlin.coroutines.suspendCoroutine
 internal class SyncUtils @Inject constructor(
     @ApplicationContext
     private val context: Context,
-    private val apiClient: ApiClient,
+    private val wpService: WpService,
 ) {
     fun publishPostLiveData(
         post: PhotoPressPost,
@@ -261,8 +261,7 @@ internal class SyncUtils @Inject constructor(
 
         }
 
-
-        apiClient.apiService
+        wpService
             .uploadMediaMulti(
                 blogId = blogId.toString(),
                 contents = requestBodyBuilder.build(),
@@ -387,8 +386,7 @@ internal class SyncUtils @Inject constructor(
             }
             .build()
 
-
-        apiClient.apiService
+        wpService
             .uploadSingleMedia(
                 blogId = blogId.toString(),
                 contents = requestBody,
@@ -480,8 +478,7 @@ internal class SyncUtils @Inject constructor(
         blogId: Int,
         image: UploadMediaResponse
     ) = suspendCoroutine<UploadMediaResponse> { cont ->
-
-        apiClient.apiService
+        wpService
             .updateMediaAttributes(
                 blogId = blogId.toString(),
                 mediaId = image.media!!.id.toString(),
@@ -613,7 +610,7 @@ internal class SyncUtils @Inject constructor(
         val featuredImage = images.find { it.originalImage.id == post.postThumbnail }
             ?: images[0]
 
-        apiClient.apiService
+        wpService
             .uploadBlogpost(
                 blogId = post.blogId.toString(),
                 fields = WPBlogPost.FIELDS_STRING,
@@ -663,7 +660,7 @@ internal class SyncUtils @Inject constructor(
 
         val scheduledDateString = scheduledTime?.let { Instant.ofEpochMilli(it).toString() }
 
-        apiClient.apiService
+        wpService
             .updatePostStatus(
                 blogId = blogId.toString(),
                 postId = blogPost.id.toString(),
@@ -751,8 +748,7 @@ internal class SyncUtils @Inject constructor(
 
 
     suspend fun addCategory(blogId: Int, categoryName: String): Boolean = suspendCoroutine { cont ->
-
-        apiClient.apiService
+        wpService
             .addCategory(
                 blogId = blogId.toString(),
                 request = WPCategory.AddCategoryRequest(categoryName).toFieldMap()
