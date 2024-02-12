@@ -1,9 +1,8 @@
 package net.c306.photopress.ui.welcome
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,13 +20,10 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 internal class SelectBlogViewModel @Inject constructor(
-    application: Application,
     private val wpService: WpService,
     private val authPrefs: AuthPrefs,
     private val settings: Settings,
-) : AndroidViewModel(application) {
-
-    private val applicationContext = application.applicationContext
+) : ViewModel() {
 
     private val _blogList = MutableLiveData<List<Blog>?>()
     val blogList: LiveData<List<Blog>?> = _blogList
@@ -63,7 +59,6 @@ internal class SelectBlogViewModel @Inject constructor(
 
 
     init {
-        val authPrefs = AuthPrefs(application)
         val savedBlogs = authPrefs.getBlogsList()
         _blogList.value = savedBlogs
 

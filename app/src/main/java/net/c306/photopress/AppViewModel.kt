@@ -2,9 +2,9 @@ package net.c306.photopress
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,13 +20,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class AppViewModel @Inject constructor(
+internal class AppViewModel @Inject constructor(
     application: Application,
     private val settings: Settings,
     private val appPrefs: AppPrefs,
-) : AndroidViewModel(application) {
-
-    private val applicationContext = application.applicationContext
+    private val authPrefs: AuthPrefs,
+) : ViewModel() {
 
     // User details and name
     private val userDetails = MutableLiveData<UserDetails>()
@@ -68,7 +67,7 @@ class AppViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             Timber.i("Logging out...")
-            AuthPrefs(applicationContext).clear()
+            authPrefs.clear()
             settings.clear()
             // If we use a room database, clear that here too
 
@@ -87,10 +86,10 @@ class AppViewModel @Inject constructor(
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
             AuthPrefs.ARG_USER_TOKEN -> _isLoggedIn.value =
-                AuthPrefs(applicationContext).haveAuthToken()
+                authPrefs.haveAuthToken()
 
             AuthPrefs.ARG_USER_DETAILS -> userDetails.value =
-                AuthPrefs(applicationContext).getUserDetails()
+                authPrefs.getUserDetails()
 
             Settings.KEY_SELECTED_BLOG_ID -> setSelectedBlog()
 
@@ -101,8 +100,6 @@ class AppViewModel @Inject constructor(
 
     // Constructor
     init {
-        val authPrefs = AuthPrefs(applicationContext)
-
         userDetails.value = authPrefs.getUserDetails()
         _isLoggedIn.value = authPrefs.haveAuthToken()
         setSelectedBlog()

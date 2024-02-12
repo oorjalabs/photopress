@@ -20,10 +20,14 @@ import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
 import net.c306.photopress.utils.setCustomDefaultValue
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClickListener {
+internal class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClickListener {
+
+    @Inject
+    lateinit var authPrefs: AuthPrefs
 
     private val myTag = this::class.java.name
 
@@ -46,7 +50,6 @@ class SettingsFragment : CustomPreferenceFragment(), Preference.OnPreferenceClic
 
         // Set user's blog list
         findPreference<SearchableListPreference>(Settings.KEY_SELECTED_BLOG_ID)?.run {
-            val authPrefs = AuthPrefs(context)
             val blogs = authPrefs.getBlogsList()
 
             entries = blogs.map {

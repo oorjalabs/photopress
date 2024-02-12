@@ -26,8 +26,12 @@ import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SE
 import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECT_BLOG_REQUEST_KEY
 import net.c306.photopress.utils.AuthPrefs
 import java.util.*
+import javax.inject.Inject
 
-class BlogChooserDialogFragment : DialogFragment() {
+internal class BlogChooserDialogFragment : DialogFragment() {
+
+    @Inject
+    lateinit var authPrefs: AuthPrefs
 
     private val args by navArgs<BlogChooserDialogFragmentArgs>()
 
@@ -40,7 +44,7 @@ class BlogChooserDialogFragment : DialogFragment() {
 
     private val mBlogChooserListAdapter: BlogAdapter by lazy {
         val context = requireContext()
-        val blogList = AuthPrefs(context).getBlogsList()
+        val blogList = authPrefs.getBlogsList()
 
         BlogAdapter(
             context,

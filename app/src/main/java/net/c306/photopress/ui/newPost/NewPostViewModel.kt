@@ -46,6 +46,7 @@ internal class NewPostViewModel @Inject constructor(
     private val wpService: WpService,
     private val syncUtils: SyncUtils,
     private val settings: Settings,
+    private val authPrefs: AuthPrefs,
 ) : ViewModel() {
 
     // Fragment state
@@ -116,7 +117,7 @@ internal class NewPostViewModel @Inject constructor(
             if (blogId < 0) {
                 null
             } else {
-                AuthPrefs(applicationContext)
+                authPrefs
                     .getBlogsList()
                     .find { it.id == blogId }
             }
@@ -129,8 +130,8 @@ internal class NewPostViewModel @Inject constructor(
 
         updateState()
 
-        val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
-        val selectedBlogCategories = AuthPrefs(applicationContext).getCategoriesList()
+        val selectedBlogTags = authPrefs.getTagsList()
+        val selectedBlogCategories = authPrefs.getCategoriesList()
 
         setBlogTags(selectedBlogTags ?: emptyList())
         setBlogCategories(selectedBlogCategories ?: emptyList())
@@ -152,8 +153,7 @@ internal class NewPostViewModel @Inject constructor(
         viewModelScope.launch {
             refreshTags().tags?.let {
                 setBlogTags(it)
-                AuthPrefs(applicationContext)
-                    .saveTagsList(it)
+                authPrefs.saveTagsList(it)
             }
         }
     }
@@ -178,7 +178,7 @@ internal class NewPostViewModel @Inject constructor(
         _blogCategories.value = list
 
         // Update storage
-        AuthPrefs(applicationContext).saveCategoriesList(list)
+        authPrefs.saveCategoriesList(list)
 
         // Update on server and sync list
         viewModelScope.launch {
@@ -202,8 +202,7 @@ internal class NewPostViewModel @Inject constructor(
         viewModelScope.launch {
             refreshCategories().categories?.let {
                 setBlogCategories(it)
-                AuthPrefs(applicationContext)
-                    .saveCategoriesList(it)
+                authPrefs.saveCategoriesList(it)
             }
         }
     }
@@ -525,8 +524,7 @@ internal class NewPostViewModel @Inject constructor(
             blogTags.sortBy { it.slug }
 
             // Save and set updated list
-            AuthPrefs(applicationContext)
-                .saveTagsList(blogTags)
+            authPrefs.saveTagsList(blogTags)
             setBlogTags(blogTags)
 
         }
