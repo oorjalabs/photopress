@@ -24,6 +24,7 @@ internal class SelectBlogViewModel @Inject constructor(
     application: Application,
     private val wpService: WpService,
     private val authPrefs: AuthPrefs,
+    private val settings: Settings,
 ) : AndroidViewModel(application) {
 
     private val applicationContext = application.applicationContext
@@ -57,7 +58,7 @@ internal class SelectBlogViewModel @Inject constructor(
             selectedBlog.value = allBlogs.find { it.id == value }
         }
 
-        Settings.getInstance(applicationContext).setSelectedBlogId(value)
+        settings.setSelectedBlogId(value)
     }
 
 
@@ -71,7 +72,7 @@ internal class SelectBlogViewModel @Inject constructor(
             // There is no else, because default is 'null' so blogs can be refreshed
         }
 
-        val selectedBlogId = Settings.getInstance(applicationContext).selectedBlogId
+        val selectedBlogId = settings.selectedBlogId
 
         selectedBlog.value =
             if (selectedBlogId < 0) null
