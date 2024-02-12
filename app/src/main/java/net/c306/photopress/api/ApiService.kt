@@ -10,13 +10,11 @@ import retrofit2.http.*
 /**
  * Interface for defining REST request functions
  */
-interface ApiService {
-
+internal interface ApiService {
 
     @POST(ApiConstants.TOKEN_URL)
     @FormUrlEncoded
     fun getToken(@FieldMap fields: Map<String, String>): Call<GetTokenResponse>
-
 
     @GET(ApiConstants.VALIDATE_URL)
     fun validateToken(
@@ -24,18 +22,15 @@ interface ApiService {
         @Query(ApiConstants.ARG_TOKEN) token: String
     ): Call<ValidateTokenResponse>
 
-
     @GET(ApiConstants.ABOUT_ME_URL)
     fun aboutMe(@Query(ApiConstants.ARG_FIELDS) fields: String?): Call<UserDetails>
 
-    
     @GET(ApiConstants.BLOG_LIST)
     fun listBlogs(
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Query(ApiConstants.ARG_OPTIONS) options: String?
     ): Call<Blog.GetSitesResponse>
-    
-    
+
     @GET(ApiConstants.GET_TAGS_FOR_SITE)
     fun getTagsForSite(
             @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -44,8 +39,7 @@ interface ApiService {
             @Query(WPTag.ARG_NUMBER) number: Number = WPTag.VALUE_NUMBER,
             @Query(WPTag.ARG_FIELDS) fields: String = WPTag.FIELDS_STRING
     ): Call<WPTag.TagsResponse>
-    
-    
+
     @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
     fun getCategoriesForSite(
             @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -54,8 +48,7 @@ interface ApiService {
             @Query(WPCategory.ARG_NUMBER) number: Number = WPCategory.VALUE_NUMBER,
             @Query(WPCategory.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING
     ): Call<WPCategory.GetCategoriesResponse>
-    
-    
+
     @POST(ApiConstants.CREATE_CATEGORY)
     @FormUrlEncoded
     fun addCategory(
@@ -63,16 +56,14 @@ interface ApiService {
         @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
         @FieldMap request: Map<String, String>
     ): Call<WPCategory>
-    
-    
+
     @POST(ApiConstants.CREATE_POST)
     fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body body: WPBlogPost.CreatePostRequest
     ): Call<WPBlogPost>
-    
-    
+
     @POST(ApiConstants.UPDATE_POST)
     fun updatePostStatus(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -80,24 +71,21 @@ interface ApiService {
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body body: WPBlogPost.UpdatePostStatusRequest
     ): Call<WPBlogPost>
-    
-    
+
     @POST(ApiConstants.UPLOAD_MEDIA)
     fun uploadSingleMedia(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body contents: MultipartBody
     ): Call<WPMedia.UploadMediaResponse>
-    
-    
+
     @POST(ApiConstants.UPLOAD_MEDIA)
     fun uploadMediaMulti(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body contents: MultipartBody
     ): Call<WPMedia.UploadMediaResponse>
-    
-    
+
     @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
     fun updateMediaAttributes(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -105,7 +93,7 @@ interface ApiService {
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body body: WPMedia.UpdateMediaAttributesRequest
     ): Call<WPMedia>
-    
+
     @Keep
     data class ValidateTokenResponse(
         @SerializedName(ApiConstants.ARG_CLIENT_ID)
@@ -120,7 +108,7 @@ interface ApiService {
 
     @Keep
     data class GetTokenResponse(
-        
+
         @SerializedName(ApiConstants.ARG_ACCESS_TOKEN)
         val accessToken: String?,
 

@@ -13,12 +13,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
-import net.c306.photopress.api.ApiClient
+import net.c306.photopress.api.ApiService
 import net.c306.photopress.api.Blog
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPTag
@@ -33,76 +34,81 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@HiltViewModel
+internal class NewPostViewModel @Inject constructor(
+    application: Application,
+    private val apiService: ApiService,
+    private val syncUtils: SyncUtils,
+) : AndroidViewModel(application) {
 
-class NewPostViewModel(application: Application) : AndroidViewModel(application) {
-    
     private val applicationContext by lazy { application.applicationContext }
-    
+
     private val settings by lazy { Settings.getInstance(applicationContext) }
-    
+
     // Fragment state
     enum class State {
         /** Blog not selected. Can't publish. */
         NO_BLOG_SELECTED,
-        
+
         /** Image not selected. Can't publish. */
         EMPTY,
-        
+
         /** Image selected, title text not available. Can't publish. */
         HAVE_IMAGE,
-        
+
         /** Image & title text are both available. Can publish. */
         READY,
-        
+
         /** Publishing post. */
         PUBLISHING,
-        
+
         /** Post. Show link, clear inputs */
         PUBLISHED
     }
-    
+
     private val _state = MutableLiveData<State>().apply { value = State.EMPTY }
     val state: LiveData<State> = _state
-    
+
     internal fun setState(newState: State) {
         _state.value = newState
     }
-    
+
     private val _resetState = MutableSharedFlow<Boolean>()
     val resetState = _resetState.asSharedFlow()
-    
+
     internal fun updateState() {
         val title = postTitle.value ?: ""
         val image = postImages.value?.getOrNull(0)
         val blogId = selectedBlogId.value
         val publishedPost = publishedPost.value
-        
+
         _state.value = when {
             blogId == null || blogId < 0 -> State.NO_BLOG_SELECTED
-            publishedPost != null        -> State.PUBLISHED
-            image == null                -> State.EMPTY
-            title.isBlank()              -> State.HAVE_IMAGE
-            else                         -> State.READY
+            publishedPost != null -> State.PUBLISHED
+            image == null -> State.EMPTY
+            title.isBlank() -> State.HAVE_IMAGE
+            else -> State.READY
         }
     }
-    
+
     val inputsEnabled = state.switchMap {
         MutableLiveData<Boolean>().apply {
             value = it != State.NO_BLOG_SELECTED && it != State.PUBLISHING && it != State.PUBLISHED
         }
     }
-    
-    
+
+
     // Default post settings
     private val useBlockEditor = MutableLiveData<Boolean>()
     private val addFeaturedImage = MutableLiveData<Boolean>()
     internal val defaultTags = MutableLiveData<String>()
     internal val defaultCategories = MutableLiveData<List<String>>()
-    
-    
+
+
     // Selected Blog
     private val _selectedBlogId = MutableLiveData<Int>()
     private val selectedBlogId: LiveData<Int> = _selectedBlogId
@@ -115,34 +121,34 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     .getBlogsList()
                     .find { it.id == blogId }
             }
-        
+
         MutableLiveData<Blog?>().apply { value = selectedBlog }
     }
-    
+
     private fun setSelectedBlogId(value: Int) {
         _selectedBlogId.value = value
-        
+
         updateState()
-        
+
         val selectedBlogTags = AuthPrefs(applicationContext).getTagsList()
         val selectedBlogCategories = AuthPrefs(applicationContext).getCategoriesList()
-        
+
         setBlogTags(selectedBlogTags ?: emptyList())
         setBlogCategories(selectedBlogCategories ?: emptyList())
-        
+
         if (selectedBlogTags == null) updateTagsList()
         if (selectedBlogCategories == null) updateCategoriesList()
     }
-    
-    
+
+
     // Selected Blog's Tags
     private val _blogTags = MutableLiveData<List<WPTag>>()
     val blogTags: LiveData<List<WPTag>> = _blogTags
-    
+
     private fun setBlogTags(list: List<WPTag>) {
         _blogTags.value = list
     }
-    
+
     private fun updateTagsList() {
         viewModelScope.launch {
             refreshTags().tags?.let {
@@ -152,47 +158,47 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             }
         }
     }
-    
+
     // Selected Blog's Categories
     private val _blogCategories = MutableLiveData<List<WPCategory>>()
     val blogCategories: LiveData<List<WPCategory>> = _blogCategories
-    
+
     private fun setBlogCategories(list: List<WPCategory>) {
         _blogCategories.value = list
     }
-    
+
     /**
      * Save category to liveData, storage, and upload to server.
      * Returns updated category list
      */
     internal fun addBlogCategory(category: WPCategory): List<WPCategory> {
-        
+
         // Update live data
         val list = _blogCategories.value?.toMutableList() ?: mutableListOf()
         list.add(category)
         _blogCategories.value = list
-        
+
         // Update storage
         AuthPrefs(applicationContext).saveCategoriesList(list)
-        
+
         // Update on server and sync list
         viewModelScope.launch {
             // Add category on server
-            val success = SyncUtils(applicationContext).addCategory(
+            val success = syncUtils.addCategory(
                 selectedBlogId.value ?: return@launch,
                 category.name
             )
-            
+
             if (success) {
                 // Refresh categories list from server
                 updateCategoriesList()
             }
         }
-        
+
         return list
     }
-    
-    
+
+
     private fun updateCategoriesList() {
         viewModelScope.launch {
             refreshCategories().categories?.let {
@@ -202,14 +208,14 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             }
         }
     }
-    
+
     /**
      * Post Images
      */
-    
+
     private val _postImages = MutableLiveData<List<PostImage>>(emptyList())
     val postImages: LiveData<List<PostImage>> = _postImages
-    
+
     /**
      * Set or clear selected image Uri(s). Called on selection of images by user, or on `newPost`.
      */
@@ -220,21 +226,21 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             } else {
                 value.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }
             }
-        
+
         updateState()
     }
-    
+
     fun addImageUris(newUris: List<Uri>) {
         val list = _postImages.value ?: mutableListOf()
-        
+
         list.toMutableList().apply {
-            addAll(newUris.mapIndexed { index, uri -> PostImage(uri = uri, order = index) }) 
+            addAll(newUris.mapIndexed { index, uri -> PostImage(uri = uri, order = index) })
         }
-        
+
         _postImages.value = list
         updateState()
     }
-    
+
     /**
      * Update [_postImages], usually called after [PostImage.FileDetails] attributes are updated.
      */
@@ -242,8 +248,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         _postImages.value = list
         updateState()
     }
-    
-    
+
+
     /**
      * Update a particular [PostImage] in [_postImages].
      * Usually called after editing image attributes.
@@ -251,50 +257,50 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
      */
     internal fun updatePostImage(image: PostImage) {
         val list = _postImages.value?.toMutableList() ?: mutableListOf()
-        
+
         val index = list.indexOfFirst { it.id == image.id }
-        
+
         // If image in list, update it, else add it
         if (index > -1) {
             list[index] = image
         } else {
             list.add(image)
         }
-        
+
         _postImages.value = list
         updateState()
     }
-    
+
     /**
      * Remove image from [_postImages] list
      */
     internal fun removeImage(image: PostImage) {
         val list = _postImages.value?.toMutableList() ?: mutableListOf()
-        
+
         list.removeIf { it.id == image.id }
-        
+
         if (image.id == postFeaturedImageId.value) {
             toggleFeaturedImage(null)
         }
-        
+
         _postImages.value = list
         updateState()
     }
-    
+
     val imageCount = postImages.switchMap { list ->
         liveData { emit(list.filter { it.fileDetails != null }.size) }
     }
-    
-    
+
+
     // Post publishing state
     private val postStatus = MutableLiveData<PhotoPressPost.PhotoPostStatus?>()
-    
+
     // Title text
     val postTitle = MutableLiveData<String?>()
-    
+
     // Post tags
     val postTags = MutableLiveData<String>()
-    
+
     // Post categories
     private val _postCategories = MutableLiveData<List<String>>()
     var postCategories: List<String>
@@ -303,58 +309,58 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             if (_postCategories.value != value)
                 _postCategories.value = value
         }
-    
+
     val postCategoriesDisplayString = _postCategories.switchMap {
         liveData { emit(it.joinToString(", ")) }
     }
-    
+
     // Post caption (same as image caption in case of single image post)
     val postCaption = MutableLiveData<String?>()
-    
+
     // Post caption (same as image caption in case of single image post)
     private val _postFeaturedImageId = MutableLiveData<Int>()
     val postFeaturedImageId: LiveData<Int> = _postFeaturedImageId
-    
+
     fun toggleFeaturedImage(imageId: Int?) {
         _postFeaturedImageId.value =
             if (imageId == null || imageId == _postFeaturedImageId.value) null
             else imageId
     }
-    
+
     // Image whose attributes are being edited
     val editingImage = MutableLiveData<PostImage?>()
-    
-    
+
+
     /**
      * Post scheduling
      */
-    
+
     // Scheduled post time
     private val _scheduledDateTime = MutableLiveData<Long?>()
     val scheduledDateTime: LiveData<Long?> = _scheduledDateTime
-    
+
     val showTimePicker = MutableLiveData<Boolean>()
-    
+
     private val _scheduleReady = MutableLiveData<Boolean>()
     val scheduleReady: LiveData<Boolean> = _scheduleReady
-    
+
     fun setSchedule(ready: Boolean, dateTime: Long?, showTimePicker: Boolean) {
         _scheduledDateTime.value = dateTime
         this.showTimePicker.value = showTimePicker
         _scheduleReady.value = ready
     }
-    
+
     fun resetScheduled() {
         _scheduledDateTime.value = null
         this.showTimePicker.value = false
         _scheduleReady.value = false
     }
-    
-    
+
+
     // Published post data
     private val _publishedPost = MutableLiveData<PublishedPost?>()
     val publishedPost: LiveData<PublishedPost?> = _publishedPost
-    
+
     /**
      * Reset view model state for a new post
      */
@@ -366,36 +372,36 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         postCaption.value = null
         postStatus.value = null
         toggleFeaturedImage(null)
-        
+
         setImageUris(null)
         updateState()
         viewModelScope.launch {
             _resetState.emit(true)
         }
     }
-    
-    
+
+
     // Observer for changes to selected blog id
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
-            Settings.KEY_SELECTED_BLOG_ID   -> setSelectedBlogId(settings.selectedBlogId)
-            
-            Settings.KEY_PUBLISH_FORMAT     -> useBlockEditor.value = settings.useBlockEditor
-            
+            Settings.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(settings.selectedBlogId)
+
+            Settings.KEY_PUBLISH_FORMAT -> useBlockEditor.value = settings.useBlockEditor
+
             Settings.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value =
                 settings.addFeaturedImage
-            
-            Settings.KEY_DEFAULT_TAGS       -> defaultTags.value = settings.defaultTags
-            
+
+            Settings.KEY_DEFAULT_TAGS -> defaultTags.value = settings.defaultTags
+
             Settings.KEY_DEFAULT_CATEGORIES -> defaultCategories.value =
                 settings.defaultCategories
         }
     }
-    
-    
+
+
     init {
         updateState()
-        
+
         useBlockEditor.value = settings.useBlockEditor
         addFeaturedImage.value = settings.addFeaturedImage
         defaultTags.value = settings.defaultTags
@@ -403,18 +409,18 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
         setSelectedBlogId(settings.selectedBlogId)
         settings.observe(observer)
     }
-    
-    
+
+
     /**
      * Gets the file name and mime-type for the given content uri
      */
     internal fun getFileName(uri: Uri): PostImage.FileDetails {
-        
+
         val projection = arrayOf(
             MediaStore.MediaColumns.DISPLAY_NAME,
             MediaStore.MediaColumns.MIME_TYPE
         )
-        
+
         val metaCursor = applicationContext.contentResolver.query(
             uri,
             projection,
@@ -422,7 +428,7 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             null,
             null
         )
-        
+
         var fileName = ""
         var mimeType = ""
         metaCursor?.use {
@@ -431,26 +437,26 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 mimeType = it.getString(1)
             }
         }
-        
+
         return PostImage.FileDetails(
             fileName,
             mimeType
         )
     }
-    
-    
+
+
     private val doPublish = MutableLiveData<Boolean?>()
-    
+
     internal fun publishPost(status: PhotoPressPost.PhotoPostStatus) {
         postStatus.value = status
         doPublish.value = true
     }
-    
+
     internal val publishLiveData: LiveData<SyncUtils.PublishLiveData?> =
         doPublish.switchMap {
-            
+
             if (it != true) return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
-            
+
             // Else publish
             val isJetpackBlog = selectedBlog.value?.jetpack
             val blogId = selectedBlogId.value
@@ -463,15 +469,15 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             val categories = postCategories
                 .filter { category -> category.isNotBlank() }
                 .distinct()
-            
+
             if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
                 Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
                 Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG)
                     .show()
-                
+
                 return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
             }
-            
+
             val post = PhotoPressPost(
                 blogId = blogId,
                 postCaption = postCaption.value ?: "",
@@ -484,74 +490,73 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                 title = title,
                 uploadPending = true
             )
-            
+
             // Reset published post data
             _publishedPost.value = null
             _state.value = State.PUBLISHING
-            
-            SyncUtils(applicationContext)
-                .publishPostLiveData(
-                    post = post,
-                    images = images,
-                    addFeaturedImage = addFeaturedImage.value,
-                    useBlockEditor = useBlockEditor.value,
-                    isJetpackBlog = isJetpackBlog
-                )
+
+            syncUtils.publishPostLiveData(
+                post = post,
+                images = images,
+                addFeaturedImage = addFeaturedImage.value,
+                useBlockEditor = useBlockEditor.value,
+                isJetpackBlog = isJetpackBlog
+            )
         }
-    
+
     internal fun onPublishFinished(publishResult: SyncUtils.PublishPostResponse) {
-        
+
         doPublish.value = null
-        
+
         val publishedPost = publishResult.publishedPost!!
-        
+
         // Add and update returned tags in tags list
         val blogTags = blogTags.value?.toMutableList() ?: mutableListOf()
         val newPostTags = (publishedPost.post.tags).values
-        
+
         if (newPostTags.isNotEmpty()) {
-            
+
             // Remove tags that are present in new post's tags
             blogTags.removeIf { tag -> !newPostTags.none { it.id == tag.id } }
-            
+
             // Add all tags from new post
             blogTags.addAll(newPostTags)
-            
+
             // Sort alphabetically, ascending
             blogTags.sortBy { it.slug }
-            
+
             // Save and set updated list
             AuthPrefs(applicationContext)
                 .saveTagsList(blogTags)
             setBlogTags(blogTags)
-            
+
         }
-        
+
         // Update categories list
         updateCategoriesList()
-        
+
         Timber.d("Blogpost done! $publishedPost")
-        
+
         _publishedPost.value = publishedPost
         resetScheduled()
         updateState()
     }
-    
-    
+
+
     private data class RefreshTagsResult(
         val errorMessage: String? = null,
         val tags: List<WPTag>? = null
     )
-    
+
     private suspend fun refreshTags() = suspendCoroutine { cont ->
         val blogId = selectedBlogId.value?.toString()
-        
+
         if (blogId.isNullOrBlank()) {
             cont.resume(RefreshTagsResult(errorMessage = "No blog selected"))
             return@suspendCoroutine
         }
-        
-        ApiClient().getApiService(applicationContext)
+
+        apiService
             .getTagsForSite(blogId)
             .enqueue(object : Callback<WPTag.TagsResponse> {
                 override fun onFailure(call: Call<WPTag.TagsResponse>, t: Throwable) {
@@ -559,81 +564,85 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
                     Timber.w(t, "Error fetching tags!")
                     cont.resume(RefreshTagsResult(errorMessage = "Error fetching tags: ${t.localizedMessage}"))
                 }
-                
+
                 override fun onResponse(
                     call: Call<WPTag.TagsResponse>,
                     response: Response<WPTag.TagsResponse>
                 ) {
                     val fetchTagsResponse = response.body()
-                    
+
                     if (fetchTagsResponse == null) {
                         Timber.w("Error updating to published: No blog response received :(")
                         cont.resume(RefreshTagsResult(errorMessage = "Error publishing: No response received"))
                         return
                     }
-                    
+
                     Timber.v("Fetched ${fetchTagsResponse.found} tags")
                     cont.resume(RefreshTagsResult(tags = fetchTagsResponse.tags))
                 }
             })
     }
-    
+
     private data class RefreshCategoriesResult(
         val errorMessage: String? = null,
         val categories: List<WPCategory>? = null
     )
-    
+
     private suspend fun refreshCategories() = suspendCoroutine { cont ->
         val blogId = selectedBlogId.value?.toString()
-        
+
         if (blogId.isNullOrBlank()) {
             cont.resume(RefreshCategoriesResult(errorMessage = "No blog selected"))
             return@suspendCoroutine
         }
-        
-        ApiClient().getApiService(applicationContext)
+
+        apiService
             .getCategoriesForSite(blogId)
             .enqueue(object : Callback<WPCategory.GetCategoriesResponse> {
                 override fun onFailure(call: Call<WPCategory.GetCategoriesResponse>, t: Throwable) {
                     // Error creating post
                     Timber.w(t, "Error fetching categories!")
-                    cont.resume(RefreshCategoriesResult(errorMessage = "Error fetching categories: ${t.localizedMessage}"))
+                    cont.resume(
+                        RefreshCategoriesResult(
+                            errorMessage = "Error fetching categories: ${t.localizedMessage}",
+                        ),
+                    )
                 }
-                
+
                 override fun onResponse(
                     call: Call<WPCategory.GetCategoriesResponse>,
                     response: Response<WPCategory.GetCategoriesResponse>
                 ) {
                     val fetchCategoriesResponse = response.body()
-                    
+
                     if (fetchCategoriesResponse == null) {
                         Timber.w("Error updating to published: No blog response received :(")
                         cont.resume(RefreshCategoriesResult(errorMessage = "Error publishing: No response received"))
                         return
                     }
-                    
+
                     Timber.v("Fetched ${fetchCategoriesResponse.found} categories")
                     cont.resume(RefreshCategoriesResult(categories = fetchCategoriesResponse.categories))
                 }
             })
     }
-    
-    
+
+
     val publishedDialogMessage: String
         get() {
             val published = publishedPost.value ?: return ""
-            
+
             return applicationContext.getString(
                 when {
-                    published.isDraft                 -> R.string.post_publish_title_post_draft
+                    published.isDraft -> R.string.post_publish_title_post_draft
                     published.post.date.after(Date()) -> R.string.post_publish_title_post_scheduled
-                    else                              -> R.string.post_publish_title_post_published
+                    else -> R.string.post_publish_title_post_published
                 },
                 Html.fromHtml(published.post.title, Html.FROM_HTML_MODE_COMPACT)
             )
         }
-    
-    
+
+
     fun sharePost() {
         publishedPost.value?.post?.let { post ->
             CommonUtils.sendSharingIntent(
@@ -643,15 +652,15 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             )
         }
     }
-    
-    
+
+
     fun openPostExternal() {
         publishedPost.value?.post?.let { post ->
             applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
         }
     }
-    
-    
+
+
     fun openPostInWordPress() {
         publishedPost.value?.post?.let { post ->
             applicationContext.startActivity(
@@ -666,8 +675,8 @@ class NewPostViewModel(application: Application) : AndroidViewModel(application)
             )
         }
     }
-    
-    
+
+
     fun copyPostToClipboard() {
         publishedPost.value?.post?.let { post ->
             CommonUtils.copyToClipboard(applicationContext, "${post.title}\n${post.url}")
