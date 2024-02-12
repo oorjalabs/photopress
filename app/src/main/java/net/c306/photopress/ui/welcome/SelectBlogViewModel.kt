@@ -4,18 +4,18 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
 import net.c306.photopress.api.Blog
 import net.c306.photopress.api.WpService
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -83,36 +83,23 @@ internal class SelectBlogViewModel @Inject constructor(
     /**
      * Get user details from server
      */
-    internal fun refreshBlogsList() {
-        wpService
-            .listBlogs(Blog.FIELDS_STRING, Blog.OPTIONS_STRING)
-            .enqueue(object : Callback<Blog.GetSitesResponse> {
-                override fun onFailure(call: Call<Blog.GetSitesResponse>, t: Throwable) {
-                    // Error logging in
-                    Timber.w(t, "Error fetching blogs!")
-                }
+    fun refreshBlogsList() {
+        viewModelScope.launch {
+            try {
+                val blogs = wpService.listBlogs(
+                    fields = Blog.FIELDS_STRING,
+                    options = Blog.OPTIONS_STRING,
+                ).sites
 
-                override fun onResponse(
-                    call: Call<Blog.GetSitesResponse>,
-                    response: Response<Blog.GetSitesResponse>
-                ) {
-                    val blogsList = response.body()?.sites
+                _blogList.value = blogs
+                blogsAvailable.value = blogs.isNotEmpty()
 
-                    if (blogsList == null) {
-                        Timber.w("No blog info recovered :(")
-                        blogsAvailable.value = false
-                        return
-                    }
-
-                    Timber.d("Blog info received: ${blogsList.size}")
-
-                    _blogList.value = blogsList
-                    blogsAvailable.value = blogsList.isNotEmpty()
-
-                    // Save to storage
-                    authPrefs.saveBlogsList(blogsList)
-                }
-            })
+                // Save to storage
+                authPrefs.saveBlogsList(blogs)
+            } catch (e: IOException) {
+                Timber.w(e, "Error fetching blogs!")
+            }
+        }
     }
 
     sealed interface Title {

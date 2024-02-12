@@ -18,12 +18,6 @@ import retrofit2.http.Query
  */
 internal interface WpService {
 
-    @GET(ApiConstants.BLOG_LIST)
-    fun listBlogs(
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Query(ApiConstants.ARG_OPTIONS) options: String?
-    ): Call<Blog.GetSitesResponse>
-
     @GET(ApiConstants.GET_TAGS_FOR_SITE)
     fun getTagsForSite(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -101,7 +95,7 @@ internal interface WpService {
     suspend fun aboutMe(@Query(ApiConstants.ARG_FIELDS) fields: String?): UserDetails
 
     @GET(ApiConstants.BLOG_LIST)
-    suspend fun listBlogsAsync(
+    suspend fun listBlogs(
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Query(ApiConstants.ARG_OPTIONS) options: String?
     ): Blog.GetSitesResponse
