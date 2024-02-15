@@ -4,7 +4,6 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import net.c306.photopress.BuildConfig
 import okhttp3.MultipartBody
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
@@ -17,69 +16,6 @@ import retrofit2.http.Query
  * Interface for defining REST request functions
  */
 internal interface WpService {
-
-    @GET(ApiConstants.GET_TAGS_FOR_SITE)
-    fun getTagsForSite(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(WPTag.ARG_ORDER_BY) orderBy: String = WPTag.VALUE_ORDER_BY,
-        @Query(WPTag.ARG_ORDER) order: String = WPTag.VALUE_ORDER,
-        @Query(WPTag.ARG_NUMBER) number: Number = WPTag.VALUE_NUMBER,
-        @Query(WPTag.ARG_FIELDS) fields: String = WPTag.FIELDS_STRING
-    ): Call<WPTag.TagsResponse>
-
-    @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
-    fun getCategoriesForSite(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(WPCategory.ARG_ORDER_BY) orderBy: String = WPCategory.VALUE_ORDER_BY,
-        @Query(WPCategory.ARG_ORDER) order: String = WPCategory.VALUE_ORDER,
-        @Query(WPCategory.ARG_NUMBER) number: Number = WPCategory.VALUE_NUMBER,
-        @Query(WPCategory.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING
-    ): Call<WPCategory.GetCategoriesResponse>
-
-    @POST(ApiConstants.CREATE_CATEGORY)
-    @FormUrlEncoded
-    fun addCategory(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
-        @FieldMap request: Map<String, String>
-    ): Call<WPCategory>
-
-    @POST(ApiConstants.CREATE_POST)
-    fun uploadBlogpost(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: WPBlogPost.CreatePostRequest
-    ): Call<WPBlogPost>
-
-    @POST(ApiConstants.UPDATE_POST)
-    fun updatePostStatus(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Path(ApiConstants.ARG_POST_ID) postId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: WPBlogPost.UpdatePostStatusRequest
-    ): Call<WPBlogPost>
-
-    @POST(ApiConstants.UPLOAD_MEDIA)
-    fun uploadSingleMedia(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body contents: MultipartBody
-    ): Call<WPMedia.UploadMediaResponse>
-
-    @POST(ApiConstants.UPLOAD_MEDIA)
-    fun uploadMediaMulti(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body contents: MultipartBody
-    ): Call<WPMedia.UploadMediaResponse>
-
-    @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
-    fun updateMediaAttributes(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Path(ApiConstants.ARG_MEDIA_ID) mediaId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: WPMedia.UpdateMediaAttributesRequest
-    ): Call<WPMedia>
 
     @POST(ApiConstants.TOKEN_URL)
     @FormUrlEncoded
@@ -101,7 +37,7 @@ internal interface WpService {
     ): Blog.GetSitesResponse
 
     @GET(ApiConstants.GET_TAGS_FOR_SITE)
-    suspend fun getTagsForSiteAsync(
+    suspend fun getTagsForSite(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(WPTag.ARG_ORDER_BY) orderBy: String = WPTag.VALUE_ORDER_BY,
         @Query(WPTag.ARG_ORDER) order: String = WPTag.VALUE_ORDER,
@@ -110,7 +46,7 @@ internal interface WpService {
     ): WPTag.TagsResponse
 
     @GET(ApiConstants.GET_CATEGORIES_FOR_SITE)
-    suspend fun getCategoriesForSiteAsync(
+    suspend fun getCategoriesForSite(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(WPCategory.ARG_ORDER_BY) orderBy: String = WPCategory.VALUE_ORDER_BY,
         @Query(WPCategory.ARG_ORDER) order: String = WPCategory.VALUE_ORDER,
@@ -120,21 +56,21 @@ internal interface WpService {
 
     @POST(ApiConstants.CREATE_CATEGORY)
     @FormUrlEncoded
-    suspend fun addCategoryAsync(
+    suspend fun addCategory(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
         @FieldMap request: Map<String, String>
     ): WPCategory
 
     @POST(ApiConstants.CREATE_POST)
-    suspend fun uploadBlogpostAsync(
+    suspend fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body body: WPBlogPost.CreatePostRequest
     ): WPBlogPost
 
     @POST(ApiConstants.UPDATE_POST)
-    suspend fun updatePostStatusAsync(
+    suspend fun updatePostStatus(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Path(ApiConstants.ARG_POST_ID) postId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
@@ -142,21 +78,21 @@ internal interface WpService {
     ): WPBlogPost
 
     @POST(ApiConstants.UPLOAD_MEDIA)
-    suspend fun uploadSingleMediaAsync(
+    suspend fun uploadSingleMedia(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body contents: MultipartBody
     ): WPMedia.UploadMediaResponse
 
     @POST(ApiConstants.UPLOAD_MEDIA)
-    suspend fun uploadMediaMultiAsync(
+    suspend fun uploadMediaMulti(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body contents: MultipartBody
     ): WPMedia.UploadMediaResponse
 
     @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
-    suspend fun updateMediaAttributesAsync(
+    suspend fun updateMediaAttributes(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Path(ApiConstants.ARG_MEDIA_ID) mediaId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
@@ -191,7 +127,5 @@ internal interface WpService {
         val tokenType: String?,
 
         val error: String?
-
     )
-
 }

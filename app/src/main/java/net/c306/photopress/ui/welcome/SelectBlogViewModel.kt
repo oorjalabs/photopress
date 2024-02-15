@@ -13,6 +13,7 @@ import net.c306.photopress.api.Blog
 import net.c306.photopress.api.WpService
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
+import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -93,6 +94,8 @@ internal class SelectBlogViewModel @Inject constructor(
                 // Save to storage
                 authPrefs.saveBlogsList(blogs)
             } catch (e: IOException) {
+                Timber.w(e, "Error fetching blogs!")
+            } catch (e: HttpException) {
                 Timber.w(e, "Error fetching blogs!")
             }
         }

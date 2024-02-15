@@ -12,6 +12,7 @@ import net.c306.photopress.api.TokenRequest
 import net.c306.photopress.api.UserDetails
 import net.c306.photopress.api.WpService
 import net.c306.photopress.utils.AuthPrefs
+import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -101,6 +102,14 @@ internal class LoginViewModel @Inject constructor(
                 )
             )
             null
+        } catch (e: HttpException) {
+            Timber.w(e, "Error getting token!")
+            setAuthResult(
+                AuthResponse(
+                    error = applicationContext.getString(R.string.message_error_no_auth_token)
+                )
+            )
+            null
         }
 
         if (tokenResponse?.accessToken != null) {
@@ -140,6 +149,14 @@ internal class LoginViewModel @Inject constructor(
                 )
             )
             null
+        } catch (e: HttpException) {
+            Timber.d(e, "Error getting token!")
+            setAuthResult(
+                AuthResponse(
+                    error = applicationContext.getString(R.string.message_error_network)
+                )
+            )
+            null
         }
 
         if (tokenResponse != null && tokenResponse.error.isNullOrBlank()) {
@@ -172,6 +189,8 @@ internal class LoginViewModel @Inject constructor(
         try {
             authPrefs.saveUserDetails(wpService.aboutMe(UserDetails.FIELD_STRING))
         } catch (e: IOException) {
+            Timber.d(e, "Error getting user details")
+        } catch (e: HttpException) {
             Timber.d(e, "Error getting user details")
         }
     }

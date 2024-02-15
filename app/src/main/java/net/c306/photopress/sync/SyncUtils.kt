@@ -19,15 +19,12 @@ import net.c306.photopress.utils.Utils
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.HttpException
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal class SyncUtils @Inject constructor(
     @ApplicationContext
@@ -67,168 +64,170 @@ internal class SyncUtils @Inject constructor(
                     statusMessage = errorMessage
                 )
                 emit(PublishLiveData(progress, response))
-                return@withContext
-            }
-
-            emit(
-                PublishLiveData(
-                    progress = PublishProgress(
-                        finished = false,
-                        statusMessage = context.getString(R.string.sync_status_uploading_images)
-                    )
-                )
-            )
-
-            val mediaToUpload = images.mapNotNull { image ->
-                getFileForUri(context, image)?.let { (file, _) ->
-                    Pair(file, image)
-                }
-            }
-
-            var uploadSuccess = true
-            val uploadedMedia: List<UploadMediaResponse>
-
-            if (isJetpackBlog == true) {
-                // Upload images one by one
-                val imageCount = mediaToUpload.size
-                uploadedMedia = mediaToUpload.mapIndexed { index, imagePair ->
-                    emit(
-                        PublishLiveData(
-                            progress = PublishProgress(
-                                finished = false,
-                                statusMessage = context.getString(
-                                    R.string.sync_status_uploading_images_individual,
-                                    index + 1,
-                                    imageCount
-                                )
-                            )
-                        )
-                    )
-                    val (success, uploaded) = uploadSingleMedia(post.blogId, imagePair)
-                    uploadSuccess = success && uploadSuccess
-                    if (!success) Timber.d("Error uploading image $index: '${uploaded.errorMessage}'")
-                    uploaded
-                }
             } else {
-                // Upload images all together
-                val uploaded = uploadMedia(post.blogId, mediaToUpload)
-                uploadSuccess = uploaded.first
-                uploadedMedia = uploaded.second
-            }
-
-            // Delete images from app storage
-            deleteFiles(mediaToUpload.map { it.first })
-
-            if (!uploadSuccess) {
-                val errorMessage = context.getString(
-                    R.string.sync_status_error,
-                    uploadedMedia[0].errorMessage
-                        ?: context.getString(R.string.sync_status_error_media_upload_failed)
-                )
-                val response = PublishPostResponse(
-                    errorMessage = errorMessage,
-                    publishedPost = null,
-                    updatedImages = null
-                )
-                val progress = PublishProgress(true, errorMessage)
-                emit(PublishLiveData(progress, response))
-
-                return@withContext
-            }
-
-            // Disabled because WP api returns 404 for recently updated image :(
-            if (isJetpackBlog == true && false) {
-                emit(
-                    PublishLiveData(
-                        PublishProgress(
-                            finished = false,
-                            statusMessage = context.getString(R.string.sync_status_updating_media_details)
-                        )
-                    )
-                )
-                delay(timeMillis = 3500)
-                Timber.v("Jetpack blog, updating media attributes again")
-                uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
-            }
-
-            emit(
-                PublishLiveData(
-                    progress = PublishProgress(
-                        finished = false,
-                        statusMessage = context.getString(R.string.sync_status_uploading_post)
-                    )
-                )
-            )
-
-            // Upload post as draft with embedded image
-            val (uploadedPost, uploadError) = uploadPost(
-                post = post,
-                postImages = uploadedMedia,
-                useBlockEditor = useBlockEditor,
-                addFeaturedImage = addFeaturedImage
-            )
-
-            if (uploadError != null || uploadedPost == null) {
-                val errorMessage = context.getString(
-                    R.string.sync_status_error,
-                    uploadError
-                        ?: context.getString(R.string.sync_status_error_post_upload_failed)
-                )
-                val response = PublishPostResponse(
-                    errorMessage = errorMessage,
-                    publishedPost = null,
-                    updatedImages = uploadedMedia
-                )
-                val progress = PublishProgress(true, errorMessage)
-                emit(PublishLiveData(progress, response))
-
-                return@withContext
-            }
-
-            var publishedPost: WPBlogPost? = null
-
-            if (post.status != PhotoPressPost.PhotoPostStatus.DRAFT) {
 
                 emit(
                     PublishLiveData(
                         progress = PublishProgress(
                             finished = false,
-                            statusMessage = context.getString(R.string.sync_status_updating_post_status)
+                            statusMessage = context.getString(R.string.sync_status_uploading_images)
                         )
                     )
                 )
 
-                // Change status to published
-                val publishResult = updateToPublished(
-                    post.blogId,
-                    uploadedPost,
-                    post.scheduledTime
+                val mediaToUpload = images.mapNotNull { image ->
+                    getFileForUri(context, image)?.let { (file, _) ->
+                        Pair(file, image)
+                    }
+                }
+
+                var uploadSuccess = true
+                val uploadedMedia: List<UploadMediaResponse>
+
+                if (isJetpackBlog == true) {
+                    // Upload images one by one
+                    val imageCount = mediaToUpload.size
+                    uploadedMedia = mediaToUpload.mapIndexed { index, imagePair ->
+                        emit(
+                            PublishLiveData(
+                                progress = PublishProgress(
+                                    finished = false,
+                                    statusMessage = context.getString(
+                                        R.string.sync_status_uploading_images_individual,
+                                        index + 1,
+                                        imageCount
+                                    )
+                                )
+                            )
+                        )
+                        val (success, uploaded) = uploadSingleMedia(post.blogId, imagePair)
+                        uploadSuccess = success && uploadSuccess
+                        if (!success) Timber.d("Error uploading image $index: '${uploaded.errorMessage}'")
+                        uploaded
+                    }
+                } else {
+                    // Upload images all together
+                    val uploaded = uploadMedia(post.blogId, mediaToUpload)
+                    uploadSuccess = uploaded.first
+                    uploadedMedia = uploaded.second
+                }
+
+                // Delete images from app storage
+                deleteFiles(mediaToUpload.map { it.first })
+
+                if (!uploadSuccess) {
+                    val errorMessage = context.getString(
+                        R.string.sync_status_error,
+                        uploadedMedia[0].errorMessage
+                            ?: context.getString(R.string.sync_status_error_media_upload_failed)
+                    )
+                    val response = PublishPostResponse(
+                        errorMessage = errorMessage,
+                        publishedPost = null,
+                        updatedImages = null
+                    )
+                    val progress = PublishProgress(true, errorMessage)
+                    emit(PublishLiveData(progress, response))
+
+                    return@withContext
+                }
+
+                // Disabled because WP api returns 404 for recently updated image :(
+                if (isJetpackBlog == true && false) {
+                    emit(
+                        PublishLiveData(
+                            PublishProgress(
+                                finished = false,
+                                statusMessage = context.getString(R.string.sync_status_updating_media_details)
+                            )
+                        )
+                    )
+                    delay(timeMillis = 3500)
+                    Timber.v("Jetpack blog, updating media attributes again")
+                    uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
+                }
+
+                emit(
+                    PublishLiveData(
+                        progress = PublishProgress(
+                            finished = false,
+                            statusMessage = context.getString(R.string.sync_status_uploading_post)
+                        )
+                    )
                 )
-                publishedPost = publishResult.uploadedPost
+
+                // Upload post as draft with embedded image
+                val (uploadedPost, uploadError) = uploadPost(
+                    post = post,
+                    postImages = uploadedMedia,
+                    useBlockEditor = useBlockEditor,
+                    addFeaturedImage = addFeaturedImage
+                )
+
+                if (uploadError != null || uploadedPost == null) {
+                    val errorMessage = context.getString(
+                        R.string.sync_status_error,
+                        uploadError
+                            ?: context.getString(R.string.sync_status_error_post_upload_failed)
+                    )
+                    val response = PublishPostResponse(
+                        errorMessage = errorMessage,
+                        publishedPost = null,
+                        updatedImages = uploadedMedia
+                    )
+                    val progress = PublishProgress(true, errorMessage)
+                    emit(PublishLiveData(progress, response))
+
+                    return@withContext
+                }
+
+                var publishedPost: WPBlogPost? = null
+
+                if (post.status != PhotoPressPost.PhotoPostStatus.DRAFT) {
+
+                    emit(
+                        PublishLiveData(
+                            progress = PublishProgress(
+                                finished = false,
+                                statusMessage = context.getString(R.string.sync_status_updating_post_status)
+                            )
+                        )
+                    )
+
+                    // Change status to published
+                    val publishResult = updateToPublished(
+                        post.blogId,
+                        uploadedPost,
+                        post.scheduledTime
+                    )
+                    publishedPost = publishResult.uploadedPost
+                }
+
+                Timber.d("Blogpost done! ${publishedPost ?: uploadedPost}")
+
+                // Update published post
+                val response = PublishPostResponse(
+                    errorMessage = null,
+                    publishedPost = PublishedPost(
+                        publishedPost ?: uploadedPost,
+                        publishedPost == null
+                    ),
+                    updatedImages = null
+                )
+                val progress = PublishProgress(
+                    finished = true,
+                    statusMessage = context.getString(R.string.sync_status_post_uploaded)
+                )
+
+                emit(PublishLiveData(progress, response))
             }
-
-            Timber.d("Blogpost done! ${publishedPost ?: uploadedPost}")
-
-            // Update published post
-            val response = PublishPostResponse(
-                errorMessage = null,
-                publishedPost = PublishedPost(publishedPost ?: uploadedPost, publishedPost == null),
-                updatedImages = null
-            )
-            val progress = PublishProgress(
-                finished = true,
-                statusMessage = context.getString(R.string.sync_status_post_uploaded)
-            )
-            emit(PublishLiveData(progress, response))
         }
     }
-
 
     private suspend fun uploadMedia(
         blogId: Int,
         images: List<Pair<File, PostImage>>
-    ) = suspendCoroutine<Pair<Boolean, List<UploadMediaResponse>>> { cont ->
-
+    ): Pair<Boolean, List<UploadMediaResponse>> {
         val requestBodyBuilder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
 
@@ -261,102 +260,59 @@ internal class SyncUtils @Inject constructor(
 
         }
 
-        wpService
-            .uploadMediaMulti(
+        return try {
+            val uploadMediaResponse = wpService.uploadMediaMulti(
                 blogId = blogId.toString(),
                 contents = requestBodyBuilder.build(),
                 fields = WPMedia.FIELDS_STRING
-            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
+            )
 
-                override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading media: ")
-                    cont.resume(
-                        Pair(
-                            false,
-                            images.map { UploadMediaResponse(t.message, null, it.second) })
+            Timber.v("Media uploaded! $uploadMediaResponse")
+            Pair(
+                true,
+                images.mapIndexed { index, (_, image) ->
+                    UploadMediaResponse(
+                        errorMessage = null,
+                        media = uploadMediaResponse.media.getOrNull(index),
+                        originalImage = image
                     )
                 }
+            )
 
-                override fun onResponse(
-                    call: Call<WPMedia.UploadMediaResponse>,
-                    response: Response<WPMedia.UploadMediaResponse>
-                ) {
-                    val uploadMediaResponse = response.body()
-
-                    if (uploadMediaResponse == null) {
-                        Timber.w("Error uploading media: No response received :(")
-                        cont.resume(
-                            Pair(
-                                false,
-                                images.map {
-                                    UploadMediaResponse(
-                                        context.getString(R.string.sync_status_error_no_response),
-                                        null,
-                                        it.second
-                                    )
-                                })
-                        )
-                        return
-                    }
-
-
-                    if (!uploadMediaResponse.errors.isNullOrEmpty()) {
-                        Timber.w("Error uploading media: ${uploadMediaResponse.errors.joinToString("\n")}")
-                        cont.resume(
-                            Pair(
-                                false,
-                                images.map {
-                                    UploadMediaResponse(
-                                        uploadMediaResponse.errors[0],
-                                        null,
-                                        it.second
-                                    )
-                                })
-                        )
-                        return
-                    }
-
-                    if (uploadMediaResponse.media.isEmpty()) {
-                        Timber.w("Error uploading media: No media returned")
-                        cont.resume(
-                            Pair(
-                                false,
-                                images.map {
-                                    UploadMediaResponse(
-                                        context.getString(R.string.sync_status_error_no_media_returned),
-                                        null,
-                                        it.second
-                                    )
-                                })
-                        )
-                        return
-                    }
-
-                    Timber.v("Media uploaded! $uploadMediaResponse")
-                    cont.resume(Pair(true, images.mapIndexed { index, (_, image) ->
-                        UploadMediaResponse(
-                            errorMessage = null,
-                            media = uploadMediaResponse.media.getOrNull(index),
-                            originalImage = image
-                        )
-                    }))
-
+        } catch (e: IOException) {
+            Timber.w(e, "Error uploading media!")
+            Pair(
+                false,
+                images.map {
+                    UploadMediaResponse(
+                        errorMessage = e.localizedMessage,
+                        media = null,
+                        originalImage = it.second
+                    )
                 }
-            })
-
+            )
+        } catch (e: HttpException) {
+            Timber.w(e, "Error uploading media!")
+            Pair(
+                false,
+                images.map {
+                    UploadMediaResponse(
+                        errorMessage = e.localizedMessage,
+                        media = null,
+                        originalImage = it.second
+                    )
+                }
+            )
+        }
     }
-
 
     private suspend fun uploadSingleMedia(
         blogId: Int,
         imagePair: Pair<File, PostImage>
-    ) = suspendCoroutine<Pair<Boolean, UploadMediaResponse>> { cont ->
-
+    ): Pair<Boolean, UploadMediaResponse> {
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .apply {
-
                 val (file, image) = imagePair
 
                 val imageBody = file.asRequestBody(image.fileDetails!!.mimeType.toMediaType())
@@ -386,143 +342,77 @@ internal class SyncUtils @Inject constructor(
             }
             .build()
 
-        wpService
-            .uploadSingleMedia(
+        return try {
+            val uploadMediaResponse = wpService.uploadSingleMedia(
                 blogId = blogId.toString(),
                 contents = requestBody,
                 fields = WPMedia.FIELDS_STRING
-            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
+            )
 
-                override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading media: ")
-                    cont.resume(
-                        Pair(
-                            false,
-                            UploadMediaResponse(t.message, null, imagePair.second)
-                        )
-                    )
-                }
-
-                override fun onResponse(
-                    call: Call<WPMedia.UploadMediaResponse>,
-                    response: Response<WPMedia.UploadMediaResponse>
-                ) {
-                    val uploadMediaResponse = response.body()
-
-                    if (uploadMediaResponse == null) {
-                        Timber.w("Error uploading media: No response received :(")
-                        cont.resume(
-                            Pair(
-                                false,
-                                UploadMediaResponse(
-                                    errorMessage = context.getString(R.string.sync_status_error_no_response),
-                                    media = null,
-                                    originalImage = imagePair.second
-                                )
-                            )
-                        )
-                        return
-                    }
-
-
-                    if (!uploadMediaResponse.errors.isNullOrEmpty()) {
-                        Timber.w("Error uploading media: ${uploadMediaResponse.errors.joinToString("\n")}")
-                        cont.resume(
-                            Pair(
-                                false,
-                                UploadMediaResponse(
-                                    uploadMediaResponse.errors[0],
-                                    null,
-                                    imagePair.second
-                                )
-                            )
-                        )
-                        return
-                    }
-
-                    if (uploadMediaResponse.media.isEmpty()) {
-                        Timber.w("Error uploading media: No media returned")
-                        cont.resume(
-                            Pair(
-                                false,
-                                UploadMediaResponse(
-                                    errorMessage = context.getString(R.string.sync_status_error_no_media_returned),
-                                    media = null,
-                                    originalImage = imagePair.second
-                                )
-                            )
-                        )
-                        return
-                    }
-
-                    Timber.v("Media uploaded! $uploadMediaResponse")
-                    cont.resume(
-                        Pair(
-                            true,
-                            UploadMediaResponse(
-                                errorMessage = null,
-                                media = uploadMediaResponse.media.getOrNull(0),
-                                originalImage = imagePair.second
-                            )
-                        )
-                    )
-
-                }
-            })
-
+            Timber.v("Media uploaded! $uploadMediaResponse")
+            Pair(
+                true,
+                UploadMediaResponse(
+                    errorMessage = null,
+                    media = uploadMediaResponse.media.getOrNull(0),
+                    originalImage = imagePair.second
+                )
+            )
+        } catch (e: IOException) {
+            Timber.w(e, "Error uploading media!")
+            Pair(
+                false,
+                UploadMediaResponse(
+                    errorMessage = e.localizedMessage,
+                    media = null,
+                    originalImage = imagePair.second
+                )
+            )
+        } catch (e: HttpException) {
+            Timber.w(e, "Error uploading media!")
+            Pair(
+                false,
+                UploadMediaResponse(
+                    errorMessage = e.localizedMessage,
+                    media = null,
+                    originalImage = imagePair.second
+                )
+            )
+        }
     }
-
 
     private suspend fun updateMediaMetadata(
         blogId: Int,
-        image: UploadMediaResponse
-    ) = suspendCoroutine<UploadMediaResponse> { cont ->
-        wpService
-            .updateMediaAttributes(
-                blogId = blogId.toString(),
-                mediaId = image.media!!.id.toString(),
-                fields = WPMedia.FIELDS_STRING,
-                body = WPMedia.UpdateMediaAttributesRequest(
-                    title = image.originalImage.name,
-                    caption = image.originalImage.caption,
-                    description = image.originalImage.description,
-                    alt = image.originalImage.altText
-                )
+        inputImageResponse: UploadMediaResponse
+    ): UploadMediaResponse = try {
+        val updateMediaResponse = wpService.updateMediaAttributes(
+            blogId = blogId.toString(),
+            mediaId = inputImageResponse.media?.id.toString(),
+            fields = WPMedia.FIELDS_STRING,
+            body = WPMedia.UpdateMediaAttributesRequest(
+                title = inputImageResponse.originalImage.name,
+                caption = inputImageResponse.originalImage.caption,
+                description = inputImageResponse.originalImage.description,
+                alt = inputImageResponse.originalImage.altText
             )
-            .enqueue(object : Callback<WPMedia> {
+        )
 
-                override fun onFailure(call: Call<WPMedia>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading media!")
-                    cont.resume(image.copy(errorMessage = t.message))
-                }
-
-                override fun onResponse(
-                    call: Call<WPMedia>,
-                    response: Response<WPMedia>
-                ) {
-                    val updateMediaResponse = response.body()
-
-                    if (updateMediaResponse == null) {
-                        Timber.w("Updating media: No response received :(")
-                        cont.resume(image.copy(errorMessage = "No response"))
-                        return
-                    }
-
-                    Timber.v("Media updated! $updateMediaResponse")
-                    cont.resume(image.copy(media = updateMediaResponse))
-                }
-            })
+        Timber.v("Media updated! $updateMediaResponse")
+        inputImageResponse.copy(media = updateMediaResponse)
+    } catch (e: IOException) {
+        Timber.w(e, "Error updating media metadata!")
+        inputImageResponse.copy(errorMessage = e.localizedMessage)
+    } catch (e: HttpException) {
+        Timber.w(e, "Error updating media metadata!")
+        inputImageResponse.copy(errorMessage = e.localizedMessage)
     }
-
 
     private suspend fun uploadPost(
         post: PhotoPressPost,
         postImages: List<UploadMediaResponse>,
         useBlockEditor: Boolean?,
         addFeaturedImage: Boolean?
-    ) = suspendCoroutine<UploadPostResponse> { cont ->
+    ): UploadPostResponse {
 
         val usingBlockEditor = useBlockEditor ?: Settings.DEFAULT_USE_BLOCK_EDITOR
         val addingFeaturedImage = addFeaturedImage ?: Settings.DEFAULT_ADD_FEATURED_IMAGE
@@ -610,8 +500,8 @@ internal class SyncUtils @Inject constructor(
         val featuredImage = images.find { it.originalImage.id == post.postThumbnail }
             ?: images[0]
 
-        wpService
-            .uploadBlogpost(
+        return try {
+            val publishResponse = wpService.uploadBlogpost(
                 blogId = post.blogId.toString(),
                 fields = WPBlogPost.FIELDS_STRING,
                 body = WPBlogPost.CreatePostRequest(
@@ -620,35 +510,19 @@ internal class SyncUtils @Inject constructor(
                     tags = post.tags,
                     categories = post.categories,
                     status = WPBlogPost.PublishStatus.DRAFT,
-                    featuredImage = if (addingFeaturedImage) featuredImage.media!!.id.toString() else null
+                    featuredImage = if (addingFeaturedImage) featuredImage.media?.id?.toString().orEmpty() else null
                 )
-            ).enqueue(object : Callback<WPBlogPost> {
-                override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading blogpost!")
-                    cont.resume(UploadPostResponse(errorMessage = t.localizedMessage))
-                }
+            )
 
-                override fun onResponse(
-                    call: Call<WPBlogPost>,
-                    response: Response<WPBlogPost>
-                ) {
-                    val publishResponse = response.body()
-
-                    if (publishResponse == null) {
-                        Timber.w("Upload post: No response received :(")
-                        cont.resume(
-                            UploadPostResponse(
-                                errorMessage = context.getString(R.string.sync_status_error_no_response)
-                            )
-                        )
-                        return
-                    }
-
-                    Timber.v("Blog uploaded! $publishResponse")
-                    cont.resume(UploadPostResponse(uploadedPost = publishResponse))
-                }
-            })
+            Timber.v("Blog uploaded! $publishResponse")
+            UploadPostResponse(uploadedPost = publishResponse)
+        } catch (e: IOException) {
+            Timber.w(e, "Error uploading blogpost!")
+            UploadPostResponse(errorMessage = e.localizedMessage)
+        } catch (e: HttpException) {
+            Timber.w(e, "Error uploading blogpost!")
+            UploadPostResponse(errorMessage = e.localizedMessage)
+        }
     }
 
 
@@ -656,47 +530,25 @@ internal class SyncUtils @Inject constructor(
         blogId: Int,
         blogPost: WPBlogPost,
         scheduledTime: Long?
-    ) = suspendCoroutine<UploadPostResponse> { cont ->
-
-        val scheduledDateString = scheduledTime?.let { Instant.ofEpochMilli(it).toString() }
-
-        wpService
-            .updatePostStatus(
-                blogId = blogId.toString(),
-                postId = blogPost.id.toString(),
-                fields = WPBlogPost.FIELDS_STRING,
-                body = WPBlogPost.UpdatePostStatusRequest(
-                    status = WPBlogPost.PublishStatus.PUBLISH,
-                    date = scheduledDateString
-                )
+    ): UploadPostResponse = try {
+        val publishResponse = wpService.updatePostStatus(
+            blogId = blogId.toString(),
+            postId = blogPost.id.toString(),
+            fields = WPBlogPost.FIELDS_STRING,
+            body = WPBlogPost.UpdatePostStatusRequest(
+                status = WPBlogPost.PublishStatus.PUBLISH,
+                date = scheduledTime?.let { Instant.ofEpochMilli(it).toString() }
             )
-            .enqueue(object : Callback<WPBlogPost> {
-                override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error  updating to published!")
-                    cont.resume(UploadPostResponse(errorMessage = t.localizedMessage))
-                }
+        )
 
-                override fun onResponse(
-                    call: Call<WPBlogPost>,
-                    response: Response<WPBlogPost>
-                ) {
-                    val publishResponse = response.body()
-
-                    if (publishResponse == null) {
-                        Timber.w("Error updating to published: No blog response received :(")
-                        cont.resume(
-                            UploadPostResponse(
-                                errorMessage = context.getString(R.string.sync_status_error_no_response)
-                            )
-                        )
-                        return
-                    }
-
-                    Timber.v("Blog published! $publishResponse")
-                    cont.resume(UploadPostResponse(uploadedPost = publishResponse))
-                }
-            })
+        Timber.v("Blog published! $publishResponse")
+        UploadPostResponse(uploadedPost = publishResponse)
+    } catch (e: IOException) {
+        Timber.w(e, "Error updating to published!")
+        UploadPostResponse(errorMessage = e.localizedMessage)
+    } catch (e: HttpException) {
+        Timber.w(e, "Error updating to published!")
+        UploadPostResponse(errorMessage = e.localizedMessage)
     }
 
 
@@ -734,50 +586,31 @@ internal class SyncUtils @Inject constructor(
      * Deletes all provided images from app's storage space
      */
     private suspend fun deleteFiles(images: List<File>) = withContext(Dispatchers.IO) {
-
-        if (images.isEmpty()) return@withContext
-
-        try {
-            images
-                .filter { it.exists() && it.isFile }
-                .forEach { it.delete() }
-        } catch (e: SecurityException) {
-            Timber.d(e, "Error deleting files")
+        if (images.isNotEmpty()) {
+            try {
+                images
+                    .filter { it.exists() && it.isFile }
+                    .forEach { it.delete() }
+            } catch (e: SecurityException) {
+                Timber.d(e, "Error deleting files")
+            }
         }
     }
 
 
-    suspend fun addCategory(blogId: Int, categoryName: String): Boolean = suspendCoroutine { cont ->
-        wpService
-            .addCategory(
-                blogId = blogId.toString(),
-                request = WPCategory.AddCategoryRequest(categoryName).toFieldMap()
-            )
-            .enqueue(object : Callback<WPCategory> {
-
-                override fun onFailure(call: Call<WPCategory>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error adding category!")
-                    cont.resume(false)
-                }
-
-                override fun onResponse(
-                    call: Call<WPCategory>,
-                    response: Response<WPCategory>
-                ) {
-                    val addCategoryResponse = response.body()
-
-                    if (addCategoryResponse == null) {
-                        Timber.w("Adding category: No response received :(")
-                        cont.resume(false)
-                        return
-                    }
-
-                    Timber.v("Category added! $addCategoryResponse")
-                    cont.resume(true)
-                }
-            })
-
+    suspend fun addCategory(blogId: Int, categoryName: String) = try {
+        val addedCategory = wpService.addCategory(
+            blogId = blogId.toString(),
+            request = WPCategory.AddCategoryRequest(categoryName).toFieldMap()
+        )
+        Timber.d("Category added! $addedCategory")
+        true
+    } catch (e: IOException) {
+        Timber.w(e, "Error adding category!")
+        false
+    } catch (e: HttpException) {
+        Timber.w(e, "Error adding category!")
+        false
     }
 
 
