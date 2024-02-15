@@ -46,16 +46,21 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         // Set actual app theme. Theme in application/manifest is for splash
         setTheme(R.style.AppTheme)
 
-        // On Android P+, set app icon in app switcher view
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            setTaskDescription(
+        setTaskDescription(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityManager.TaskDescription.Builder()
+                    .setLabel(getString(R.string.app_name))
+                    .setIcon(R.mipmap.ic_launcher)
+                    .setPrimaryColor(getColor(R.color.primaryColor))
+                    .build()
+            } else {
                 ActivityManager.TaskDescription(
                     getString(R.string.app_name), // Leave the default title.
                     R.mipmap.ic_launcher,
                     getColor(R.color.primaryColor) // Leave the default color
                 )
-            )
-        }
+            }
+        )
 
         setContentView(binding.root)
 
