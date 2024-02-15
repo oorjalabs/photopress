@@ -19,17 +19,12 @@ import net.c306.photopress.utils.Utils
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
-import retrofit2.Response
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal class SyncUtils @Inject constructor(
     @ApplicationContext
@@ -385,46 +380,29 @@ internal class SyncUtils @Inject constructor(
 
     private suspend fun updateMediaMetadata(
         blogId: Int,
-        image: UploadMediaResponse
-    ) = suspendCoroutine<UploadMediaResponse> { cont ->
-        wpService
-            .updateMediaAttributes(
-                blogId = blogId.toString(),
-                mediaId = image.media!!.id.toString(),
-                fields = WPMedia.FIELDS_STRING,
-                body = WPMedia.UpdateMediaAttributesRequest(
-                    title = image.originalImage.name,
-                    caption = image.originalImage.caption,
-                    description = image.originalImage.description,
-                    alt = image.originalImage.altText
-                )
+        inputImageResponse: UploadMediaResponse
+    ): UploadMediaResponse = try {
+        val updateMediaResponse = wpService.updateMediaAttributes(
+            blogId = blogId.toString(),
+            mediaId = inputImageResponse.media?.id.toString(),
+            fields = WPMedia.FIELDS_STRING,
+            body = WPMedia.UpdateMediaAttributesRequest(
+                title = inputImageResponse.originalImage.name,
+                caption = inputImageResponse.originalImage.caption,
+                description = inputImageResponse.originalImage.description,
+                alt = inputImageResponse.originalImage.altText
             )
-            .enqueue(object : Callback<WPMedia> {
+        )
 
-                override fun onFailure(call: Call<WPMedia>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading media!")
-                    cont.resume(image.copy(errorMessage = t.message))
-                }
-
-                override fun onResponse(
-                    call: Call<WPMedia>,
-                    response: Response<WPMedia>
-                ) {
-                    val updateMediaResponse = response.body()
-
-                    if (updateMediaResponse == null) {
-                        Timber.w("Updating media: No response received :(")
-                        cont.resume(image.copy(errorMessage = "No response"))
-                        return
-                    }
-
-                    Timber.v("Media updated! $updateMediaResponse")
-                    cont.resume(image.copy(media = updateMediaResponse))
-                }
-            })
+        Timber.v("Media updated! $updateMediaResponse")
+        inputImageResponse.copy(media = updateMediaResponse)
+    } catch (e: IOException) {
+        Timber.w(e, "Error updating media metadata!")
+        inputImageResponse.copy(errorMessage = e.localizedMessage)
+    } catch (e: HttpException) {
+        Timber.w(e, "Error updating media metadata!")
+        inputImageResponse.copy(errorMessage = e.localizedMessage)
     }
-
 
     private suspend fun uploadPost(
         post: PhotoPressPost,

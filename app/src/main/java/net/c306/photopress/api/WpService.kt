@@ -4,7 +4,6 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import net.c306.photopress.BuildConfig
 import okhttp3.MultipartBody
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
@@ -17,14 +16,6 @@ import retrofit2.http.Query
  * Interface for defining REST request functions
  */
 internal interface WpService {
-
-    @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
-    fun updateMediaAttributes(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Path(ApiConstants.ARG_MEDIA_ID) mediaId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: WPMedia.UpdateMediaAttributesRequest
-    ): Call<WPMedia>
 
     @POST(ApiConstants.TOKEN_URL)
     @FormUrlEncoded
@@ -101,7 +92,7 @@ internal interface WpService {
     ): WPMedia.UploadMediaResponse
 
     @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
-    suspend fun updateMediaAttributesAsync(
+    suspend fun updateMediaAttributes(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Path(ApiConstants.ARG_MEDIA_ID) mediaId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
