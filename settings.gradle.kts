@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 rootProject.name="PhotoPress"
 
 include(":app")
+include(":feature:welcome")
