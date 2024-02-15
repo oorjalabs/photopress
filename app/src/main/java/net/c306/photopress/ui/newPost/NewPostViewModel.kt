@@ -30,6 +30,7 @@ import net.c306.photopress.sync.SyncUtils
 import net.c306.photopress.sync.SyncUtils.PublishedPost
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
+import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
@@ -552,6 +553,9 @@ internal class NewPostViewModel @Inject constructor(
             } catch (e: IOException) {
                 Timber.d(e, "Error fetching tags!")
                 null
+            } catch (e: HttpException) {
+                Timber.d(e, "Error fetching tags!")
+                null
             }
 
             if (fetchTagsResponse != null) {
@@ -578,6 +582,9 @@ internal class NewPostViewModel @Inject constructor(
             val fetchCategoriesResponse = try {
                 wpService.getCategoriesForSite(blogId)
             } catch (e: IOException) {
+                Timber.d(e, "Error fetching categories!")
+                null
+            } catch (e: HttpException) {
                 Timber.d(e, "Error fetching categories!")
                 null
             }

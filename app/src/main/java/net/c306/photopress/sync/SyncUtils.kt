@@ -21,9 +21,11 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.time.Instant
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -522,7 +524,7 @@ internal class SyncUtils @Inject constructor(
         postImages: List<UploadMediaResponse>,
         useBlockEditor: Boolean?,
         addFeaturedImage: Boolean?
-    ) = suspendCoroutine<UploadPostResponse> { cont ->
+    ): UploadPostResponse {
 
         val usingBlockEditor = useBlockEditor ?: Settings.DEFAULT_USE_BLOCK_EDITOR
         val addingFeaturedImage = addFeaturedImage ?: Settings.DEFAULT_ADD_FEATURED_IMAGE
@@ -610,8 +612,8 @@ internal class SyncUtils @Inject constructor(
         val featuredImage = images.find { it.originalImage.id == post.postThumbnail }
             ?: images[0]
 
-        wpService
-            .uploadBlogpost(
+        return try {
+            val publishResponse = wpService.uploadBlogpost(
                 blogId = post.blogId.toString(),
                 fields = WPBlogPost.FIELDS_STRING,
                 body = WPBlogPost.CreatePostRequest(
@@ -620,35 +622,19 @@ internal class SyncUtils @Inject constructor(
                     tags = post.tags,
                     categories = post.categories,
                     status = WPBlogPost.PublishStatus.DRAFT,
-                    featuredImage = if (addingFeaturedImage) featuredImage.media!!.id.toString() else null
+                    featuredImage = if (addingFeaturedImage) featuredImage.media?.id?.toString().orEmpty() else null
                 )
-            ).enqueue(object : Callback<WPBlogPost> {
-                override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading blogpost!")
-                    cont.resume(UploadPostResponse(errorMessage = t.localizedMessage))
-                }
+            )
 
-                override fun onResponse(
-                    call: Call<WPBlogPost>,
-                    response: Response<WPBlogPost>
-                ) {
-                    val publishResponse = response.body()
-
-                    if (publishResponse == null) {
-                        Timber.w("Upload post: No response received :(")
-                        cont.resume(
-                            UploadPostResponse(
-                                errorMessage = context.getString(R.string.sync_status_error_no_response)
-                            )
-                        )
-                        return
-                    }
-
-                    Timber.v("Blog uploaded! $publishResponse")
-                    cont.resume(UploadPostResponse(uploadedPost = publishResponse))
-                }
-            })
+            Timber.v("Blog uploaded! $publishResponse")
+            UploadPostResponse(uploadedPost = publishResponse)
+        } catch (e: IOException) {
+            Timber.w(e, "Error uploading blogpost!")
+            UploadPostResponse(errorMessage = e.localizedMessage)
+        } catch (e: HttpException) {
+            Timber.w(e, "Error uploading blogpost!")
+            UploadPostResponse(errorMessage = e.localizedMessage)
+        }
     }
 
 
@@ -656,47 +642,25 @@ internal class SyncUtils @Inject constructor(
         blogId: Int,
         blogPost: WPBlogPost,
         scheduledTime: Long?
-    ) = suspendCoroutine<UploadPostResponse> { cont ->
-
-        val scheduledDateString = scheduledTime?.let { Instant.ofEpochMilli(it).toString() }
-
-        wpService
-            .updatePostStatus(
-                blogId = blogId.toString(),
-                postId = blogPost.id.toString(),
-                fields = WPBlogPost.FIELDS_STRING,
-                body = WPBlogPost.UpdatePostStatusRequest(
-                    status = WPBlogPost.PublishStatus.PUBLISH,
-                    date = scheduledDateString
-                )
+    ): UploadPostResponse = try {
+        val publishResponse = wpService.updatePostStatus(
+            blogId = blogId.toString(),
+            postId = blogPost.id.toString(),
+            fields = WPBlogPost.FIELDS_STRING,
+            body = WPBlogPost.UpdatePostStatusRequest(
+                status = WPBlogPost.PublishStatus.PUBLISH,
+                date = scheduledTime?.let { Instant.ofEpochMilli(it).toString() }
             )
-            .enqueue(object : Callback<WPBlogPost> {
-                override fun onFailure(call: Call<WPBlogPost>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error  updating to published!")
-                    cont.resume(UploadPostResponse(errorMessage = t.localizedMessage))
-                }
+        )
 
-                override fun onResponse(
-                    call: Call<WPBlogPost>,
-                    response: Response<WPBlogPost>
-                ) {
-                    val publishResponse = response.body()
-
-                    if (publishResponse == null) {
-                        Timber.w("Error updating to published: No blog response received :(")
-                        cont.resume(
-                            UploadPostResponse(
-                                errorMessage = context.getString(R.string.sync_status_error_no_response)
-                            )
-                        )
-                        return
-                    }
-
-                    Timber.v("Blog published! $publishResponse")
-                    cont.resume(UploadPostResponse(uploadedPost = publishResponse))
-                }
-            })
+        Timber.v("Blog published! $publishResponse")
+        UploadPostResponse(uploadedPost = publishResponse)
+    } catch (e: IOException) {
+        Timber.w(e, "Error updating to published!")
+        UploadPostResponse(errorMessage = e.localizedMessage)
+    } catch (e: HttpException) {
+        Timber.w(e, "Error updating to published!")
+        UploadPostResponse(errorMessage = e.localizedMessage)
     }
 
 
@@ -734,50 +698,31 @@ internal class SyncUtils @Inject constructor(
      * Deletes all provided images from app's storage space
      */
     private suspend fun deleteFiles(images: List<File>) = withContext(Dispatchers.IO) {
-
-        if (images.isEmpty()) return@withContext
-
-        try {
-            images
-                .filter { it.exists() && it.isFile }
-                .forEach { it.delete() }
-        } catch (e: SecurityException) {
-            Timber.d(e, "Error deleting files")
+        if (images.isNotEmpty()) {
+            try {
+                images
+                    .filter { it.exists() && it.isFile }
+                    .forEach { it.delete() }
+            } catch (e: SecurityException) {
+                Timber.d(e, "Error deleting files")
+            }
         }
     }
 
 
-    suspend fun addCategory(blogId: Int, categoryName: String): Boolean = suspendCoroutine { cont ->
-        wpService
-            .addCategory(
-                blogId = blogId.toString(),
-                request = WPCategory.AddCategoryRequest(categoryName).toFieldMap()
-            )
-            .enqueue(object : Callback<WPCategory> {
-
-                override fun onFailure(call: Call<WPCategory>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error adding category!")
-                    cont.resume(false)
-                }
-
-                override fun onResponse(
-                    call: Call<WPCategory>,
-                    response: Response<WPCategory>
-                ) {
-                    val addCategoryResponse = response.body()
-
-                    if (addCategoryResponse == null) {
-                        Timber.w("Adding category: No response received :(")
-                        cont.resume(false)
-                        return
-                    }
-
-                    Timber.v("Category added! $addCategoryResponse")
-                    cont.resume(true)
-                }
-            })
-
+    suspend fun addCategory(blogId: Int, categoryName: String) = try {
+        val addedCategory = wpService.addCategory(
+            blogId = blogId.toString(),
+            request = WPCategory.AddCategoryRequest(categoryName).toFieldMap()
+        )
+        Timber.d("Category added! $addedCategory")
+        true
+    } catch (e: IOException) {
+        Timber.w(e, "Error adding category!")
+        false
+    } catch (e: HttpException) {
+        Timber.w(e, "Error adding category!")
+        false
     }
 
 

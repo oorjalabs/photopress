@@ -18,29 +18,6 @@ import retrofit2.http.Query
  */
 internal interface WpService {
 
-    @POST(ApiConstants.CREATE_CATEGORY)
-    @FormUrlEncoded
-    fun addCategory(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
-        @FieldMap request: Map<String, String>
-    ): Call<WPCategory>
-
-    @POST(ApiConstants.CREATE_POST)
-    fun uploadBlogpost(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: WPBlogPost.CreatePostRequest
-    ): Call<WPBlogPost>
-
-    @POST(ApiConstants.UPDATE_POST)
-    fun updatePostStatus(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Path(ApiConstants.ARG_POST_ID) postId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body body: WPBlogPost.UpdatePostStatusRequest
-    ): Call<WPBlogPost>
-
     @POST(ApiConstants.UPLOAD_MEDIA)
     fun uploadSingleMedia(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -102,21 +79,21 @@ internal interface WpService {
 
     @POST(ApiConstants.CREATE_CATEGORY)
     @FormUrlEncoded
-    suspend fun addCategoryAsync(
+    suspend fun addCategory(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String = WPCategory.FIELDS_STRING,
         @FieldMap request: Map<String, String>
     ): WPCategory
 
     @POST(ApiConstants.CREATE_POST)
-    suspend fun uploadBlogpostAsync(
+    suspend fun uploadBlogpost(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body body: WPBlogPost.CreatePostRequest
     ): WPBlogPost
 
     @POST(ApiConstants.UPDATE_POST)
-    suspend fun updatePostStatusAsync(
+    suspend fun updatePostStatus(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Path(ApiConstants.ARG_POST_ID) postId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
