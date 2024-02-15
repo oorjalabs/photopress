@@ -18,13 +18,6 @@ import retrofit2.http.Query
  */
 internal interface WpService {
 
-    @POST(ApiConstants.UPLOAD_MEDIA)
-    fun uploadMediaMulti(
-        @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
-        @Query(ApiConstants.ARG_FIELDS) fields: String?,
-        @Body contents: MultipartBody
-    ): Call<WPMedia.UploadMediaResponse>
-
     @POST(ApiConstants.UPDATE_MEDIA_ATTRIBUTES)
     fun updateMediaAttributes(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
@@ -101,7 +94,7 @@ internal interface WpService {
     ): WPMedia.UploadMediaResponse
 
     @POST(ApiConstants.UPLOAD_MEDIA)
-    suspend fun uploadMediaMultiAsync(
+    suspend fun uploadMediaMulti(
         @Path(ApiConstants.ARG_BLOG_ID) blogId: String,
         @Query(ApiConstants.ARG_FIELDS) fields: String?,
         @Body contents: MultipartBody

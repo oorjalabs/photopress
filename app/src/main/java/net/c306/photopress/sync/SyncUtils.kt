@@ -229,8 +229,7 @@ internal class SyncUtils @Inject constructor(
     private suspend fun uploadMedia(
         blogId: Int,
         images: List<Pair<File, PostImage>>
-    ) = suspendCoroutine<Pair<Boolean, List<UploadMediaResponse>>> { cont ->
-
+    ): Pair<Boolean, List<UploadMediaResponse>> {
         val requestBodyBuilder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
 
@@ -263,90 +262,50 @@ internal class SyncUtils @Inject constructor(
 
         }
 
-        wpService
-            .uploadMediaMulti(
+        return try {
+            val uploadMediaResponse = wpService.uploadMediaMulti(
                 blogId = blogId.toString(),
                 contents = requestBodyBuilder.build(),
                 fields = WPMedia.FIELDS_STRING
-            ).enqueue(object : Callback<WPMedia.UploadMediaResponse> {
+            )
 
-                override fun onFailure(call: Call<WPMedia.UploadMediaResponse>, t: Throwable) {
-                    // Error creating post
-                    Timber.w(t, "Error uploading media: ")
-                    cont.resume(
-                        Pair(
-                            false,
-                            images.map { UploadMediaResponse(t.message, null, it.second) })
+            Timber.v("Media uploaded! $uploadMediaResponse")
+            Pair(
+                true,
+                images.mapIndexed { index, (_, image) ->
+                    UploadMediaResponse(
+                        errorMessage = null,
+                        media = uploadMediaResponse.media.getOrNull(index),
+                        originalImage = image
                     )
                 }
+            )
 
-                override fun onResponse(
-                    call: Call<WPMedia.UploadMediaResponse>,
-                    response: Response<WPMedia.UploadMediaResponse>
-                ) {
-                    val uploadMediaResponse = response.body()
-
-                    if (uploadMediaResponse == null) {
-                        Timber.w("Error uploading media: No response received :(")
-                        cont.resume(
-                            Pair(
-                                false,
-                                images.map {
-                                    UploadMediaResponse(
-                                        context.getString(R.string.sync_status_error_no_response),
-                                        null,
-                                        it.second
-                                    )
-                                })
-                        )
-                        return
-                    }
-
-
-                    if (!uploadMediaResponse.errors.isNullOrEmpty()) {
-                        Timber.w("Error uploading media: ${uploadMediaResponse.errors.joinToString("\n")}")
-                        cont.resume(
-                            Pair(
-                                false,
-                                images.map {
-                                    UploadMediaResponse(
-                                        uploadMediaResponse.errors[0],
-                                        null,
-                                        it.second
-                                    )
-                                })
-                        )
-                        return
-                    }
-
-                    if (uploadMediaResponse.media.isEmpty()) {
-                        Timber.w("Error uploading media: No media returned")
-                        cont.resume(
-                            Pair(
-                                false,
-                                images.map {
-                                    UploadMediaResponse(
-                                        context.getString(R.string.sync_status_error_no_media_returned),
-                                        null,
-                                        it.second
-                                    )
-                                })
-                        )
-                        return
-                    }
-
-                    Timber.v("Media uploaded! $uploadMediaResponse")
-                    cont.resume(Pair(true, images.mapIndexed { index, (_, image) ->
-                        UploadMediaResponse(
-                            errorMessage = null,
-                            media = uploadMediaResponse.media.getOrNull(index),
-                            originalImage = image
-                        )
-                    }))
-
+        } catch (e: IOException) {
+            Timber.w(e, "Error uploading media!")
+            Pair(
+                false,
+                images.map {
+                    UploadMediaResponse(
+                        errorMessage = e.localizedMessage,
+                        media = null,
+                        originalImage = it.second
+                    )
                 }
-            })
-
+            )
+        } catch (e: HttpException) {
+            Timber.w(e, "Error uploading media!")
+            Pair(
+                false,
+                images.map {
+                    UploadMediaResponse(
+                        errorMessage = e.localizedMessage,
+                        media = null,
+                        originalImage = it.second
+                    )
+                }
+            )
+        }
     }
 
     private suspend fun uploadSingleMedia(
