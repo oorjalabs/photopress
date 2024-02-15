@@ -450,53 +450,60 @@ internal class NewPostViewModel @Inject constructor(
     internal val publishLiveData: LiveData<SyncUtils.PublishLiveData?> =
         doPublish.switchMap {
 
-            if (it != true) return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
+            if (it != true) {
+                liveData<SyncUtils.PublishLiveData?> { emit(null) }
+            } else {
 
-            // Else publish
-            val isJetpackBlog = selectedBlog.value?.jetpack
-            val blogId = selectedBlogId.value
-            val title = postTitle.value
-            val images = postImages.value
-            val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
-                .apply { add(applicationContext.getString(R.string.app_post_tag)) }
-                .filter { tag -> tag.isNotBlank() }
-                .distinct()
-            val categories = postCategories
-                .filter { category -> category.isNotBlank() }
-                .distinct()
+                // Else publish
+                val isJetpackBlog = selectedBlog.value?.jetpack
+                val blogId = selectedBlogId.value
+                val title = postTitle.value
+                val images = postImages.value
+                val tags = (postTags.value?.split(",")?.toMutableList() ?: mutableListOf())
+                    .apply { add(applicationContext.getString(R.string.app_post_tag)) }
+                    .filter { tag -> tag.isNotBlank() }
+                    .distinct()
+                val categories = postCategories
+                    .filter { category -> category.isNotBlank() }
+                    .distinct()
 
-            if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
-                Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
-                Toast.makeText(applicationContext, "Null inputs to publish :(", Toast.LENGTH_LONG)
-                    .show()
+                if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
+                    Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
+                    Toast.makeText(
+                        applicationContext,
+                        "Null inputs to publish :(",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
 
-                return@switchMap liveData<SyncUtils.PublishLiveData?> { emit(null) }
+                    liveData<SyncUtils.PublishLiveData?> { emit(null) }
+                } else {
+                    val post = PhotoPressPost(
+                        blogId = blogId,
+                        postCaption = postCaption.value ?: "",
+                        // Featured image, or first image if no featured image is set
+                        postThumbnail = postFeaturedImageId.value ?: images[0].id,
+                        scheduledTime = scheduledDateTime.value,
+                        status = postStatus.value ?: PhotoPressPost.PhotoPostStatus.PUBLISH,
+                        tags = tags,
+                        categories = categories,
+                        title = title,
+                        uploadPending = true
+                    )
+
+                    // Reset published post data
+                    _publishedPost.value = null
+                    _state.value = State.PUBLISHING
+
+                    syncUtils.publishPostLiveData(
+                        post = post,
+                        images = images,
+                        addFeaturedImage = addFeaturedImage.value,
+                        useBlockEditor = useBlockEditor.value,
+                        isJetpackBlog = isJetpackBlog
+                    )
+                }
             }
-
-            val post = PhotoPressPost(
-                blogId = blogId,
-                postCaption = postCaption.value ?: "",
-                // Featured image, or first image if no featured image is set
-                postThumbnail = postFeaturedImageId.value ?: images[0].id,
-                scheduledTime = scheduledDateTime.value,
-                status = postStatus.value ?: PhotoPressPost.PhotoPostStatus.PUBLISH,
-                tags = tags,
-                categories = categories,
-                title = title,
-                uploadPending = true
-            )
-
-            // Reset published post data
-            _publishedPost.value = null
-            _state.value = State.PUBLISHING
-
-            syncUtils.publishPostLiveData(
-                post = post,
-                images = images,
-                addFeaturedImage = addFeaturedImage.value,
-                useBlockEditor = useBlockEditor.value,
-                isJetpackBlog = isJetpackBlog
-            )
         }
 
     internal fun onPublishFinished(publishResult: SyncUtils.PublishPostResponse) {

@@ -64,162 +64,165 @@ internal class SyncUtils @Inject constructor(
                     statusMessage = errorMessage
                 )
                 emit(PublishLiveData(progress, response))
-                return@withContext
-            }
-
-            emit(
-                PublishLiveData(
-                    progress = PublishProgress(
-                        finished = false,
-                        statusMessage = context.getString(R.string.sync_status_uploading_images)
-                    )
-                )
-            )
-
-            val mediaToUpload = images.mapNotNull { image ->
-                getFileForUri(context, image)?.let { (file, _) ->
-                    Pair(file, image)
-                }
-            }
-
-            var uploadSuccess = true
-            val uploadedMedia: List<UploadMediaResponse>
-
-            if (isJetpackBlog == true) {
-                // Upload images one by one
-                val imageCount = mediaToUpload.size
-                uploadedMedia = mediaToUpload.mapIndexed { index, imagePair ->
-                    emit(
-                        PublishLiveData(
-                            progress = PublishProgress(
-                                finished = false,
-                                statusMessage = context.getString(
-                                    R.string.sync_status_uploading_images_individual,
-                                    index + 1,
-                                    imageCount
-                                )
-                            )
-                        )
-                    )
-                    val (success, uploaded) = uploadSingleMedia(post.blogId, imagePair)
-                    uploadSuccess = success && uploadSuccess
-                    if (!success) Timber.d("Error uploading image $index: '${uploaded.errorMessage}'")
-                    uploaded
-                }
             } else {
-                // Upload images all together
-                val uploaded = uploadMedia(post.blogId, mediaToUpload)
-                uploadSuccess = uploaded.first
-                uploadedMedia = uploaded.second
-            }
-
-            // Delete images from app storage
-            deleteFiles(mediaToUpload.map { it.first })
-
-            if (!uploadSuccess) {
-                val errorMessage = context.getString(
-                    R.string.sync_status_error,
-                    uploadedMedia[0].errorMessage
-                        ?: context.getString(R.string.sync_status_error_media_upload_failed)
-                )
-                val response = PublishPostResponse(
-                    errorMessage = errorMessage,
-                    publishedPost = null,
-                    updatedImages = null
-                )
-                val progress = PublishProgress(true, errorMessage)
-                emit(PublishLiveData(progress, response))
-
-                return@withContext
-            }
-
-            // Disabled because WP api returns 404 for recently updated image :(
-            if (isJetpackBlog == true && false) {
-                emit(
-                    PublishLiveData(
-                        PublishProgress(
-                            finished = false,
-                            statusMessage = context.getString(R.string.sync_status_updating_media_details)
-                        )
-                    )
-                )
-                delay(timeMillis = 3500)
-                Timber.v("Jetpack blog, updating media attributes again")
-                uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
-            }
-
-            emit(
-                PublishLiveData(
-                    progress = PublishProgress(
-                        finished = false,
-                        statusMessage = context.getString(R.string.sync_status_uploading_post)
-                    )
-                )
-            )
-
-            // Upload post as draft with embedded image
-            val (uploadedPost, uploadError) = uploadPost(
-                post = post,
-                postImages = uploadedMedia,
-                useBlockEditor = useBlockEditor,
-                addFeaturedImage = addFeaturedImage
-            )
-
-            if (uploadError != null || uploadedPost == null) {
-                val errorMessage = context.getString(
-                    R.string.sync_status_error,
-                    uploadError
-                        ?: context.getString(R.string.sync_status_error_post_upload_failed)
-                )
-                val response = PublishPostResponse(
-                    errorMessage = errorMessage,
-                    publishedPost = null,
-                    updatedImages = uploadedMedia
-                )
-                val progress = PublishProgress(true, errorMessage)
-                emit(PublishLiveData(progress, response))
-
-                return@withContext
-            }
-
-            var publishedPost: WPBlogPost? = null
-
-            if (post.status != PhotoPressPost.PhotoPostStatus.DRAFT) {
 
                 emit(
                     PublishLiveData(
                         progress = PublishProgress(
                             finished = false,
-                            statusMessage = context.getString(R.string.sync_status_updating_post_status)
+                            statusMessage = context.getString(R.string.sync_status_uploading_images)
                         )
                     )
                 )
 
-                // Change status to published
-                val publishResult = updateToPublished(
-                    post.blogId,
-                    uploadedPost,
-                    post.scheduledTime
+                val mediaToUpload = images.mapNotNull { image ->
+                    getFileForUri(context, image)?.let { (file, _) ->
+                        Pair(file, image)
+                    }
+                }
+
+                var uploadSuccess = true
+                val uploadedMedia: List<UploadMediaResponse>
+
+                if (isJetpackBlog == true) {
+                    // Upload images one by one
+                    val imageCount = mediaToUpload.size
+                    uploadedMedia = mediaToUpload.mapIndexed { index, imagePair ->
+                        emit(
+                            PublishLiveData(
+                                progress = PublishProgress(
+                                    finished = false,
+                                    statusMessage = context.getString(
+                                        R.string.sync_status_uploading_images_individual,
+                                        index + 1,
+                                        imageCount
+                                    )
+                                )
+                            )
+                        )
+                        val (success, uploaded) = uploadSingleMedia(post.blogId, imagePair)
+                        uploadSuccess = success && uploadSuccess
+                        if (!success) Timber.d("Error uploading image $index: '${uploaded.errorMessage}'")
+                        uploaded
+                    }
+                } else {
+                    // Upload images all together
+                    val uploaded = uploadMedia(post.blogId, mediaToUpload)
+                    uploadSuccess = uploaded.first
+                    uploadedMedia = uploaded.second
+                }
+
+                // Delete images from app storage
+                deleteFiles(mediaToUpload.map { it.first })
+
+                if (!uploadSuccess) {
+                    val errorMessage = context.getString(
+                        R.string.sync_status_error,
+                        uploadedMedia[0].errorMessage
+                            ?: context.getString(R.string.sync_status_error_media_upload_failed)
+                    )
+                    val response = PublishPostResponse(
+                        errorMessage = errorMessage,
+                        publishedPost = null,
+                        updatedImages = null
+                    )
+                    val progress = PublishProgress(true, errorMessage)
+                    emit(PublishLiveData(progress, response))
+
+                    return@withContext
+                }
+
+                // Disabled because WP api returns 404 for recently updated image :(
+                if (isJetpackBlog == true && false) {
+                    emit(
+                        PublishLiveData(
+                            PublishProgress(
+                                finished = false,
+                                statusMessage = context.getString(R.string.sync_status_updating_media_details)
+                            )
+                        )
+                    )
+                    delay(timeMillis = 3500)
+                    Timber.v("Jetpack blog, updating media attributes again")
+                    uploadedMedia.forEach { updateMediaMetadata(post.blogId, it) }
+                }
+
+                emit(
+                    PublishLiveData(
+                        progress = PublishProgress(
+                            finished = false,
+                            statusMessage = context.getString(R.string.sync_status_uploading_post)
+                        )
+                    )
                 )
-                publishedPost = publishResult.uploadedPost
+
+                // Upload post as draft with embedded image
+                val (uploadedPost, uploadError) = uploadPost(
+                    post = post,
+                    postImages = uploadedMedia,
+                    useBlockEditor = useBlockEditor,
+                    addFeaturedImage = addFeaturedImage
+                )
+
+                if (uploadError != null || uploadedPost == null) {
+                    val errorMessage = context.getString(
+                        R.string.sync_status_error,
+                        uploadError
+                            ?: context.getString(R.string.sync_status_error_post_upload_failed)
+                    )
+                    val response = PublishPostResponse(
+                        errorMessage = errorMessage,
+                        publishedPost = null,
+                        updatedImages = uploadedMedia
+                    )
+                    val progress = PublishProgress(true, errorMessage)
+                    emit(PublishLiveData(progress, response))
+
+                    return@withContext
+                }
+
+                var publishedPost: WPBlogPost? = null
+
+                if (post.status != PhotoPressPost.PhotoPostStatus.DRAFT) {
+
+                    emit(
+                        PublishLiveData(
+                            progress = PublishProgress(
+                                finished = false,
+                                statusMessage = context.getString(R.string.sync_status_updating_post_status)
+                            )
+                        )
+                    )
+
+                    // Change status to published
+                    val publishResult = updateToPublished(
+                        post.blogId,
+                        uploadedPost,
+                        post.scheduledTime
+                    )
+                    publishedPost = publishResult.uploadedPost
+                }
+
+                Timber.d("Blogpost done! ${publishedPost ?: uploadedPost}")
+
+                // Update published post
+                val response = PublishPostResponse(
+                    errorMessage = null,
+                    publishedPost = PublishedPost(
+                        publishedPost ?: uploadedPost,
+                        publishedPost == null
+                    ),
+                    updatedImages = null
+                )
+                val progress = PublishProgress(
+                    finished = true,
+                    statusMessage = context.getString(R.string.sync_status_post_uploaded)
+                )
+
+                emit(PublishLiveData(progress, response))
             }
-
-            Timber.d("Blogpost done! ${publishedPost ?: uploadedPost}")
-
-            // Update published post
-            val response = PublishPostResponse(
-                errorMessage = null,
-                publishedPost = PublishedPost(publishedPost ?: uploadedPost, publishedPost == null),
-                updatedImages = null
-            )
-            val progress = PublishProgress(
-                finished = true,
-                statusMessage = context.getString(R.string.sync_status_post_uploaded)
-            )
-            emit(PublishLiveData(progress, response))
         }
     }
-
 
     private suspend fun uploadMedia(
         blogId: Int,

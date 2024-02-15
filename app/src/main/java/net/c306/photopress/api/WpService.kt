@@ -127,7 +127,5 @@ internal interface WpService {
         val tokenType: String?,
 
         val error: String?
-
     )
-
 }
