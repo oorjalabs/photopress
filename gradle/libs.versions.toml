@@ -4,10 +4,10 @@ minSdk = "29"
 targetSdk = "34"
 compileSdk = "34"
 
-agp = "8.2.2"
+agp = "8.3.0"
 kotlin = "1.9.22"
-kotlinx-coroutines = "1.7.3"
-ksp = "1.9.22-1.0.17"
+kotlinx-coroutines = "1.8.0"
+ksp = "1.9.22-1.0.18"
 
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.8.2"
