@@ -22,8 +22,6 @@ import net.c306.photopress.utils.viewBinding
 @AndroidEntryPoint
 class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_select_blog) {
 
-    private val appViewModel by activityViewModels<AppViewModel>()
-
     private val viewModel by viewModels<SelectBlogViewModel>()
 
     private val binding by viewBinding(FragmentWelcomeItemSelectBlogBinding::bind)
@@ -37,13 +35,17 @@ class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_se
             binding.tvNoBlogMessage.isVisible = it == false
         }
 
-        appViewModel.blogSelected.observe(viewLifecycleOwner) {
-            binding.animationViewDone.isVisible = it
-            if (it == true) {
-                binding.animationViewDone.playAnimation()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.isBlogSelected.collectLatest {
+                    binding.animationViewDone.isVisible = it
+                    if (it) {
+                        binding.animationViewDone.playAnimation()
+                    }
+                    binding.groupSetupComplete.isVisible = it
+                    binding.buttonSelectBlog.isVisible = !it
+                }
             }
-            binding.groupSetupComplete.isVisible = it
-            binding.buttonSelectBlog.isVisible = !it
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

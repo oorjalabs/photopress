@@ -62,8 +62,6 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         binding.navView.setupWithNavController(navController)
 
         appViewModel.isLoggedIn.observe(this) { }
-        appViewModel.selectedBlogId.observe(this) { }
-        appViewModel.blogSelected.observe(this) { }
 
         // Restart activity after logout
         appViewModel.doPostLogoutRestart.observe(this) {

@@ -34,7 +34,7 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
     private val args by navArgs<WelcomeFragmentArgs>()
 
     private val appViewModel by activityViewModels<AppViewModel>()
-    private val welcomeViewModel by activityViewModels<WelcomeViewModel>()
+    private val viewModel by activityViewModels<WelcomeViewModel>()
 
     private val binding by viewBinding(FragmentWelcomeBinding::bind)
 
@@ -46,7 +46,7 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
 
         // If already set up, go straight to main app
         val isLoggedIn = appViewModel.isLoggedIn.value == true
-        val blogSelected = appViewModel.blogSelected.value == true
+        val blogSelected = viewModel.isBlogSelected.value
         if (isLoggedIn && blogSelected) {
             findNavController().navigate(WelcomeFragmentDirections.actionGoToApp())
             return null
@@ -85,10 +85,10 @@ class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
             )
         }
 
-        welcomeViewModel.goToScreen.observe(viewLifecycleOwner) {
+        viewModel.goToScreen.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.pager.setCurrentItem(it, true)
-                welcomeViewModel.setGoToScreen(null)
+                viewModel.setGoToScreen(null)
             }
         }
 
