@@ -5,13 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
 import net.c306.photopress.ui.custom.BottomNavFragment
 
+@AndroidEntryPoint
 class PostListFragment : BottomNavFragment() {
-    
+
     private val postListViewModel: PostListViewModel by activityViewModels()
-    
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,

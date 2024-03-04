@@ -3,6 +3,7 @@ package net.c306.photopress.ui.welcome
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import net.c306.photopress.R
+import net.c306.photopress.ui.custom.NoBottomNavFragment
 
 class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
@@ -16,7 +17,7 @@ class WelcomeFragmentAdapter(fragment: Fragment): FragmentStateAdapter(fragment)
 
     override fun createFragment(position: Int): Fragment =
         when (Screens.entries.getOrElse(position) { Screens.WELCOME }) {
-            Screens.WELCOME -> Fragment(R.layout.fragment_welcome_item_init)
+            Screens.WELCOME -> NoBottomNavFragment(R.layout.fragment_welcome_item_init)
             Screens.LOGIN -> WelcomeItemFragmentLogin()
             Screens.SELECT_BLOG -> WelcomeItemFragmentSelectBlog()
         }

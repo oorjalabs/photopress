@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.c306.photopress.api.Blog
 import net.c306.photopress.api.WpService
@@ -23,41 +24,48 @@ import javax.inject.Inject
 internal class SelectBlogViewModel @Inject constructor(
     private val wpService: WpService,
     private val authPrefs: AuthPrefs,
-    private val settings: Settings,
+    settings: Settings,
 ) : ViewModel() {
 
     private val _blogList = MutableLiveData<List<Blog>?>()
     val blogList: LiveData<List<Blog>?> = _blogList
 
-    private val selectedBlog = MutableStateFlow<Blog?>(null)
+    val isBlogSelected = settings.selectedBlogId
+        .mapLatest { it > -1 }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 3000),
+            initialValue = false,
+        )
 
-    val selectBlogWelcomeSubtitle = selectedBlog.mapLatest {
-        if (it == null) {
-            Title.Default
-        } else {
-            Title.SelectedBlog(it.name)
-        }
-    }
+    val selectBlogWelcomeSubtitle = settings.selectedBlogId
+        .mapLatest { id ->
+            val selectedBlogName = if (id < 0) {
+                null
+            } else {
+                _blogList.value
+                    .orEmpty()
+                    .find { it.id == id }
+                    ?.name
+            }
+
+            if (selectedBlogName == null) {
+                Title.Default
+            } else {
+                Title.SelectedBlog(selectedBlogName)
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Title.Default,
+        )
 
     /**
      * true = have blogs
      * null = not fetched yet
      * false = no blogs (don't re-fetch yet)
      */
-    val blogsAvailable = MutableLiveData<Boolean?>().apply { value = null }
-
-
-    fun setSelectedBlogId(value: Int) {
-        if (value == -1) {
-            selectedBlog.value = null
-        } else {
-            val allBlogs = _blogList.value ?: emptyList()
-            selectedBlog.value = allBlogs.find { it.id == value }
-        }
-
-        settings.setSelectedBlogId(value)
-    }
-
+    val blogsAvailable = MutableLiveData<Boolean?>(null)
 
     init {
         val savedBlogs = authPrefs.getBlogsList()
@@ -67,15 +75,7 @@ internal class SelectBlogViewModel @Inject constructor(
             blogsAvailable.value = true
             // There is no else, because default is 'null' so blogs can be refreshed
         }
-
-        val selectedBlogId = settings.selectedBlogId
-
-        selectedBlog.value =
-            if (selectedBlogId < 0) null
-            else savedBlogs.find { it.id == selectedBlogId }
-
     }
-
 
     /**
      * Get user details from server
