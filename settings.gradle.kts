@@ -20,3 +20,4 @@ rootProject.name="PhotoPress"
 include(":app")
 include(":feature:welcome")
 include(":core:extensions")
+include(":core:designSystem")

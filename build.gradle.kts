@@ -7,8 +7,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     dependencies {
-        classpath(libs.android.gradle)
-        classpath(libs.kotlin.gradle)
         classpath(libs.androidx.nav.safe.args)
     }
 }
@@ -16,6 +14,10 @@ buildscript {
 plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
 }
 
 tasks.register("clean", Delete::class) {

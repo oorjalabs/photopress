@@ -3,8 +3,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.hilt)
