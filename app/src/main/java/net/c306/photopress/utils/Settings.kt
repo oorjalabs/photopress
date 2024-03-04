@@ -2,21 +2,44 @@ package net.c306.photopress.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.Keep
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * To save and fetch data from SharedPreferences
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class Settings @Inject constructor(
     @ApplicationContext context: Context,
 ) : BasePrefs() {
 
     override var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+    private val prefsUpdatedTimestamp = MutableStateFlow(0L)
+
+    @Keep
+    private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+        prefsUpdatedTimestamp.value = System.currentTimeMillis()
+    }
+
+    init {
+        prefs.registerOnSharedPreferenceChangeListener(observer)
+    }
+
+    val selectedBlogIdFlow: Flow<Int>
+        get() = prefsUpdatedTimestamp
+            .mapLatest { selectedBlogId }
+            .onStart { selectedBlogId }
 
     fun setSelectedBlogId(value: Int) {
         prefs.edit {

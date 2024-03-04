@@ -16,15 +16,12 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
 import net.c306.photopress.api.Blog
-import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECTED_BLOG_KEY
-import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECT_BLOG_REQUEST_KEY
 import net.c306.photopress.utils.AuthPrefs
 import javax.inject.Inject
 
@@ -33,6 +30,8 @@ internal class BlogChooserDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var authPrefs: AuthPrefs
+
+    private val viewModel by viewModels<BlogChooserViewModel>()
 
     private val args by navArgs<BlogChooserDialogFragmentArgs>()
 
@@ -135,10 +134,7 @@ internal class BlogChooserDialogFragment : DialogFragment() {
                 .setView(contentView)
                 .setTitle(getString(R.string.blog_selector_title))
                 .setPositiveButton(getString(R.string.button_text_done)) { _, _ ->
-                    setFragmentResult(
-                        requestKey = SELECT_BLOG_REQUEST_KEY,
-                        result = bundleOf(SELECTED_BLOG_KEY to mCurrentBlogId),
-                    )
+                    viewModel.setSelectedBlogId(mCurrentBlogId)
                 }
                 .setNegativeButton(getString(R.string.button_text_cancel), null)
                 .create()

@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
 import net.c306.photopress.utils.viewBinding
@@ -30,16 +27,6 @@ class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_se
     private val viewModel by viewModels<SelectBlogViewModel>()
 
     private val binding by viewBinding(FragmentWelcomeItemSelectBlogBinding::bind)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // TODO: 11/02/2024 Test this
-        setFragmentResultListener(SELECT_BLOG_REQUEST_KEY) { _, bundle ->
-            if (bundle.containsKey(SELECTED_BLOG_KEY)) {
-                viewModel.setSelectedBlogId(bundle.getInt(SELECTED_BLOG_KEY))
-            }
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
