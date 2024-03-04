@@ -52,4 +52,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Integration with LiveData
     implementation(libs.androidx.compose.runtime.livedata)
+
+    implementation(libs.airbnb.lottie.compose)
 }

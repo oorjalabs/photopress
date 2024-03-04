@@ -1,0 +1,204 @@
+<resources>
+<!--    <string name="app_name">PhotoPress</string>-->
+<!--    -->
+<!--    <string name="app_post_tag">PhotoPress</string>-->
+<!--    -->
+<!--    <string name="title_list">Posts</string>-->
+<!--    <string name="title_post_new">Add Post</string>-->
+<!--    <string name="title_settings">Settings</string>-->
+<!--    -->
+<!--    <string name="logout_confirm_text">Do you really want to sign out?</string>-->
+<!--    <string name="title_update_notes">What\'s new</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Welcome screens  &ndash;&gt;-->
+    <string name="cd_close_welcome_screen">Close welcome screen</string>
+    <string name="title_welcome_to_photopress">Welcome to PhotoPress</string>
+    <string name="subtitle_welcome_to_photopress">The photoblogging app for WordPress</string>
+    <string name="message_welcome_to_photopress">Select a photo.\nGive a title.\nPress publish.\n\nIt\'s that simple.</string>
+    <string name="cd_welcome_screen_progress_indicator">Welcome screen progress indicator</string>
+    <string name="cd_photopress_logo">PhotoPress logo</string>
+<!--    <string name="title_login_to_wordpress">Login to WordPress</string>-->
+<!--    <string name="subtitle_login_to_wordpress">Connect with your WordPress blog</string>-->
+<!--    <string name="message_login_to_wordpress">PhotoPress works with blogs hosted on WordPress.com or using the Jetpack plugin.</string>-->
+<!--    <string name="button_connect_with_wordpress">Connect with WordPress</string>-->
+<!--    <string name="title_welcome_last">Select blog</string>-->
+<!--    <string name="subtitle_welcome_select_blog">Pick a blog to post photos</string>-->
+<!--    <string name="button_get_started">Let\'s begin</string>-->
+<!--    <string name="label_next_pick_a_blog">Next: Pick a blog</string>-->
+<!--    <string name="connected_as">Connected as %1$s</string>-->
+<!--    <string name="hint_search">Search</string>-->
+<!--    <string name="dialog_blog_list_empty_view">No blogs found. Would you like to create a new blog?</string>-->
+<!--    <string name="blog_selector_title">Select blog</string>-->
+<!--    <string name="button_text_done">@string/string_done</string>-->
+<!--    <string name="button_text_cancel">Cancel</string>-->
+<!--    <string name="button_select_blog">Select a blog</string>-->
+<!--    <string name="posting_on_blog">Selected blog: %1$s</string>-->
+<!--    <string name="message_posting_to">Posting to %1$s</string>-->
+<!--    <string name="message_welcome_no_blogs_found">No blogs found.\nCreate a blog on WordPress.com.</string>-->
+<!--    -->
+<!--    <string name="message_error_network">Error connecting to WordPress. Please try again later.</string>-->
+<!--    <string name="message_error_token_validation">Error occurred while validating token. Please try again later.</string>-->
+<!--    <string name="message_error_no_auth_token">Authentication error. Please try again later</string>-->
+<!--    <string name="message_two_factor_code">If two-factor authentication is enabled, please use SMS or code based verification. WordPress app based verification does not work with PhotoPress.</string>-->
+<!--    <string name="title_two_factor_code">Two-factor authentication</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Preferences  &ndash;&gt;-->
+<!--    <string name="pref_title_select_blog">Select blog</string>-->
+<!--    <string name="pref_cat_title_about">About</string>-->
+<!--    <string name="pref_cat_title_posting">Posting</string>-->
+<!--    <string name="pref_cat_title_user">User</string>-->
+<!--    <string name="pref_title_logged_in">Logged in as %s</string>-->
+<!--    <string name="pref_title_logout">Logout</string>-->
+<!--    <string name="pref_title_update_notes">See what\'s new</string>-->
+<!--    -->
+<!--    <string name="pref_title_post_format">Post format for editor</string>-->
+<!--    <string-array name="pref_entries_post_format">-->
+<!--        <item>Block editor</item>-->
+<!--        <item>Classic editor</item>-->
+<!--    </string-array>-->
+<!--    -->
+<!--    <string-array name="pref_values_post_format">-->
+<!--        <item>block</item>-->
+<!--        <item>classic</item>-->
+<!--    </string-array>-->
+<!--    -->
+<!--    <string name="pref_title_add_featured_image">Set as featured image</string>-->
+<!--    <string name="pref_summary_add_featured_image">Also set the selected image as a featured image</string>-->
+<!--    -->
+<!--    <string name="pref_title_default_tags">Default tags</string>-->
+<!--    <string name="pref_title_default_categories">Default categories</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Generic strings  &ndash;&gt;-->
+<!--    <string name="string_ok">OK</string>-->
+<!--    <string name="string_done">Done</string>-->
+<!--    <string name="string_cancel">Cancel</string>-->
+<!--    <string name="string_publish">Publish</string>-->
+<!--    <string name="string_schedule">Schedule</string>-->
+<!--    <string name="string_close">Close</string>-->
+<!--    <string name="string_none">None</string>-->
+<!--    <string name="string_under_development">Still working on it</string>-->
+<!--    <string name="string_search">Search</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Image attributes fragment  &ndash;&gt;-->
+<!--    <string name="image_attributes_title">Image attributes</string>-->
+<!--    <string name="image_attributes_label_title">Name</string>-->
+<!--    <string name="image_attributes_label_caption">Caption</string>-->
+<!--    <string name="image_attributes_label_alt_text">Alternate text</string>-->
+<!--    <string name="image_attributes_label_description">Description</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Credits fragment  &ndash;&gt;-->
+<!--    <string name="credits_title"><![CDATA[Credits & Thanks]]></string>-->
+<!--    <string name="credits_full_text"><![CDATA[-->
+<!--        <p>PhotoPress icon adapted from <a href="https://www.iconfinder.com/icons/5439767/animal_dog_pet_puppy_icon">puppy icon</a> by <a href="https://furbabyguide.com/">Gerald Sanders</a>.</p>-->
+<!--        <p>Animated check mark is by <a href="https://lottiefiles.com/641-simple-tick">Hicy Wonder</a> on LottieFiles.</p>-->
+<!--        <p>Animated right arrows are by <a href="https://lottiefiles.com/11515-swipe-right-arrows">MJ Mohiddin</a> on LottieFiles.</p>-->
+<!--        <p>Reorder images icon is by <a href="https://thenounproject.com/term/reorder/140246/">Gilad Sotil </a> on the Noun Project.</p>-->
+<!--        <p>PhotoPress relies on <a href="https://developer.wordpress.com/docs/api/">the API</a> provided by <a href="https://automattic.com/">Automattic</a> + <a href="https://wordpress.com">WordPress.com</a>. PhotoPress is, however, a third-party app and is not associated in any way with Automattic or WordPress.com.</p>-->
+<!--    ]]></string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Post settings  &ndash;&gt;-->
+<!--    <string name="post_settings_title">Post settings</string>-->
+<!--    <string name="post_settings_label_tags">Tags (comma separated)</string>-->
+<!--    <string name="post_settings_hint_tags">Cycling,Velo,Love,Outdoors,Endorphins,Nature,Hills,Sweat,Tears</string>-->
+<!--    <string name="post_settings_label_categories">Categories</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Reorder images fragment  &ndash;&gt;-->
+<!--    <string name="reorder_images_title">Reorder images</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Schedule post dialogs  &ndash;&gt;-->
+<!--    <string name="schedule_post_title_confirm_schedule_time">Confirm schedule</string>-->
+<!--    <string name="schedule_post_message_confirm_schedule_time">Publish post at %1$s</string>-->
+<!--    <string name="schedule_post_title_select_publish_date">Publishing date</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Pre publish dialog  &ndash;&gt;-->
+<!--    <string name="pre_publish_title_ready_to_publish">Ready to publish</string>-->
+<!--    <string name="pre_publish_button_publish_now">Publish Immediately</string>-->
+<!--    <string name="pre_publish_button_schedule_for_later">Schedule for later</string>-->
+<!--    <string name="pre_publish_button_upload_as_draft">Upload as draft</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Post publish dialog  &ndash;&gt;-->
+<!--    <string name="post_publish_title_post_published">Post published: %1$s</string>-->
+<!--    <string name="post_publish_title_post_draft">Post uploaded as draft: %1$s</string>-->
+<!--    <string name="post_publish_title_post_scheduled">Post scheduled: %1$s</string>-->
+<!--    <string name="post_publish_button_open_in_wordpress_app">Open in WordPress</string>-->
+<!--    <string name="post_publish_button_open_post_in_browser">Open in browser</string>-->
+<!--    <string name="post_publish_button_copy_post_url">Copy link to clipboard</string>-->
+<!--    <string name="post_publish_button_share_post">Share post</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  New Post fragment  &ndash;&gt;-->
+<!--    <string name="new_post_label_no_blog_selected">No blog selected. Please first select a blog on the settings screen.</string>-->
+<!--    <string name="new_post_label_posting_as_author_to_blog">Posting to %2$s as %1$s</string>-->
+<!--    <string name="new_post_label_tap_to_add_photo">Tap to pick a photo</string>-->
+<!--    <string name="new_post_label_post_title">Post Title</string>-->
+<!--    <string name="new_post_hint_post_title">Cycle Love</string>-->
+<!--    <string name="new_post_placeholder_image_caption">Add image caption</string>-->
+<!--    <string name="new_post_placeholder_gallery_caption">Add gallery caption</string>-->
+<!--    -->
+<!--    <string name="new_post_button_upload_post">Upload post</string>-->
+<!--    <string name="new_post_cd_button_post_settings">Open post settings</string>-->
+<!--    -->
+<!--    <string name="new_post_cd_fab_publish">Publish</string>-->
+<!--    <string name="new_post_cd_photo_to_post">Photo to post</string>-->
+<!--    <string name="new_post_cd_change_photo">Change photos</string>-->
+<!--    <string name="new_post_cd_add_more_photos">Add more photos</string>-->
+<!--    <string name="new_post_cd_reorder_photos">Reorder photos</string>-->
+<!--    -->
+<!--    <string name="new_post_toast_image_selection_cancelled">No image selected</string>-->
+<!--    -->
+<!--    <string name="new_post_toast_uploaded_as_draft">Post uploaded as draft</string>-->
+<!--    <string name="new_post_toast_published">Post published successfully</string>-->
+<!--    <string name="new_post_toast_post_scheduled">Post scheduled</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash; Image Item &ndash;&gt;-->
+<!--    <string name="image_item_cd_photo_attributes_gallery">Tap to set photo caption, description and alt text</string>-->
+<!--    <string name="image_item_cd_photo_attributes_reorder">Press and hold to drag and reorder; tap to open image.</string>-->
+<!--    <string name="image_item_cd_featured_image">Featured image</string>-->
+<!--    <string name="image_attributes_cd_selected_image">Selected image</string>-->
+<!--    <string name="image_attributes_cd_featured">Featured</string>-->
+<!--    <string name="image_attributes_button_set_as_featured_image">Set featured image</string>-->
+<!--    <string name="image_attributes_button_unset_as_featured_image">Remove featured image</string>-->
+<!--    <string name="image_attributes_button_remove_image">Remove image</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Full image view  &ndash;&gt;-->
+<!--    <string name="full_image_view_cd_image">Current image</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  SyncUtils  &ndash;&gt;-->
+<!--    <string name="sync_status_started_upload">Started</string>-->
+<!--    <string name="sync_status_uploading_images">Uploading images</string>-->
+<!--    <string name="sync_status_uploading_images_individual">Uploading image %1$d of %2$d</string>-->
+<!--    <string name="sync_status_updating_media_details">Updating image details</string>-->
+<!--    <string name="sync_status_uploading_post">Uploading post</string>-->
+<!--    <string name="sync_status_updating_post_status">Updating post status</string>-->
+<!--    <string name="sync_status_post_uploaded">Post uploaded</string>-->
+<!--    <string name="sync_status_error">Error: %1$s</string>-->
+<!--    <string name="sync_status_error_no_title_or_images">Error: No title or images provided</string>-->
+<!--    <string name="sync_status_error_media_upload_failed">Media upload failed</string>-->
+<!--    <string name="sync_status_error_post_upload_failed">Post upload failed</string>-->
+<!--    <string name="sync_status_error_no_response">No response</string>-->
+<!--    <string name="sync_status_error_no_media_returned">No media returned</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Category chooser dialog  &ndash;&gt;-->
+<!--    <string name="category_picker_title">Select categories</string>-->
+<!--    <string name="category_picker_empty_view">Create new category \'%1$s\'</string>-->
+<!--    <string name="category_picker_empty_view_no_projects">No categories. Create one by typing a category name…</string>-->
+<!--    -->
+<!--    -->
+<!--    &lt;!&ndash;  Unsorted  &ndash;&gt;-->
+<!--    <string name="dummy_content">DUMMY\nCONTENT</string>-->
+
+</resources>
