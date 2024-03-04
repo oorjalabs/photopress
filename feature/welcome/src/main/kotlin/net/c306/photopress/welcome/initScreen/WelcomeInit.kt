@@ -41,6 +41,7 @@ import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import net.c306.photopress.core.designsystem.BasePalette
 import net.c306.photopress.core.designsystem.CustomColour
 import net.c306.photopress.welcome.R
+import net.c306.photopress.welcome.WelcomeTheme
 
 private object WelcomeInit {
     object Style {

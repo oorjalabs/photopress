@@ -1,4 +1,4 @@
-package net.c306.photopress.welcome.initScreen
+package net.c306.photopress.welcome
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
