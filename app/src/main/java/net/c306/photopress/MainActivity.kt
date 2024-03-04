@@ -3,7 +3,6 @@ package net.c306.photopress
 import android.app.ActivityManager
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.viewModels
@@ -47,15 +46,13 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         setTheme(R.style.AppTheme)
 
         // On Android P+, set app icon in app switcher view
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            setTaskDescription(
-                ActivityManager.TaskDescription(
-                    getString(R.string.app_name), // Leave the default title.
-                    R.mipmap.ic_launcher,
-                    getColor(R.color.primaryColor) // Leave the default color
-                )
+        setTaskDescription(
+            ActivityManager.TaskDescription(
+                getString(R.string.app_name), // Leave the default title.
+                R.mipmap.ic_launcher,
+                getColor(R.color.primaryColor) // Leave the default color
             )
-        }
+        )
 
         setContentView(binding.root)
 
