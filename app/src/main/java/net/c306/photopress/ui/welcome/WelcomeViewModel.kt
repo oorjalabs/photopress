@@ -18,7 +18,7 @@ class WelcomeViewModel @Inject constructor(
     settings: Settings,
 ): ViewModel() {
 
-    val isBlogSelected = settings.selectedBlogIdFlow
+    val isBlogSelected = settings.selectedBlogId
         .mapLatest { it > -1 }
         .stateIn(
             scope = viewModelScope,

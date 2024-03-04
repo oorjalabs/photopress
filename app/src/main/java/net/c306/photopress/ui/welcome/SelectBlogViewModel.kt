@@ -30,7 +30,7 @@ internal class SelectBlogViewModel @Inject constructor(
     private val _blogList = MutableLiveData<List<Blog>?>()
     val blogList: LiveData<List<Blog>?> = _blogList
 
-    val isBlogSelected = settings.selectedBlogIdFlow
+    val isBlogSelected = settings.selectedBlogId
         .mapLatest { it > -1 }
         .stateIn(
             scope = viewModelScope,
@@ -38,7 +38,7 @@ internal class SelectBlogViewModel @Inject constructor(
             initialValue = false,
         )
 
-    val selectBlogWelcomeSubtitle = settings.selectedBlogIdFlow
+    val selectBlogWelcomeSubtitle = settings.selectedBlogId
         .mapLatest { id ->
             val selectedBlogName = if (id < 0) {
                 null

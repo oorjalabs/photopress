@@ -15,12 +15,16 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
-import net.c306.photopress.api.Blog
 import net.c306.photopress.api.WPCategory
 import net.c306.photopress.api.WPTag
 import net.c306.photopress.api.WpService
@@ -36,6 +40,7 @@ import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 internal class NewPostViewModel @Inject constructor(
     @ApplicationContext
@@ -84,7 +89,7 @@ internal class NewPostViewModel @Inject constructor(
         val publishedPost = publishedPost.value
 
         _state.value = when {
-            blogId == null || blogId < 0 -> State.NO_BLOG_SELECTED
+            blogId < 0 -> State.NO_BLOG_SELECTED
             publishedPost != null -> State.PUBLISHED
             image == null -> State.EMPTY
             title.isBlank() -> State.HAVE_IMAGE
@@ -107,10 +112,15 @@ internal class NewPostViewModel @Inject constructor(
 
 
     // Selected Blog
-    private val _selectedBlogId = MutableLiveData<Int>()
-    private val selectedBlogId: LiveData<Int> = _selectedBlogId
-    val selectedBlog = selectedBlogId.switchMap { blogId ->
-        val selectedBlog =
+    private val selectedBlogId = settings.selectedBlogId
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 3000),
+            initialValue = -1,
+        )
+
+    val selectedBlog = selectedBlogId
+        .mapLatest { blogId ->
             if (blogId < 0) {
                 null
             } else {
@@ -118,25 +128,30 @@ internal class NewPostViewModel @Inject constructor(
                     .getBlogsList()
                     .find { it.id == blogId }
             }
+        }
+        .onEach {
+            updateState()
 
-        MutableLiveData<Blog?>().apply { value = selectedBlog }
-    }
+            val selectedBlogTags = authPrefs.getTagsList()
+            val selectedBlogCategories = authPrefs.getCategoriesList()
 
-    private fun setSelectedBlogId(value: Int) {
-        _selectedBlogId.value = value
+            setBlogTags(selectedBlogTags ?: emptyList())
+            setBlogCategories(selectedBlogCategories ?: emptyList())
 
-        updateState()
-
-        val selectedBlogTags = authPrefs.getTagsList()
-        val selectedBlogCategories = authPrefs.getCategoriesList()
-
-        setBlogTags(selectedBlogTags ?: emptyList())
-        setBlogCategories(selectedBlogCategories ?: emptyList())
-
-        if (selectedBlogTags == null) updateTagsList()
-        if (selectedBlogCategories == null) updateCategoriesList()
-    }
-
+            if (it != null) {
+                if (selectedBlogTags == null) {
+                    updateTagsList()
+                }
+                if (selectedBlogCategories == null) {
+                    updateCategoriesList()
+                }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 3000),
+            initialValue = null,
+        )
 
     // Selected Blog's Tags
     private val _blogTags = MutableLiveData<List<WPTag>>()
@@ -181,7 +196,7 @@ internal class NewPostViewModel @Inject constructor(
         viewModelScope.launch {
             // Add category on server
             val success = syncUtils.addCategory(
-                selectedBlogId.value ?: return@launch,
+                selectedBlogId.value,
                 category.name
             )
 
@@ -379,8 +394,6 @@ internal class NewPostViewModel @Inject constructor(
     // Observer for changes to selected blog id
     private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
-            Settings.KEY_SELECTED_BLOG_ID -> setSelectedBlogId(settings.selectedBlogId)
-
             Settings.KEY_PUBLISH_FORMAT -> useBlockEditor.value = settings.useBlockEditor
 
             Settings.KEY_ADD_FEATURED_IMAGE -> addFeaturedImage.value =
@@ -401,7 +414,6 @@ internal class NewPostViewModel @Inject constructor(
         addFeaturedImage.value = settings.addFeaturedImage
         defaultTags.value = settings.defaultTags
         defaultCategories.value = settings.defaultCategories
-        setSelectedBlogId(settings.selectedBlogId)
         settings.observe(observer)
     }
 
@@ -467,7 +479,7 @@ internal class NewPostViewModel @Inject constructor(
                     .filter { category -> category.isNotBlank() }
                     .distinct()
 
-                if (blogId == null || title.isNullOrBlank() || images.isNullOrEmpty()) {
+                if (title.isNullOrBlank() || images.isNullOrEmpty()) {
                     Timber.w("Null inputs to publish: blogId: '$blogId', title: '$title', image: '$images'")
                     Toast.makeText(
                         applicationContext,
@@ -550,11 +562,11 @@ internal class NewPostViewModel @Inject constructor(
     )
 
     private suspend fun refreshTags(): RefreshTagsResult {
-        val blogId = selectedBlogId.value?.toString()
 
-        return if (blogId.isNullOrBlank()) {
+        return if (selectedBlogId.value < 0) {
             RefreshTagsResult(errorMessage = "No blog selected")
         } else {
+            val blogId = selectedBlogId.value.toString()
             val fetchTagsResponse = try {
                 wpService.getTagsForSite(blogId)
             } catch (e: IOException) {
@@ -581,11 +593,11 @@ internal class NewPostViewModel @Inject constructor(
     )
 
     private suspend fun refreshCategories(): RefreshCategoriesResult {
-        val blogId = selectedBlogId.value?.toString()
 
-        return if (blogId.isNullOrBlank()) {
+        return if (selectedBlogId.value < 0) {
             RefreshCategoriesResult(errorMessage = "No blog selected")
         } else {
+            val blogId = selectedBlogId.value.toString()
             val fetchCategoriesResponse = try {
                 wpService.getCategoriesForSite(blogId)
             } catch (e: IOException) {

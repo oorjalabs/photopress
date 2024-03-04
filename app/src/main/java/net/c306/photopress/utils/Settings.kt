@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,10 +37,10 @@ class Settings @Inject constructor(
         prefs.registerOnSharedPreferenceChangeListener(observer)
     }
 
-    val selectedBlogIdFlow: Flow<Int>
+    val selectedBlogId: Flow<Int>
         get() = prefsUpdatedTimestamp
-            .mapLatest { selectedBlogId }
-            .onStart { selectedBlogId }
+            .mapLatest { getSelectedBlogId() }
+            .onStart { getSelectedBlogId() }
 
     fun setSelectedBlogId(value: Int) {
         prefs.edit {
@@ -51,17 +52,15 @@ class Settings @Inject constructor(
         }
     }
 
-    val selectedBlogId: Int
-        get() {
-            return try {
-                // Stored as string set in upgraded list preference
-                val valueSet = prefs.getStringSet(KEY_SELECTED_BLOG_ID, null) ?: emptySet()
-                (if (valueSet.isEmpty()) DEFAULT_BLOG_ID else valueSet.first()).toInt()
-            } catch (e: ClassCastException) {
-                // Stored as string in old list preference
-                (prefs.getString(KEY_SELECTED_BLOG_ID, null) ?: DEFAULT_BLOG_ID).toInt()
-            }
-        }
+    private fun getSelectedBlogId(): Int = try {
+        // Stored as string set in upgraded list preference
+        val valueSet = prefs.getStringSet(KEY_SELECTED_BLOG_ID, null) ?: emptySet()
+        (if (valueSet.isEmpty()) DEFAULT_BLOG_ID else valueSet.first()).toInt()
+    } catch (e: ClassCastException) {
+        Timber.w(e, "Using old preference for selectedBlogId.")
+        // Stored as string in old list preference
+        (prefs.getString(KEY_SELECTED_BLOG_ID, null) ?: DEFAULT_BLOG_ID).toInt()
+    }
 
 
     val useBlockEditor: Boolean
