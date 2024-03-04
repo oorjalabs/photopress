@@ -43,20 +43,6 @@ internal class AppViewModel @Inject constructor(
     // WordPress app installed
     val isWordPressAppInstalled = MutableLiveData<Boolean>()
 
-    // Selected blog
-    private val _selectedBlogId = MutableLiveData<Int>()
-    val selectedBlogId: LiveData<Int> = _selectedBlogId
-
-    private val _blogSelected = MutableLiveData<Boolean>()
-    val blogSelected: LiveData<Boolean> = _blogSelected
-
-    private fun setSelectedBlog() {
-        val selectedBlog = settings.selectedBlogId
-        _selectedBlogId.value = selectedBlog
-        _blogSelected.value = selectedBlog > -1
-    }
-
-
     // Logged in status
     private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> = _isLoggedIn
@@ -91,8 +77,6 @@ internal class AppViewModel @Inject constructor(
             AuthPrefs.ARG_USER_DETAILS -> userDetails.value =
                 authPrefs.getUserDetails()
 
-            Settings.KEY_SELECTED_BLOG_ID -> setSelectedBlog()
-
             AppPrefs.KEY_SHOW_UPDATE_NOTES -> _showUpdateNotes.value = appPrefs.showUpdateNotes
         }
     }
@@ -102,12 +86,10 @@ internal class AppViewModel @Inject constructor(
     init {
         userDetails.value = authPrefs.getUserDetails()
         _isLoggedIn.value = authPrefs.haveAuthToken()
-        setSelectedBlog()
 
         _showUpdateNotes.value = appPrefs.showUpdateNotes
 
         authPrefs.observe(observer)
-        settings.observe(observer)
         appPrefs.observe(observer)
 
         isWordPressAppInstalled.value =

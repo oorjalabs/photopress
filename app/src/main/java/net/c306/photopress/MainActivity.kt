@@ -54,11 +54,11 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
                     .setPrimaryColor(getColor(R.color.primaryColor))
                     .build()
             } else {
-                ActivityManager.TaskDescription(
-                    getString(R.string.app_name), // Leave the default title.
-                    R.mipmap.ic_launcher,
-                    getColor(R.color.primaryColor) // Leave the default color
-                )
+            ActivityManager.TaskDescription(
+                getString(R.string.app_name), // Leave the default title.
+                R.mipmap.ic_launcher,
+                getColor(R.color.primaryColor) // Leave the default color
+            )
             }
         )
 
@@ -67,8 +67,6 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         binding.navView.setupWithNavController(navController)
 
         appViewModel.isLoggedIn.observe(this) { }
-        appViewModel.selectedBlogId.observe(this) { }
-        appViewModel.blogSelected.observe(this) { }
 
         // Restart activity after logout
         appViewModel.doPostLogoutRestart.observe(this) {

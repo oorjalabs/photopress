@@ -2,21 +2,45 @@ package net.c306.photopress.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.Keep
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * To save and fetch data from SharedPreferences
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class Settings @Inject constructor(
     @ApplicationContext context: Context,
 ) : BasePrefs() {
 
     override var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+    private val prefsUpdatedTimestamp = MutableStateFlow(0L)
+
+    @Keep
+    private val observer = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+        prefsUpdatedTimestamp.value = System.currentTimeMillis()
+    }
+
+    init {
+        prefs.registerOnSharedPreferenceChangeListener(observer)
+    }
+
+    val selectedBlogId: Flow<Int>
+        get() = prefsUpdatedTimestamp
+            .mapLatest { getSelectedBlogId() }
+            .onStart { getSelectedBlogId() }
 
     fun setSelectedBlogId(value: Int) {
         prefs.edit {
@@ -28,17 +52,15 @@ class Settings @Inject constructor(
         }
     }
 
-    val selectedBlogId: Int
-        get() {
-            return try {
-                // Stored as string set in upgraded list preference
-                val valueSet = prefs.getStringSet(KEY_SELECTED_BLOG_ID, null) ?: emptySet()
-                (if (valueSet.isEmpty()) DEFAULT_BLOG_ID else valueSet.first()).toInt()
-            } catch (e: ClassCastException) {
-                // Stored as string in old list preference
-                (prefs.getString(KEY_SELECTED_BLOG_ID, null) ?: DEFAULT_BLOG_ID).toInt()
-            }
-        }
+    private fun getSelectedBlogId(): Int = try {
+        // Stored as string set in upgraded list preference
+        val valueSet = prefs.getStringSet(KEY_SELECTED_BLOG_ID, null) ?: emptySet()
+        (if (valueSet.isEmpty()) DEFAULT_BLOG_ID else valueSet.first()).toInt()
+    } catch (e: ClassCastException) {
+        Timber.w(e, "Using old preference for selectedBlogId.")
+        // Stored as string in old list preference
+        (prefs.getString(KEY_SELECTED_BLOG_ID, null) ?: DEFAULT_BLOG_ID).toInt()
+    }
 
 
     val useBlockEditor: Boolean
