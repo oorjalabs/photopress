@@ -20,14 +20,15 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
 import net.c306.photopress.api.Blog
 import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECTED_BLOG_KEY
 import net.c306.photopress.ui.welcome.WelcomeItemFragmentSelectBlog.Companion.SELECT_BLOG_REQUEST_KEY
 import net.c306.photopress.utils.AuthPrefs
-import java.util.*
 import javax.inject.Inject
 
+@AndroidEntryPoint
 internal class BlogChooserDialogFragment : DialogFragment() {
 
     @Inject
@@ -66,7 +67,7 @@ internal class BlogChooserDialogFragment : DialogFragment() {
             val contentView = layoutInflater.inflate(R.layout.dialog_blog_chooser, null).apply {
 
                 // Create list view - add adapter and click listeners
-                val listView = findViewById<ListView>(R.id.blog_list)?.apply {
+                findViewById<ListView>(R.id.blog_list)?.apply {
                     choiceMode = ListView.CHOICE_MODE_SINGLE
                     adapter = mBlogChooserListAdapter
 

@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import dagger.hilt.android.AndroidEntryPoint
 import net.c306.customcomponents.utils.getFloatFromXml
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
@@ -21,6 +22,7 @@ import net.c306.photopress.utils.viewBinding
 /**
  * Holder fragment for the welcome fragment views
  */
+@AndroidEntryPoint
 class WelcomeFragment : NoBottomNavFragment(R.layout.fragment_welcome) {
 
     // When requested, this adapter returns a DemoObjectFragment,

@@ -3,8 +3,11 @@ package net.c306.photopress.ui.welcome
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WelcomeViewModel: ViewModel() {
+@HiltViewModel
+class WelcomeViewModel @Inject constructor(): ViewModel() {
 
     private val _goToScreen = MutableLiveData<Int>()
     val goToScreen: LiveData<Int> = _goToScreen
