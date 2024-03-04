@@ -12,10 +12,10 @@ import net.c306.photopress.R
 open class NoBottomNavFragment : Fragment {
     constructor() : super()
     constructor(@LayoutRes layout: Int) : super(layout)
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         (activity as? MainActivity)
             ?.findViewById<BottomNavigationView>(R.id.nav_view)?.isVisible = false
     }

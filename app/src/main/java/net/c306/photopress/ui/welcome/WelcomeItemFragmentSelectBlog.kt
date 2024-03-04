@@ -3,7 +3,6 @@ package net.c306.photopress.ui.welcome
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,13 +13,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.c306.photopress.R
 import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
+import net.c306.photopress.ui.custom.NoBottomNavFragment
 import net.c306.photopress.utils.viewBinding
 
 /**
  * Instances of this class are fragments representing a single object in our collection.
  */
 @AndroidEntryPoint
-class WelcomeItemFragmentSelectBlog : Fragment(R.layout.fragment_welcome_item_select_blog) {
+class WelcomeItemFragmentSelectBlog : NoBottomNavFragment(R.layout.fragment_welcome_item_select_blog) {
 
     private val viewModel by viewModels<SelectBlogViewModel>()
 

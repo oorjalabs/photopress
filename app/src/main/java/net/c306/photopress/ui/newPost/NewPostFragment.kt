@@ -100,11 +100,20 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
             }
         }
 
-        viewModel.selectedBlog.observe(viewLifecycleOwner) {
-            binding.blogName.text = if (it?.name.isNullOrBlank()) {
-                getString(R.string.new_post_label_no_blog_selected)
-            } else {
-                getString(R.string.new_post_label_posting_as_author_to_blog, avm.userDisplayName.value, it!!.name)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.selectedBlog.collectLatest {
+                    val name = it?.name
+                    binding.blogName.text = if (name.isNullOrBlank()) {
+                        getString(R.string.new_post_label_no_blog_selected)
+                    } else {
+                        getString(
+                            R.string.new_post_label_posting_as_author_to_blog,
+                            avm.userDisplayName.value,
+                            name
+                        )
+                    }
+                }
             }
         }
 
@@ -138,21 +147,41 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
             binding.photoTarget.isEnabled = it == NewPostViewModel.State.EMPTY
 
             if (it == NewPostViewModel.State.READY) {
-                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondaryColor))
+                binding.buttonUpload.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.secondaryColor
+                    )
+                )
                 binding.buttonUpload.isClickable = true
                 binding.buttonUpload.isFocusable = true
             } else {
-                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bg_fab_disabled))
+                binding.buttonUpload.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.bg_fab_disabled
+                    )
+                )
                 binding.buttonUpload.isClickable = false
                 binding.buttonUpload.isFocusable = false
             }
 
             if (it == NewPostViewModel.State.HAVE_IMAGE || it == NewPostViewModel.State.READY) {
-                binding.buttonPostSettings.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondaryColor))
+                binding.buttonPostSettings.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.secondaryColor
+                    )
+                )
                 binding.buttonPostSettings.isClickable = true
                 binding.buttonPostSettings.isFocusable = true
             } else {
-                binding.buttonPostSettings.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bg_fab_disabled))
+                binding.buttonPostSettings.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.bg_fab_disabled
+                    )
+                )
                 binding.buttonPostSettings.isClickable = false
                 binding.buttonPostSettings.isFocusable = false
             }
@@ -191,9 +220,15 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
             if (publishResult?.publishedPost != null) {
                 // Post uploaded, show message
                 val toastMessageId = when {
-                    publishResult.publishedPost.isDraft                                        -> R.string.new_post_toast_uploaded_as_draft
-                    publishResult.publishedPost.post.status == WPBlogPost.PublishStatus.FUTURE -> R.string.new_post_toast_post_scheduled
-                    else                                                                       -> R.string.new_post_toast_published
+                    publishResult.publishedPost.isDraft -> {
+                        R.string.new_post_toast_uploaded_as_draft
+                    }
+                    publishResult.publishedPost.post.status == WPBlogPost.PublishStatus.FUTURE -> {
+                        R.string.new_post_toast_post_scheduled
+                    }
+                    else -> {
+                        R.string.new_post_toast_published
+                    }
                 }
                 Toast.makeText(requireContext(), toastMessageId, Toast.LENGTH_SHORT).show()
 
@@ -253,7 +288,8 @@ class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),
                         binding.buttonChangeImage.isVisible = false
                         binding.buttonAddMorePhotos.isVisible = false
                         binding.buttonReorderPhotos.isVisible = false
-                        binding.inputPostCaption.hint = getString(R.string.new_post_placeholder_image_caption)
+                        binding.inputPostCaption.hint =
+                            getString(R.string.new_post_placeholder_image_caption)
                     }
                 }
             }
