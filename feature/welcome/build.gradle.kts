@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -16,11 +15,6 @@ android {
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-    targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-}
-
 dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(platform(libs.androidx.compose.bom))
@@ -32,7 +26,7 @@ dependencies {
     // or only import the main APIs for the underlying toolkit systems,
     // such as input and measurement/layout
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.utils)
+    implementation(libs.androidx.compose.ui.util)
 
     // Android Studio Preview support
     implementation(libs.androidx.compose.ui.tooling.preview)
