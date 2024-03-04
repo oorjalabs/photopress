@@ -768,6 +768,7 @@ style:
     allowedNames: ''
     ignoreAnnotated:
       - 'Preview'
+      - 'PreviewLightDark'
   UnusedPrivateProperty:
     active: true
     allowedNames: '_|ignored|expected|serialVersionUID'

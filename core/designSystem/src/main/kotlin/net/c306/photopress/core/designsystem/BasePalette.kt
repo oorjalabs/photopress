@@ -18,4 +18,26 @@ object BasePalette {
     val GREY_800 = Color(0xFF424242)
     val GREY_900 = Color(0xFF212121)
     val GREY_950 = Color(0xFF121212)
+
+    // https://colorhunt.co/palette/9506
+    val p1 = Color(0XFF00B8A9)
+    val p2 = Color(0XFFF8F3D4)
+    val p3 = Color(0XFFF6416C)
+    val p4 = Color(0XFFFFDE7D)
+
+    // https://colorhunt.co/palette/7642
+    val p1_night = Color(0XFFF38181)
+    val p2_night = Color(0XFFFCE38A)
+    val p3_night = Color(0XFFEAFFD0)
+    val p4_night = Color(0XFF95E1D3)
+
+    // Android theme colours
+
+    val primaryColor = Color(0XFFCCCCCC)
+    val primaryDarkColor = Color(0XFF007B66)
+    val primaryLightColor = Color(0XFFA8E0DA)
+
+    val secondaryColor = Color(0XFFCCCCCC)
+    val secondaryDarkColor = Color(0XFFCC174E)
+    val secondaryLightColor = Color(0XFFFD90A8)
 }
