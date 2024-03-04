@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.DialogAfterPublishBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
-import net.c306.photopress.utils.viewBinding
 
 @AndroidEntryPoint
 class AfterPublishedDialog : BaseBottomSheetDialogFragment(R.layout.dialog_after_publish) {

@@ -18,12 +18,12 @@ import androidx.preference.PreferenceFragmentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.customcomponents.updatenotes.UpdateNotesViewModel
 import net.c306.customcomponents.utils.CommonUtils
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.ActivityMainBinding
 import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.ui.settings.SettingsFragment
 import net.c306.photopress.ui.settings.SettingsFragmentDirections
 import net.c306.photopress.utils.AppPrefs
-import net.c306.photopress.utils.viewBinding
 import javax.inject.Inject
 
 @AndroidEntryPoint

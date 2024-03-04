@@ -91,9 +91,6 @@ android {
         }
     }
 
-    buildFeatures {
-        viewBinding = true
-    }
     namespace = "net.c306.photopress"
 
 }

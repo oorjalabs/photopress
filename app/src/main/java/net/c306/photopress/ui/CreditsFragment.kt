@@ -7,9 +7,9 @@ import android.view.View
 import androidx.annotation.IdRes
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentCreditsBinding
 import net.c306.photopress.ui.custom.AppBarFragment
-import net.c306.photopress.utils.viewBinding
 
 /**
  * Shows credits and thanks for content used

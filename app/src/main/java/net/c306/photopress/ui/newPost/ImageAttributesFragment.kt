@@ -15,10 +15,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentImageAttributesBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
 import net.c306.photopress.ui.custom.loadImage
-import net.c306.photopress.utils.viewBinding
 
 @AndroidEntryPoint
 class ImageAttributesFragment : AppBarNoBottomNavFragment(R.layout.fragment_image_attributes) {

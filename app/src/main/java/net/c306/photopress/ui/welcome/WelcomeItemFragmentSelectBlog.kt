@@ -12,9 +12,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentWelcomeItemSelectBlogBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
-import net.c306.photopress.utils.viewBinding
 
 /**
  * Instances of this class are fragments representing a single object in our collection.

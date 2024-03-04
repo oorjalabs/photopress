@@ -20,10 +20,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentPostSettingsBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
 import net.c306.photopress.utils.setInputFocus
-import net.c306.photopress.utils.viewBinding
 
 @AndroidEntryPoint
 class PostSettingsFragment : AppBarNoBottomNavFragment(R.layout.fragment_post_settings) {

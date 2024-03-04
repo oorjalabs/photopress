@@ -20,8 +20,10 @@ plugins {
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
+    rootProject.subprojects {
+        delete(layout.buildDirectory)
+    }
 }
-
 
 fun BaseExtension.baseConfig() {
     compileSdkVersion(libs.versions.compileSdk.get().toInt())
@@ -43,6 +45,8 @@ fun BaseExtension.baseConfig() {
             jvmTarget = libs.versions.java.get()
         }
     }
+
+    buildFeatures.viewBinding = true
 }
 
 /**
