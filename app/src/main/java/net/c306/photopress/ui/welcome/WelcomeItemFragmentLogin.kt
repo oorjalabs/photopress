@@ -7,9 +7,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentWelcomeItemLoginBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
-import net.c306.photopress.utils.viewBinding
 
 /**
  * Instances of this class are fragments representing a single object in our collection.

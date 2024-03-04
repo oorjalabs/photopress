@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentReorderImagesBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
 import net.c306.photopress.ui.newPost.NewPostViewModel
 import net.c306.photopress.utils.Utils
-import net.c306.photopress.utils.viewBinding
 import java.util.*
 
 @AndroidEntryPoint

@@ -23,13 +23,13 @@ import kotlinx.coroutines.launch
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
 import net.c306.photopress.api.WPBlogPost
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.database.PostImage
 import net.c306.photopress.databinding.FragmentPostNewBinding
 import net.c306.photopress.ui.custom.BottomNavFragment
 import net.c306.photopress.ui.gallery.GalleryAdapter
 import net.c306.photopress.utils.Utils
 import net.c306.photopress.utils.setInputFocus
-import net.c306.photopress.utils.viewBinding
 
 @AndroidEntryPoint
 class NewPostFragment : BottomNavFragment(R.layout.fragment_post_new),

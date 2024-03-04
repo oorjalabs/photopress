@@ -1,4 +1,4 @@
-package net.c306.photopress.utils
+package net.c306.photopress.core.extensions
 
 import android.view.LayoutInflater
 import android.view.View
@@ -60,7 +60,7 @@ inline fun <T : ViewBinding> FragmentActivity.viewBinding(
 fun <T : ViewBinding> Fragment.viewBinding(factory: (View) -> T): ReadOnlyProperty<Fragment, T> =
     object : ReadOnlyProperty<Fragment, T>, DefaultLifecycleObserver {
         private var binding: T? = null
-        
+
         override fun getValue(thisRef: Fragment, property: KProperty<*>): T =
             binding ?: factory(requireView()).also {
                 // if binding is accessed after Lifecycle is DESTROYED, create new instance, but don't cache it
@@ -72,7 +72,7 @@ fun <T : ViewBinding> Fragment.viewBinding(factory: (View) -> T): ReadOnlyProper
                     binding = it
                 }
             }
-        
+
         override fun onDestroy(owner: LifecycleOwner) {
             binding = null
         }

@@ -14,10 +14,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.c306.customcomponents.utils.getFloatFromXml
 import net.c306.photopress.AppViewModel
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentWelcomeBinding
 import net.c306.photopress.ui.custom.NoBottomNavFragment
 import net.c306.photopress.ui.welcome.WelcomeFragmentAdapter.Screens
-import net.c306.photopress.utils.viewBinding
 
 /**
  * Holder fragment for the welcome fragment views

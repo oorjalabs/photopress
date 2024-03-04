@@ -3,8 +3,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.hilt)
@@ -33,12 +33,8 @@ java {
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
     defaultConfig {
         applicationId = "net.c306.photopress"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = versionNumber
         versionName = "${getDate()}.${versionString}"
 
@@ -95,14 +91,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
-    }
-
-    buildFeatures {
-        viewBinding = true
-    }
     namespace = "net.c306.photopress"
 
 }
@@ -114,6 +102,10 @@ ksp {
 
 dependencies {
     implementation(fileTree(baseDir = "libs") { include("*.jar") })
+
+    implementation(project(path = ":core:extensions"))
+    implementation(project(path = ":feature:welcome"))
+
     implementation(libs.kotlin.stdlib)
 
     // Core

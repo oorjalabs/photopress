@@ -11,10 +11,10 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.customcomponents.confirmation.ConfirmationDialog
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.database.PhotoPressPost
 import net.c306.photopress.databinding.DialogPublishOptionBinding
 import net.c306.photopress.ui.custom.BaseBottomSheetDialogFragment
-import net.c306.photopress.utils.viewBinding
 import java.util.*
 
 @AndroidEntryPoint

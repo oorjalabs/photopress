@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import net.c306.photopress.R
+import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.FragmentFullImageBinding
 import net.c306.photopress.ui.custom.AppBarNoBottomNavFragment
 import net.c306.photopress.ui.custom.loadImage
-import net.c306.photopress.utils.viewBinding
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
