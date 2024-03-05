@@ -1,7 +1,5 @@
 package net.c306.photopress.welcome.initScreen
 
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +11,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -31,15 +27,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.airbnb.lottie.compose.rememberLottieDynamicProperties
-import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import net.c306.photopress.core.designsystem.BasePalette
 import net.c306.photopress.core.designsystem.CustomColour
+import net.c306.photopress.welcome.NextPageIndicator
 import net.c306.photopress.welcome.R
 import net.c306.photopress.welcome.WelcomeTheme
 
@@ -64,9 +54,11 @@ private object WelcomeInit {
 internal fun WelcomeInit(modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {
         Column(
-            modifier = Modifier.padding(
-                horizontal = 16.dp
-            ).fillMaxSize(),
+            modifier = Modifier
+                .padding(
+                    horizontal = 16.dp
+                )
+                .fillMaxSize(),
             horizontalAlignment = CenterHorizontally,
         ) {
             Spacer(
@@ -99,6 +91,7 @@ internal fun WelcomeInit(modifier: Modifier = Modifier) {
 
 
             Spacer(modifier = Modifier.height(16.dp))
+
             Box(modifier = Modifier.fillMaxWidth()) {
                 val stepsContentColour = WelcomeInit.Style.StepsColour.current
                 Text(
@@ -114,24 +107,7 @@ internal fun WelcomeInit(modifier: Modifier = Modifier) {
                     modifier = Modifier.align(Center),
                 )
 
-                val composition by rememberLottieComposition(
-                    LottieCompositionSpec.RawRes(
-                        resId = R.raw.anim_swipe_right_arrows
-                    )
-                )
-                val dynamicProperties = rememberLottieDynamicProperties(
-                    rememberLottieDynamicProperty(
-                        keyPath = arrayOf("**"),
-                        property = LottieProperty.COLOR_FILTER,
-                        callback = {
-                            PorterDuffColorFilter(
-                                stepsContentColour.hashCode(),
-                                PorterDuff.Mode.SRC_ATOP
-                            )
-                        })
-                )
-                LottieAnimation(
-                    composition = composition,
+                NextPageIndicator(
                     modifier = Modifier
                         .offset {
                             IntOffset(
@@ -140,11 +116,6 @@ internal fun WelcomeInit(modifier: Modifier = Modifier) {
                             )
                         }
                         .align(CenterEnd)
-                        .width(48.dp),
-                    speed = 0.5f,
-                    isPlaying = true,
-                    iterations = LottieConstants.IterateForever,
-                    dynamicProperties = dynamicProperties,
                 )
             }
 
