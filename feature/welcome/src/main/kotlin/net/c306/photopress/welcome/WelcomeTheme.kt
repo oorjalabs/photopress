@@ -10,10 +10,12 @@ import net.c306.photopress.core.designsystem.LocalIsDarkModeActive
 
 private val welcomeLightColourScheme = lightColorScheme(
     surface = BasePalette.primaryLightColor,
+    primary = BasePalette.p3,
 )
 
 private val welcomeDarkColourScheme = darkColorScheme(
     surface = BasePalette.primaryDarkColor,
+    primary = BasePalette.p1_night,
 )
 
 /**
