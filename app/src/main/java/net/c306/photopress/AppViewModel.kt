@@ -1,6 +1,5 @@
 package net.c306.photopress
 
-import android.app.Application
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,13 +14,11 @@ import net.c306.photopress.api.UserDetails
 import net.c306.photopress.utils.AppPrefs
 import net.c306.photopress.utils.AuthPrefs
 import net.c306.photopress.utils.Settings
-import net.c306.photopress.utils.isPackageInstalled
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 internal class AppViewModel @Inject constructor(
-    application: Application,
     private val settings: Settings,
     private val appPrefs: AppPrefs,
     private val authPrefs: AuthPrefs,
@@ -39,9 +36,6 @@ internal class AppViewModel @Inject constructor(
             value = if (!it.displayName.isNullOrBlank()) it.displayName else it.username
         }
     }
-
-    // WordPress app installed
-    val isWordPressAppInstalled = MutableLiveData<Boolean>()
 
     // Logged in status
     private val _isLoggedIn = MutableLiveData<Boolean>()
@@ -91,9 +85,5 @@ internal class AppViewModel @Inject constructor(
 
         authPrefs.observe(observer)
         appPrefs.observe(observer)
-
-        isWordPressAppInstalled.value =
-            application.packageManager.isPackageInstalled("org.wordpress.android") == true
     }
-
 }

@@ -1,7 +1,6 @@
 package net.c306.photopress.ui.newPost
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.provider.MediaStore
@@ -632,40 +631,6 @@ internal class NewPostViewModel @Inject constructor(
                 Html.fromHtml(published.post.title, Html.FROM_HTML_MODE_COMPACT)
             )
         }
-
-
-    fun sharePost() {
-        publishedPost.value?.post?.let { post ->
-            CommonUtils.sendSharingIntent(
-                context = applicationContext,
-                title = post.url,
-                text = post.title
-            )
-        }
-    }
-
-
-    fun openPostExternal() {
-        publishedPost.value?.post?.let { post ->
-            applicationContext.startActivity(CommonUtils.getIntentForUrl(post.url))
-        }
-    }
-
-
-    fun openPostInWordPress() {
-        publishedPost.value?.post?.let { post ->
-            applicationContext.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("wordpress://viewpost?blogId=${selectedBlogId.value}&postId=${post.id}")
-                    // Uri.parse("wordpress://post?blogId=${selectedBlogId.value}&postId=${post.id}")
-                    // Uri.parse("https://wordpress.com/post/${selectedBlogId.value}/${post.id}")
-                ).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-            )
-        }
-    }
 
 
     fun copyPostToClipboard() {

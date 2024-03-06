@@ -3,11 +3,9 @@ package net.c306.photopress.ui.newPost
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
-import net.c306.photopress.AppViewModel
+import net.c306.customcomponents.utils.CommonUtils
 import net.c306.photopress.R
 import net.c306.photopress.core.extensions.viewBinding
 import net.c306.photopress.databinding.DialogAfterPublishBinding
@@ -25,26 +23,28 @@ class AfterPublishedDialog : BaseBottomSheetDialogFragment(R.layout.dialog_after
 
         binding.highlightActionTitle.text = viewModel.publishedDialogMessage
 
-        ViewModelProvider(requireActivity()).get(AppViewModel::class.java)
-            .isWordPressAppInstalled
-            .observe(viewLifecycleOwner) {
-                binding.buttonOpenPostInWordpressApp.isVisible = it
-            }
-
         binding.buttonSharePost.setOnClickListener {
-            viewModel.sharePost()
+            viewModel.publishedPost.value?.post?.let { post ->
+                CommonUtils.sendSharingIntent(
+                    context = it.context,
+                    text = post.url,
+                    title = post.title,
+                    applyTitleFix = true,
+                )
+            }
+            dismiss()
         }
 
         binding.buttonCopyPostToClipboard.setOnClickListener {
             viewModel.copyPostToClipboard()
+            dismiss()
         }
 
         binding.buttonOpenPostInBrowser.setOnClickListener {
-            viewModel.openPostExternal()
-        }
-
-        binding.buttonOpenPostInWordpressApp.setOnClickListener {
-            viewModel.openPostInWordPress()
+            viewModel.publishedPost.value?.post?.let { post ->
+                startActivity(CommonUtils.getIntentForUrl(post.url))
+            }
+            dismiss()
         }
     }
 
@@ -52,5 +52,4 @@ class AfterPublishedDialog : BaseBottomSheetDialogFragment(R.layout.dialog_after
         viewModel.newPost()
         super.onDismiss(dialog)
     }
-
 }
