@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:background="@color/bg_status_bar"
     android:paddingHorizontal="@dimen/activity_horizontal_margin"
     android:tag="welcome3">
-    
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/image_guide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.25" />
-    
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="128dp"
@@ -23,7 +24,7 @@
         app:layout_constraintBottom_toTopOf="@id/image_guide"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-    
+
     <TextView
         android:id="@+id/text_welcome"
         android:layout_width="wrap_content"
@@ -34,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo" />
-    
+
     <TextView
         android:id="@+id/subtitle_welcome_select_blog"
         android:layout_width="wrap_content"
@@ -47,7 +48,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_welcome"
         tools:text="@string/subtitle_welcome_select_blog" />
-    
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_setup_complete"
         android:layout_width="wrap_content"
@@ -55,7 +56,7 @@
         app:constraint_referenced_ids="animation_view_done,button_start"
         tools:layout_editor_absoluteX="16dp"
         tools:visibility="visible" />
-    
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view_done"
         android:layout_width="128dp"
@@ -66,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@id/subtitle_welcome_select_blog"
         app:lottie_autoPlay="false"
         app:lottie_rawRes="@raw/anim_done" />
-    
+
     <Button
         android:id="@+id/button_start"
         style="@style/OutlinedButton.Secondary"
@@ -78,7 +79,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/subtitle_welcome_select_blog"
         app:layout_constraintVertical_bias="0.9" />
-    
+
     <Button
         android:id="@+id/button_select_blog"
         style="@style/Button.Secondary"
@@ -89,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subtitle_welcome_select_blog" />
-    
+
     <TextView
         android:id="@+id/tvNoBlogMessage"
         android:layout_width="wrap_content"
@@ -105,7 +106,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_select_blog" />
-    
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_progress_indicator_space"
         android:layout_width="wrap_content"
