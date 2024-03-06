@@ -8,33 +8,27 @@
     android:paddingHorizontal="@dimen/activity_horizontal_margin"
     android:paddingVertical="@dimen/activity_vertical_margin"
     tools:context=".ui.newPost.AfterPublishedDialog">
-    
+
     <TextView
         android:id="@+id/highlight_action_title"
         style="@style/BottomSheetTitle"
         tools:text="@string/post_publish_title_post_published" />
-    
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_share_post"
         style="@style/BottomSheetActionButtons"
         android:text="@string/post_publish_button_share_post"
         app:icon="@drawable/ic_share" />
-    
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_copy_post_to_clipboard"
         style="@style/BottomSheetActionButtons"
         android:text="@string/post_publish_button_copy_post_url"
         app:icon="@drawable/ic_copy" />
-    
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_open_post_in_browser"
         style="@style/BottomSheetActionButtons"
         android:text="@string/post_publish_button_open_post_in_browser"
         app:icon="@drawable/ic_open_external" />
-    
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_open_post_in_wordpress_app"
-        style="@style/BottomSheetActionButtons"
-        android:text="@string/post_publish_button_open_in_wordpress_app"
-        app:icon="@drawable/ic_wp" />
 </LinearLayout>
