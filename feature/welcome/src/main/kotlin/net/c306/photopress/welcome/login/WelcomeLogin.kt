@@ -19,6 +19,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -98,31 +101,35 @@ internal fun WelcomeLogin(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val subtitle = when (state) {
-                is WelcomeLogin.State.LoggedOut -> {
-                    stringResource(id = R.string.subtitle_login_to_wordpress)
-                }
-
-                is WelcomeLogin.State.LoggedIn -> {
-                    stringResource(id = R.string.connected_as, state.userName)
-                }
-            }
-            Text(
-                text = subtitle,
-                color = WelcomeLogin.Style.SubTitleColour.current,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             AnimatedContent(targetState = state) {
-                when (it) {
-                    is WelcomeLogin.State.LoggedOut -> {
-                        LoggedOutContent(onClick = onLoginClicked)
-                    }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    val subtitle = when (it) {
+                        is WelcomeLogin.State.LoggedOut -> {
+                            stringResource(id = R.string.subtitle_login_to_wordpress)
+                        }
 
-                    is WelcomeLogin.State.LoggedIn -> {
-                        LoggedInContent(onNextClicked = onNextClicked)
+                        is WelcomeLogin.State.LoggedIn -> {
+                            stringResource(id = R.string.connected_as, it.userName)
+                        }
+                    }
+                    Text(
+                        text = subtitle,
+                        color = WelcomeLogin.Style.SubTitleColour.current,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    when (it) {
+                        is WelcomeLogin.State.LoggedOut -> {
+                            LoggedOutContent(onClick = onLoginClicked)
+                        }
+
+                        is WelcomeLogin.State.LoggedIn -> {
+                            LoggedInContent(onNextClicked = onNextClicked)
+                        }
                     }
                 }
             }
@@ -228,11 +235,15 @@ private fun LoggedOutContent(
 @PreviewLightDark
 @Composable
 private fun LoggedOutPreview() {
+    var state: WelcomeLogin.State by remember { mutableStateOf(WelcomeLogin.State.LoggedOut) }
     WelcomeTheme {
         WelcomeLogin(
-            state = WelcomeLogin.State.LoggedOut,
+            state = state,
             onNextClicked = {},
-        ) {}
+            onLoginClicked = {
+                state = WelcomeLogin.State.LoggedIn("Adi")
+            },
+        )
     }
 }
 
