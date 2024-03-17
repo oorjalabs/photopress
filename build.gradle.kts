@@ -42,12 +42,6 @@ fun BaseExtension.baseConfig() {
         targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
     }
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = libs.versions.java.get()
-        }
-    }
-
     buildFeatures.viewBinding = true
 }
 
@@ -77,4 +71,20 @@ fun PluginContainer.applyBaseConfig(project: Project) {
 
 subprojects {
     project.plugins.applyBaseConfig(project)
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = libs.versions.java.get()
+
+            val warningsAsErrors: String? by project
+            allWarningsAsErrors = warningsAsErrors.toBoolean()
+            freeCompilerArgs += listOf(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=${libs.versions.kotlin.get()}",
+            )
+        }
+    }
 }
