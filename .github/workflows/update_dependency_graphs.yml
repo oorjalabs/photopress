@@ -17,7 +17,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Generate graphs
-        run: ./gradlew :example:dependencyGraph
+        run: ./gradlew dependencyGraph
         if: success()
 
       # Get changed files list and set them to `outputs.changed`
