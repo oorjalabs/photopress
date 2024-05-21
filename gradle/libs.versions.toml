@@ -7,7 +7,7 @@ compileSdk = "34"
 agp = "8.4.1"
 kotlin = "1.9.23"
 kotlinx-coroutines = "1.8.1"
-ksp = "1.9.23-1.0.20"
+ksp = "1.9.24-1.0.20"
 
 compose-compiler = "1.5.10"
 
