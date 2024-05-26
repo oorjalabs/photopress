@@ -5,11 +5,9 @@ targetSdk = "34"
 compileSdk = "34"
 
 agp = "8.4.1"
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 kotlinx-coroutines = "1.8.1"
-ksp = "1.9.23-1.0.20"
-
-compose-compiler = "1.5.10"
+ksp = "2.0.0-1.0.21"
 
 androidx-appcompat = "1.6.1"
 androidx-activity-compose = "1.9.0"
@@ -103,3 +101,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
