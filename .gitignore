@@ -102,3 +102,6 @@ PhotoPress.iws
 .idea/deploymentTargetDropDown.xml
 .idea/detekt.xml
 .idea/migrations.xml
+
+# Compose compiler reports
+/.kotlin/sessions/kotlin-compiler-6536526727991017502.salive
