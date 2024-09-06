@@ -33,9 +33,9 @@ end
 subgraph  
   direction LR;
   :app[:app]:::andNode;
-  :core:designSystem([:core:designSystem]):::andNode;
-  :core:extensions([:core:extensions]):::andNode;
-  :feature:welcome([:feature:welcome]):::andNode;
+  :core:designSystem[:core:designSystem]:::andNode;
+  :core:extensions[:core:extensions]:::andNode;
+  :feature:welcome[:feature:welcome]:::andNode;
 end
 
 %% Dependencies
