@@ -3,9 +3,9 @@ name: Publish
 on:
   workflow_dispatch:
   #  Only run when a branch is merged into main // PR merged.
-  push:
-    branches:
-      - main
+  # push:
+  #  branches:
+  #    - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
