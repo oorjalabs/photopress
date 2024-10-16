@@ -10,7 +10,7 @@ kotlinx-coroutines = "1.9.0"
 ksp = "2.0.21-1.0.25"
 
 androidx-appcompat = "1.7.0"
-androidx-activity-compose = "1.9.2"
+androidx-activity-compose = "1.9.3"
 androidx-compose = "2024.09.03"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.13.1"
