@@ -7,7 +7,7 @@ compileSdk = "34"
 agp = "8.7.1"
 kotlin = "2.0.21"
 kotlinx-coroutines = "1.9.0"
-ksp = "2.0.21-1.0.25"
+ksp = "2.0.21-1.0.26"
 
 androidx-appcompat = "1.7.0"
 androidx-activity-compose = "1.9.3"
