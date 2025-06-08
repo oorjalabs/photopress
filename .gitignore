@@ -104,4 +104,4 @@ PhotoPress.iws
 .idea/migrations.xml
 
 # Compose compiler reports
-/.kotlin/sessions/kotlin-compiler-6536526727991017502.salive
+/.kotlin/**/*.salive

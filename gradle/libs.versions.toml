@@ -1,41 +1,41 @@
 [versions]
-java = "17"
+java = "21"
 minSdk = "29"
 targetSdk = "34"
-compileSdk = "34"
+compileSdk = "35"
 
-agp = "8.7.2"
-kotlin = "2.0.21"
-kotlinx-coroutines = "1.9.0"
-ksp = "2.0.21-1.0.27"
+agp = "8.10.1"
+kotlin = "2.1.21"
+kotlinx-coroutines = "1.10.2"
+ksp = "2.1.21-2.0.1"
 
-androidx-appcompat = "1.7.0"
-androidx-activity-compose = "1.9.3"
-androidx-compose = "2024.10.01"
+androidx-appcompat = "1.7.1"
+androidx-activity-compose = "1.10.1"
+androidx-compose = "2025.06.00"
 androidx-constraintlayout = "2.2.1"
-androidx-core = "1.13.1"
+androidx-core = "1.16.0"
 androidx-espressoCore = "3.6.1"
 androidx-junit = "1.2.1"
-androidx-nav = "2.8.4"
+androidx-nav = "2.9.0"
 androidx-legacySupport = "1.0.0"
-androidx-lifecycle = "2.8.7"
+androidx-lifecycle = "2.9.1"
 androidx-preference = "1.2.1"
-androidx-room = "2.6.1"
+androidx-room = "2.7.1"
 androidx-viewpager2 = "1.1.0"
-androidx-work = "2.9.1"
+androidx-work = "2.10.1"
 ab-customComponents = "0.1.34"
 ab-dependencyGraph = "0.1.6"
 javaxAnnotation = "1.3.2"
 junit = "4.13.2"
 glide = "4.16.0"
-hilt = "2.52"
+hilt = "2.56.2"
 lottie = "6.6.6"
 material = "1.12.0"
 okhttp = "4.12.0"
 photoView = "2.3.0"
-retrofit = "2.11.0"
+retrofit = "3.0.0"
 timber = "5.0.1"
-fragmentKtx = "1.8.7"
+fragmentKtx = "1.8.8"
 
 [libraries]
 ab-customComponents = { module = "com.github.adityabhaskar:CustomComponents", version.ref = "ab-customComponents" }
@@ -82,6 +82,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 javax-annotation = { module = "javax.annotation:javax.annotation-api", version.ref = "javaxAnnotation" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
