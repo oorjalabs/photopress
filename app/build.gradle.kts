@@ -182,4 +182,6 @@ dependencies {
 
     // My custom components
     implementation(libs.ab.customComponents)
+
+    testImplementation (libs.kotlin.test.junit)
 }
